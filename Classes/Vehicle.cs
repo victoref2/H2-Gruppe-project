@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace H2_Gruppe_project.Classes;
 
-internal class Vehicle
+public class Vehicle
 {
     //change privacy and what it is as needed
     public string Id { get; private set; }
@@ -15,7 +15,7 @@ internal class Vehicle
     public string RegristrationNumber { get; private set; }
     public string AgeGroup { get; private set; }
     public bool TowHook { get; set; }
-    public string DriversLicenceClass { get; private set; }
+    public string DriversLicenceClass { get; protected set; }
     public string EngineSize { get; private set; }
     public decimal KmL { get; private set; }
     public string FuelType { get; private set; }
