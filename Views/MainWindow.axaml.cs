@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using H2_Gruppe_project.DatabaseClasses;
 
 namespace H2_Gruppe_project.Views
 {
@@ -7,6 +8,13 @@ namespace H2_Gruppe_project.Views
         public MainWindow()
         {
             InitializeComponent();
+
+            TestDatabaseConnection();
+        }
+
+        private void TestDatabaseConnection()
+        {
+            Database.TestConnection();
         }
     }
 }
