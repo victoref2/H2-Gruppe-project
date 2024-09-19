@@ -22,6 +22,6 @@ public class User
     }
     public override string ToString() 
     {
-        return $"User [ID: {Id}, Name: {Name}, Mail: {MailNumber}, Password: ****]";
+        return $"User [ID: {Id}, Name: {Name}, Mail: {Mail}, Password: ****]";
     }
 }
