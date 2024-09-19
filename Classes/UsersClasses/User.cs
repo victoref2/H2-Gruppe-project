@@ -13,12 +13,12 @@ public class User
     public string PassWord { get; set; }
     public string Mail { get; set; }
 
-    public User(string id,string name,string passWord,string mailNumber) 
+    public User(string id,string name,string passWord,string mail) 
     { 
         Id = id;
         Name = name;
         PassWord = passWord;
-        MailNumber = mailNumber;
+        Mail = mail;
     }
     public override string ToString() 
     {
