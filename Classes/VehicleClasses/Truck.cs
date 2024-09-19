@@ -2,35 +2,42 @@
 
 namespace H2_Gruppe_project.Classes
 {
-    public class Truck
+    public class Truck : HeavyVehicle
     {
-        public double Height { get; private set; }
-        public double Weight { get; private set; }
-        public double Length { get; private set; }
-        public double LoadCapacity { get; private set; }
-        public string DriversLicenseClass { get; private set; }
-        public double EngineSize { get; private set; }
-        public bool TowHook { get; private set; }
-        public Truck(double height, double weight, double length, double loadCapacity, double engineSize, bool towHook)
+        public decimal Height { get; private set; }
+        public decimal Weight { get; private set; }
+        public decimal Length { get; private set; }
+        public decimal LoadCapacity { get; private set; }
+
+        public Truck(string id, string name, string km, string regristrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
+            string engineSize, decimal kmL, string fuelType, string energyClass, int maxLoadCapacity, int numberOfAxles,
+            decimal height, decimal weight, decimal length, decimal loadCapacity)
+            : base(id, name, km, regristrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass, maxLoadCapacity, numberOfAxles)
         {
+            if (decimal.Parse(engineSize) < 4.2m || decimal.Parse(engineSize) > 15.0m)
+            {
+                throw new ArgumentOutOfRangeException(nameof(engineSize), "Engine size must be between 4.2L and 15.0L.");
+            }
+
             Height = height;
             Weight = weight;
             Length = length;
             LoadCapacity = loadCapacity;
-            TowHook = towHook;
-            if (engineSize < 4.2 || engineSize > 15.0)
-            {
-                throw new ArgumentOutOfRangeException("EngineSize", "Engine size must be between 4.2 and 15.0 liters.");
-            }
-            EngineSize = engineSize;
 
-            DriversLicenseClass = towHook ? "CE" : "C"; // If it has a tow hook, it requires a CE license
+            // Handle driver's license type based on tow hook.
+            if (towHook)
+            {
+                DriversLicenceClass = "CE";
+            }
+            else
+            {
+                DriversLicenceClass = "C";
+            }
         }
+
         public override string ToString()
         {
-            return $"Truck [Height: {Height}m, Weight: {Weight}kg, Length: {Length}m, " +
-                   $"Load Capacity: {LoadCapacity}kg, Engine Size: {EngineSize}L, " +
-                   $"Tow Hook: {(TowHook ? "Yes" : "No")}, License Required: {DriversLicenseClass}]";
+            return base.ToString() + $", Height: {Height} meters, Weight: {Weight} kg, Length: {Length} meters, Load Capacity: {LoadCapacity} tons";
         }
     }
 }

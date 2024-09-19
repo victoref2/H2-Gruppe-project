@@ -11,7 +11,7 @@ public class User
     public string Id { get; private set; }
     public string Name { get; set; }
     public string PassWord { get; set; }
-    public string MailNumber { get; set; }
+    public string Mail { get; set; }
 
     public User(string id,string name,string passWord,string mailNumber) 
     { 
