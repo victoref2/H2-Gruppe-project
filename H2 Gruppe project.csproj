@@ -11,7 +11,10 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
-    <Folder Include="Database\" />
+    <AvaloniaXaml Remove="Database\**" />
+    <Compile Remove="Database\**" />
+    <EmbeddedResource Remove="Database\**" />
+    <None Remove="Database\**" />
   </ItemGroup>
 
   <ItemGroup>
