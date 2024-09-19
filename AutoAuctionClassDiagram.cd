@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="H2_Gruppe_project.Classes.Auction" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAQAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQA=</HashCode>
+      <FileName>Classes\AuctionClasses\Auction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.CorporateUser" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\UsersClasses\CorporateUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.User" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Classes\UsersClasses\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.Bus" Collapsed="true">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAABAAAAAAEAAAACABAACAACAABAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\VehicleClasses\Bus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.ComercialVehicle" Collapsed="true">
+    <Position X="5.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAQAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Classes\VehicleClasses\ComercialVehicle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.HeavyVehicle" Collapsed="true">
+    <Position X="1.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAQAAAAAAAAAEAAA=</HashCode>
+      <FileName>Classes\VehicleClasses\HeavyVehicle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.NormalVehicle" Collapsed="true">
+    <Position X="6.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAIAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\VehicleClasses\NormalVehicle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.PrivateVehicle" Collapsed="true">
+    <Position X="7.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Classes\VehicleClasses\PrivateVehicle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.Truck" Collapsed="true">
+    <Position X="0.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAEAQAAAABAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\VehicleClasses\Truck.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.Vehicle" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQiAAQEAAAAAAAEAABAAAQAQAgAAAAAEAAAAAAAAIA=</HashCode>
+      <FileName>Classes\VehicleClasses\Vehicle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.DatabaseClasses.Database" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACQAAAAAAAAAEAEAABAAAAgAABBAAAAA=</HashCode>
+      <FileName>DatabaseClasses\BusDB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
