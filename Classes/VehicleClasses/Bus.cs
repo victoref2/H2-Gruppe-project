@@ -8,6 +8,7 @@ namespace H2_Gruppe_project.Classes;
 
 public class Bus : HeavyVehicle
 {
+    public int BusId { get; set; }
     public decimal Height { get; private set; }
     public decimal Weight { get; private set; }
     public decimal Length { get; private set; }
