@@ -1,0 +1,371 @@
+--CREATE PROCEDURE AddVehicle
+--    @Name VARCHAR(100),
+--    @KM VARCHAR(20),
+--    @RegistrationNumber VARCHAR(20),
+--    @AgeGroup VARCHAR(20),
+--    @TowHook BIT,
+--    @DriversLicenceClass VARCHAR(5),
+--    @EngineSize DECIMAL,
+--    @KmL DECIMAL(10, 2),
+--    @FuelType VARCHAR(20),
+--    @EnergyClass VARCHAR(10)
+--AS
+--BEGIN
+--    BEGIN TRY
+--        INSERT INTO Vehicles (Name, KM, RegistrationNumber, AgeGroup, TowHook, DriversLicenceClass, EngineSize, KmL, FuelType, EnergyClass)
+--        VALUES (@Name, @KM, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, @EngineSize, @KmL, @FuelType, @EnergyClass);
+
+--        SELECT SCOPE_IDENTITY() AS NewVehicleId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE AddHeavyVehicle
+--    @VehicleId INT,
+--    @MaxLoadCapacity INT,
+--    @NumberOfAxles INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        INSERT INTO HeavyVehicles (VehicleId, MaxLoadCapacity, NumberOfAxles)
+--        VALUES (@VehicleId, @MaxLoadCapacity, @NumberOfAxles);
+
+--        SELECT SCOPE_IDENTITY() AS NewHeavyVehicleId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE AddBus
+--    @HeavyVehicleId INT,
+--    @Height DECIMAL(10, 2),
+--    @Weight DECIMAL(10, 2),
+--    @Length DECIMAL(10, 2),
+--    @NumberOfSeats INT,
+--    @NumberOfSleepingPlaces INT,
+--    @HasToilet BIT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        INSERT INTO Buses (HeavyVehicleId, Height, Weight, Length, NumberOfSeats, NumberOfSleepingPlaces, HasToilet)
+--        VALUES (@HeavyVehicleId, @Height, @Weight, @Length, @NumberOfSeats, @NumberOfSleepingPlaces, @HasToilet);
+
+--        SELECT SCOPE_IDENTITY() AS NewBusId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE AddTruck
+--	@HeavyVehicleId INT,
+--	@Height DECIMAL(10, 2),
+--	@Weight DECIMAL(10, 2),
+--	@Length DECIMAL(10, 2),
+--	@LoadCapacity DECIMAL(10, 2)
+--AS
+--BEGIN
+--	BEGIN TRY
+--	INSERT INTO Trucks(HeavyVehicleId, Height, Weight, Length, LoadCapacity)
+--	VALUES(@HeavyVehicleId, @Height, @Weight, @Length, @LoadCapacity)
+
+--	SELECT SCOPE_IDENTITY() AS NewTruckId;
+--	END TRY
+--	BEGIN CATCH
+--		THROW;
+--	END CATCH;
+--END;
+
+--CREATE PROCEDURE AddNormalVehicles
+--	@VehicleId INT,
+--	@NumberOfSeats INT,
+--	@TrunkDimensions VARCHAR(50),
+--	@IsComercial BIT
+
+--AS
+--BEGIN
+--	BEGIN TRY
+--	INSERT INTO NormalVehicles(VehicleId, NumberOfSeats, TrunkDimensions, IsCommercial)
+--	VALUES(@VehicleId, @NumberOfSeats, @TrunkDimensions, @IsComercial)
+
+--	SELECT SCOPE_IDENTITY() AS NewNormalVehicleId;
+--	END TRY
+--	BEGIN CATCH
+--		THROW;
+--	END CATCH;
+--END;
+
+--CREATE PROCEDURE AddPrivateVehicles
+--	@NormalVehiclesId INT,
+--	@IsofixMount BIT
+
+--AS
+--BEGIN
+--	BEGIN TRY
+--	INSERT INTO PrivateVehicles(NormalVehicleId,IsofixMount)
+--	VALUES (@NormalVehiclesId, @IsofixMount)
+
+--	SELECT SCOPE_IDENTITY() AS NewPrivateVehicleId;
+--	END TRY
+--	BEGIN CATCH
+--		THROW;
+--	END CATCH;
+--END;
+
+--CREATE PROCEDURE AddCommercialVehicles
+--	@NormalVehicleId INT,
+--	@RollCage Bit,
+--	@LoadCapacity INT
+
+--AS
+--BEGIN
+--	BEGIN TRY
+--	INSERT INTO CommercialVehicles(NormalVehicleId, RollCage, LoadCapacity)
+--	VALUES (@NormalVehicleId, @RollCage, @LoadCapacity)
+
+--	SELECT SCOPE_IDENTITY() AS NewCommercialVehicleId;
+--	END TRY
+--	BEGIN CATCH
+--		THROW;
+--	END CATCH;
+--END;
+
+--CREATE PROCEDURE GetVehicle
+--    @VehicleId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Fetch the vehicle details by VehicleId
+--        SELECT * 
+--        FROM Vehicles
+--        WHERE VehicleId = @VehicleId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetHeavyVehicle
+--    @HeavyVehicleId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Fetch the heavy vehicle details by HeavyVehicleId
+--        SELECT * 
+--        FROM HeavyVehicles
+--        WHERE HeavyVehicleId = @HeavyVehicleId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetBus
+--    @BusId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Fetch the bus details by BusId
+--        SELECT * 
+--        FROM Buses
+--        WHERE BusId = @BusId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetTruck
+--    @TruckId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Fetch the truck details by TruckId
+--        SELECT * 
+--        FROM Trucks
+--        WHERE TruckId = @TruckId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetNormalVehicle
+--    @NormalVehicleId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Fetch the normal vehicle details by NormalVehicleId
+--        SELECT * 
+--        FROM NormalVehicles
+--        WHERE NormalVehicleId = @NormalVehicleId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetPrivateVehicle
+--    @PrivateVehicleId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Fetch the private vehicle details by PrivateVehicleId
+--        SELECT * 
+--        FROM PrivateVehicles
+--        WHERE PrivateVehicleId = @PrivateVehicleId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetCommercialVehicle
+--    @CommercialVehicleId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Fetch the commercial vehicle details by CommercialVehicleId
+--        SELECT * 
+--        FROM CommercialVehicles
+--        WHERE CommercialVehicleId = @CommercialVehicleId;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetABus
+--    @BusId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Retrieve Bus details along with related Heavy Vehicle and Vehicle data
+--        SELECT B.*, 
+--               HV.MaxLoadCapacity, 
+--               V.Name AS VehicleName, 
+--               V.RegistrationNumber
+--        FROM Buses B
+--        -- Join with HeavyVehicles using the HeavyVehicleId FK
+--        JOIN HeavyVehicles HV ON B.HeavyVehicleId = HV.HeavyVehicleId
+--        -- Join with Vehicles using the VehicleId FK from HeavyVehicles
+--        JOIN Vehicles V ON HV.VehicleId = V.VehicleId
+--        WHERE B.BusId = @BusId; -- Filter by the provided BusId
+--    END TRY
+--    BEGIN CATCH
+--        THROW; -- Handle any errors
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetATruck
+--    @TruckId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        SELECT T.*, 
+--               HV.MaxLoadCapacity, 
+--               V.Name AS VehicleName, 
+--               V.RegistrationNumber
+--        FROM Trucks T
+--        JOIN HeavyVehicles HV ON T.HeavyVehicleId = HV.HeavyVehicleId
+--        JOIN Vehicles V ON HV.VehicleId = V.VehicleId
+--        WHERE T.TruckId = @TruckId; -- Filter by the provided TruckId
+--    END TRY
+--    BEGIN CATCH
+--        THROW; 
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetACommercialVehicle
+--    @NormalVehicleId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Retrieve Commercial Vehicle details along with related Normal Vehicle and Vehicle data
+--        SELECT CV.*, 
+--               NV.NumberOfSeats, 
+--               NV.TrunkDimensions, 
+--               NV.IsCommercial, 
+--               V.Name AS VehicleName, 
+--               V.RegistrationNumber
+--        FROM CommercialVehicles CV
+--        -- Join with NormalVehicles using the NormalVehicleId FK
+--        JOIN NormalVehicles NV ON CV.NormalVehicleId = NV.NormalVehicleId
+--        -- Join with Vehicles using the VehicleId FK from NormalVehicles
+--        JOIN Vehicles V ON NV.VehicleId = V.VehicleId
+--        WHERE NV.NormalVehicleId = @NormalVehicleId; -- Filter by the provided NormalVehicleId
+--    END TRY
+--    BEGIN CATCH
+--        THROW; -- Handle any errors
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE GetAPrivateVehicle
+--    @NormalVehicleId INT
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Retrieve Private Vehicle details along with related Normal Vehicle and Vehicle data
+--        SELECT PV.*, 
+--               NV.NumberOfSeats, 
+--               NV.TrunkDimensions, 
+--               NV.IsCommercial, 
+--               V.Name AS VehicleName, 
+--               V.RegistrationNumber
+--        FROM PrivateVehicles PV
+--        -- Join with NormalVehicles using the NormalVehicleId FK
+--        JOIN NormalVehicles NV ON PV.NormalVehicleId = NV.NormalVehicleId
+--        -- Join with Vehicles using the VehicleId FK from NormalVehicles
+--        JOIN Vehicles V ON NV.VehicleId = V.VehicleId
+--        WHERE NV.NormalVehicleId = @NormalVehicleId; -- Filter by the provided NormalVehicleId
+--    END TRY
+--    BEGIN CATCH
+--        THROW; -- Handle any errors
+--    END CATCH;
+--END;
+
+--CREATE PROCEDURE CreateAUser
+--    @LoginName NVARCHAR(128),
+--    @Password NVARCHAR(128)
+--AS
+--BEGIN
+--    BEGIN TRY
+--        -- Step 1: Create the login
+--        DECLARE @Sql NVARCHAR(MAX);
+--        SET @Sql = 'CREATE LOGIN [' + @LoginName + '] WITH PASSWORD = ''' + @Password + ''';';
+--        EXEC sp_executesql @Sql;
+
+--        -- Step 2: Create the user in the specified database
+--        SET @Sql = 'USE [AutoAuctionDB]; CREATE USER [' + @LoginName + '] FOR LOGIN [' + @LoginName + '];';
+--        EXEC sp_executesql @Sql;
+
+--        -- Step 3: Grant EXECUTE permission
+--        SET @Sql = 'GRANT EXECUTE TO [' + @LoginName + '];';
+--        EXEC sp_executesql @Sql;
+
+--        -- Step 4: Deny SELECT on tables
+--        SET @Sql = 'DENY SELECT ON SCHEMA::dbo TO [' + @LoginName + '];';
+--        EXEC sp_executesql @Sql;
+
+--        -- Step 5: Deny INSERT on tables
+--        SET @Sql = 'DENY INSERT ON SCHEMA::dbo TO [' + @LoginName + '];';
+--        EXEC sp_executesql @Sql;
+
+--        -- Step 6: Deny UPDATE on tables
+--        SET @Sql = 'DENY UPDATE ON SCHEMA::dbo TO [' + @LoginName + '];';
+--        EXEC sp_executesql @Sql;
+
+--        -- Step 7: Deny DELETE on tables
+--        SET @Sql = 'DENY DELETE ON SCHEMA::dbo TO [' + @LoginName + '];';
+--        EXEC sp_executesql @Sql;
+
+--        PRINT 'User created successfully.';
+--    END TRY
+--    BEGIN CATCH
+--        PRINT 'Error occurred: ' + ERROR_MESSAGE();
+--    END CATCH;
+--END;
+--GO
