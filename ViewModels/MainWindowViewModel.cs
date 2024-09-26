@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using H2_Gruppe_project.DatabaseClasses;
+using H2_Gruppe_project.Classes;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -11,24 +13,15 @@ namespace H2_Gruppe_project.ViewModels
             get => _currentViewModel;
             set => SetProperty(ref _currentViewModel, value);
         }
-
+        public string Greeting { get; }
         public MainWindowViewModel()
         {
             // Initialize with the Main Menu View
             CurrentViewModel = new MainMenuViewModel(this);
-        }
-    }
-}
-
-
-/*public string Greeting { get; }
-
-        public MainWindowViewModel()
-        {
-            Greeting = TestVehicleAndBusDatabaseOperations();
+            //Greeting = TestVehicleAndBusDatabaseOperations();
         }
 
-        private string TestVehicleAndBusDatabaseOperations()
+        /*private string TestVehicleAndBusDatabaseOperations()
         {
             try
             {
@@ -107,3 +100,5 @@ namespace H2_Gruppe_project.ViewModels
                 return $"Error during database operations: {ex.Message}";
             }
         }*/
+    }
+}

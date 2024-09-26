@@ -12,10 +12,13 @@
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaXaml Remove="Database\**" />
+    <AvaloniaXaml Remove="SQL Create Tables\**" />
     <Compile Remove="Database\**" />
+    <Compile Remove="SQL Create Tables\**" />
     <EmbeddedResource Remove="Database\**" />
-    <Folder Include="SQL Create Tables\" />
+    <EmbeddedResource Remove="SQL Create Tables\**" />
     <None Remove="Database\**" />
+    <None Remove="SQL Create Tables\**" />
   </ItemGroup>
 
   <ItemGroup>
