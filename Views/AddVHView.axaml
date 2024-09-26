@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Class="H2_Gruppe_project.Views.AddVHView"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:H2_Gruppe_project.ViewModels"
+             x:DataType="vm:AddVHViewModel">
+
+    <StackPanel>
+        <TextBlock Text="Add a New Vehicle!" />
+        <Button Content="Go Back to Main Menu" Command="{Binding GoToMainMenuViewCommand}" />
+    </StackPanel>
+</UserControl>

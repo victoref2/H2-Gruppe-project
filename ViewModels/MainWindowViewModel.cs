@@ -1,12 +1,27 @@
-﻿using H2_Gruppe_project.DatabaseClasses;
-using H2_Gruppe_project.Classes;
-using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace H2_Gruppe_project.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        public string Greeting { get; }
+        private ViewModelBase _currentViewModel;
+
+        public ViewModelBase CurrentViewModel
+        {
+            get => _currentViewModel;
+            set => SetProperty(ref _currentViewModel, value);
+        }
+
+        public MainWindowViewModel()
+        {
+            // Initialize with the Main Menu View
+            CurrentViewModel = new MainMenuViewModel(this);
+        }
+    }
+}
+
+
+/*public string Greeting { get; }
 
         public MainWindowViewModel()
         {
@@ -46,6 +61,4 @@ namespace H2_Gruppe_project.ViewModels
             {
                 return $"Error during database operations: {ex.Message}";
             }
-        }
-    }
-}
+        }*/

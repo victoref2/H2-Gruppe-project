@@ -1,0 +1,75 @@
+Step 1
+make a viewmodel file naming convetion is
+<NAME>ViewModel.CS
+then the code needed to make it work need to look something like this
+
+using CommunityToolkit.Mvvm.Input;
+
+namespace H2_Gruppe_project.ViewModels
+{
+    public partial class AddVHViewModel : ViewModelBase
+    {
+        private readonly MainWindowViewModel _mainViewModel;
+
+        public AddVHViewModel(MainWindowViewModel mainViewModel)
+        {
+            _mainViewModel = mainViewModel;
+        }
+
+        [RelayCommand]
+        public void GoToMainMenuView()
+        {
+            _mainViewModel.CurrentViewModel = new MainMenuViewModel(_mainViewModel);
+        }
+    }
+}
+
+step 2
+make a view naming convention
+<NAME>View.axaml
+the axaml for multipage looks something like this
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Class="H2_Gruppe_project.Views.AddVHView"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:H2_Gruppe_project.ViewModels"
+             x:DataType="vm:AddVHViewModel">
+
+    <StackPanel>
+        <TextBlock Text="Add a New Vehicle!" />
+        <Button Content="Go Back to Main Menu" Command="{Binding GoToMainMenuViewCommand}" />
+    </StackPanel>
+</UserControl>
+
+and the .cs file needs to have some code that looks like this
+
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+
+namespace H2_Gruppe_project.Views
+{
+    public partial class AddVHView : UserControl
+    {
+        public AddVHView()
+        {
+            InitializeComponent();
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+    }
+}
+
+if this alone doesnt work
+
+step 3
+Panic!!!.....
+go to the project file and include it to this itemgroup list at the bottom
+
+<ItemGroup>
+	<Page Include="Views\MainMenuView.axaml" />
+	<Page Include="Views\AddVHView.axaml" />
+</ItemGroup>
+

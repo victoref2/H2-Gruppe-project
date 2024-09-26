@@ -28,4 +28,8 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
+	<ItemGroup>
+		<Page Include="Views\MainMenuView.axaml" />
+		<Page Include="Views\AddVHView.axaml" />
+	</ItemGroup>
 </Project>
