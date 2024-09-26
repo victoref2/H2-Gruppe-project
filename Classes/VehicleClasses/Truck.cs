@@ -4,7 +4,7 @@ namespace H2_Gruppe_project.Classes
 {
     public class Truck : HeavyVehicle
     {
-        public int TruckId { get; private set; }
+        public int TruckId { get; set; }
         public decimal Height { get; private set; }
         public decimal Weight { get; private set; }
         public decimal Length { get; private set; }
@@ -15,11 +15,6 @@ namespace H2_Gruppe_project.Classes
             decimal height, decimal weight, decimal length, decimal loadCapacity)
             : base(id, name, km, regristrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass, maxLoadCapacity, numberOfAxles)
         {
-            if (decimal.Parse(engineSize) < 4.2m || decimal.Parse(engineSize) > 15.0m)
-            {
-                throw new ArgumentOutOfRangeException(nameof(engineSize), "Engine size must be between 4.2L and 15.0L.");
-            }
-
             Height = height;
             Weight = weight;
             Length = length;
@@ -33,6 +28,23 @@ namespace H2_Gruppe_project.Classes
             else
             {
                 DriversLicenceClass = "C";
+            }
+
+            ValidateEngineSize(engineSize);
+        }
+
+        private void ValidateEngineSize(string engineSize)
+        {
+            if (decimal.TryParse(engineSize.TrimEnd('L', 'l'), out decimal engineCapacity))
+            {
+                if (engineCapacity < 4.2m || engineCapacity > 15.0m)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(engineSize), "Engine size must be between 4.2 and 15.0 liters.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Invalid engine size format. It should be a decimal followed by 'L'.", nameof(engineSize));
             }
         }
 
