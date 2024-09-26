@@ -25,24 +25,67 @@ namespace H2_Gruppe_project.ViewModels
 
         public MainWindowViewModel()
         {
-            Greeting = TestBusDatabaseOperations();
+            Greeting = TestVehicleAndBusDatabaseOperations();
         }
 
-        private string TestBusDatabaseOperations()
+        private string TestVehicleAndBusDatabaseOperations()
         {
             try
             {
                 Database db = new Database();
 
-                // Test AddBus
-                Bus bus = new Bus(
-                    "1", "Mercedes Benz", "50000", "XY12345", "2020", true, "10.5", 14.0m, "diesel", "Class A",
-                    30000, 2, 4.5m, 15000m, 12.0m, 50, 20, true
+                Vehicle vehicle = new Vehicle(
+                    id: null, // 
+                    name: "Generic Vehicle",
+                    km: "25000",
+                    regristrationNumber: "GV12345",
+                    ageGroup: "2022",
+                    towHook: false,
+                    driversLicenceClass: "B",
+                    engineSize: "2.0",
+                    kmL: 18.0m,
+                    fuelType: "petrol",
+                    energyClass: "Class A"
                 );
-                db.AddBus(bus); 
 
-                Bus retrievedBus = db.GetBusById("1");
-                string result = "Bus added to database.\n";
+                db.AddVehicle(vehicle);
+
+                Vehicle retrievedVehicle = db.GetVehicle(int.Parse(vehicle.Id));
+                string result = "Vehicle added to database.\n";
+                if (retrievedVehicle != null)
+                {
+                    result += retrievedVehicle.ToString() + "\n";
+                }
+                else
+                {
+                    result += "Vehicle not found.\n";
+                }
+
+                Bus bus = new Bus(
+                    id: null,
+                    name: "Mercedes Benz Bus",
+                    km: "50000",
+                    regristrationNumber: "XY12345",
+                    ageGroup: "2020",
+                    towHook: true,
+                    engineSize: "10.5L",
+                    kmL: 14.0m,
+                    fuelType: "diesel",
+                    energyClass: "Class A",
+                    maxLoadCapacity: 30000,
+                    numberOfAxles: 2,
+                    height: 4.5m,
+                    weight: 15000m,
+                    length: 12.0m,
+                    numberOfSeats: 50,
+                    numberOfSleepingPlaces: 20,
+                    hasToilet: true
+                );
+
+                db.AddBus(bus);
+
+                Bus retrievedBus = db.GetBusById(bus.BusId);
+                result += "Bus added to database.\n";
                 if (retrievedBus != null)
                 {
                     result += retrievedBus.ToString() + "\n";
@@ -52,8 +95,10 @@ namespace H2_Gruppe_project.ViewModels
                     result += "Bus not found.\n";
                 }
 
-                db.DeleteBus("1");
-                result += "Bus deleted from database.";
+                db.DeleteVehicle(int.Parse(vehicle.Id));
+                db.DeleteBus(bus.BusId);
+
+                result += "Vehicle and Bus deleted from database.";
 
                 return result;
             }

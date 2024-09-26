@@ -4,6 +4,7 @@ namespace H2_Gruppe_project.Classes
 {
     public class Truck : HeavyVehicle
     {
+        public int TruckId { get; private set; }
         public decimal Height { get; private set; }
         public decimal Weight { get; private set; }
         public decimal Length { get; private set; }

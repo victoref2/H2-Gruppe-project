@@ -1,48 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using H2_Gruppe_project.Classes;
-using Tmds.DBus.Protocol;
 
 namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        public void AddVehicle(Vehicle vehicle) {
-
-            using (SqlConnection connection = GetConnection()) {
+        public void AddVehicle(Vehicle vehicle)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
                 connection.Open();
-                string query = @"INSERT INTO Vehicles (Id, Name, Km, RegistrationNumber, AgeGroup, TowHook, DriversLicenceClass, EngineSize, KmL, FuelType, EnergyClass) 
-                                 VALUES (@Id, @Name, @Km, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, @EngineSize, @KmL, @FuelType, @EnergyClass)";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@Id", vehicle.Id);
-                cmd.Parameters.AddWithValue("@Name", vehicle.Name);
-                cmd.Parameters.AddWithValue("@Km", vehicle.KM);
-                cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegristrationNumber);
-                cmd.Parameters.AddWithValue("@AgeGroup", vehicle.AgeGroup);
-                cmd.Parameters.AddWithValue("@TowHook", vehicle.TowHook);
-                cmd.Parameters.AddWithValue("@DriversLicenceClass", vehicle.DriversLicenceClass);
-                cmd.Parameters.AddWithValue("@EngineSize", vehicle.EngineSize);
-                cmd.Parameters.AddWithValue("@KmL", vehicle.KmL);
-                cmd.Parameters.AddWithValue("@FuelType", vehicle.FuelType);
-                cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                            INSERT INTO Vehicles (Name, KM, RegistrationNumber, AgeGroup, TowHook, DriversLicenceClass, EngineSize, KmL, FuelType, EnergyClass) 
+                            VALUES (@Name, @Km, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, @EngineSize, @KmL, @FuelType, @EnergyClass);
+                            SELECT SCOPE_IDENTITY();";
+                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        cmd.Parameters.AddWithValue("@Name", vehicle.Name);
+                        cmd.Parameters.AddWithValue("@Km", vehicle.KM);
+                        cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegristrationNumber);
+                        cmd.Parameters.AddWithValue("@AgeGroup", vehicle.AgeGroup);
+                        cmd.Parameters.AddWithValue("@TowHook", vehicle.TowHook);
+                        cmd.Parameters.AddWithValue("@DriversLicenceClass", vehicle.DriversLicenceClass);
+                        cmd.Parameters.AddWithValue("@EngineSize", vehicle.EngineSize);
+                        cmd.Parameters.AddWithValue("@KmL", vehicle.KmL);
+                        cmd.Parameters.AddWithValue("@FuelType", vehicle.FuelType);
+                        cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
 
-                cmd.ExecuteNonQuery();
+                        int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
+                        vehicle.Id = vehicleId.ToString(); 
+
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error adding vehicle to database: " + ex.Message);
+                    }
+                }
             }
         }
 
-        public Vehicle GetVehicle(string vehicleId)
+        public Vehicle GetVehicle(int vehicleId)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
 
-                string query = @"SELECT * FROM Vehicles WHERE Id = @Id";
+                string query = @"SELECT * FROM Vehicles WHERE VehicleId = @VehicleId";
                 SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@Id", vehicleId);
+                cmd.Parameters.AddWithValue("@VehicleId", vehicleId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
                 Vehicle vehicle = null;
@@ -50,7 +62,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                 if (reader.Read())
                 {
                     vehicle = new Vehicle(
-                        reader["Id"].ToString(),
+                        reader["VehicleId"].ToString(),
                         reader["Name"].ToString(),
                         reader["Km"].ToString(),
                         reader["RegistrationNumber"].ToString(),
@@ -68,17 +80,30 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        public void DeleteVehicle(string vehicleId){
-            using (SqlConnection connection = GetConnection()){
-
+        public void DeleteVehicle(int vehicleId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
                 connection.Open();
-                string query = "DELETE FROM Vehicles WHERE Id = @Id";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@Id", vehicleId);
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = "DELETE FROM Vehicles WHERE VehicleId = @VehicleId";
+                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        cmd.Parameters.AddWithValue("@VehicleId", vehicleId);
 
-                cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error deleting vehicle from database: " + ex.Message);
+                    }
+                }
             }
         }
-
     }
 }

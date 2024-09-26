@@ -9,7 +9,7 @@ namespace H2_Gruppe_project.Classes;
 public class Vehicle
 {
     //change privacy and what it is as needed
-    public string Id { get; private set; }
+    public string Id { get; set; }
     public string Name { get; private set; }
     public string KM { get; private set; }
     public string RegristrationNumber { get; private set; }

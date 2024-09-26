@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using H2_Gruppe_project.Classes;
-using Tmds.DBus.Protocol;
 
 namespace H2_Gruppe_project.DatabaseClasses
 {
@@ -16,71 +11,141 @@ namespace H2_Gruppe_project.DatabaseClasses
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                string query = @"INSERT INTO Bus (Id, Height, Weight, Length, NumberOfSeats, NumberOfSleepingPlaces, HasToilet)
-                                VALUES (@Id, @Height, @Weight, @Length, @NumberOfSeats, @NumberOfSleepingPlaces, @HasToilet)";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@Id", bus.Id);
-                cmd.Parameters.AddWithValue("@Height", bus.Height);
-                cmd.Parameters.AddWithValue("@Weight", bus.Weight);
-                cmd.Parameters.AddWithValue("@Length", bus.Length);
-                cmd.Parameters.AddWithValue("@NumberOfSeats", bus.NumberOfSeats);
-                cmd.Parameters.AddWithValue("@NumberOfSleepingPlaces", bus.NumberOfSleepingPlaces);
-                cmd.Parameters.AddWithValue("@HasToilet", bus.HasToilet);
-
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        public Bus GetBusById(string busId)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                string query = @"SELECT * FROM Bus WHERE Id = @Id";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@Id", busId);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                Bus bus = null;
-
-                if (reader.Read())
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
-                    bus = new Bus(
-                        reader["Id"].ToString(),
-                        reader["Name"].ToString(),
-                        reader["Km"].ToString(),
-                        reader["RegistrationNumber"].ToString(),
-                        reader["AgeGroup"].ToString(),
-                        Convert.ToBoolean(reader["TowHook"]),
-                        reader["EngineSize"].ToString(),
-                        Convert.ToDecimal(reader["KmL"]),
-                        reader["FuelType"].ToString(),
-                        reader["EnergyClass"].ToString(),
-                        Convert.ToInt32(reader["MaxLoadCapacity"]),
-                        Convert.ToInt32(reader["NumberOfAxles"]),
-                        Convert.ToDecimal(reader["Height"]),
-                        Convert.ToDecimal(reader["Weight"]),
-                        Convert.ToDecimal(reader["Length"]),
-                        Convert.ToInt32(reader["NumberOfSeats"]),
-                        Convert.ToInt32(reader["NumberOfSleepingPlaces"]),
-                        Convert.ToBoolean(reader["HasToilet"])
-                    );
-                }
+                    try
+                    {
+                        string vehicleQuery = @"
+                            INSERT INTO Vehicles (Name, KM, RegistrationNumber, AgeGroup, TowHook, DriversLicenceClass, EngineSize, KmL, FuelType, EnergyClass)
+                            VALUES (@Name, @KM, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, @EngineSize, @KmL, @FuelType, @EnergyClass);
+                            SELECT SCOPE_IDENTITY();";
+                        SqlCommand vehicleCmd = new SqlCommand(vehicleQuery, connection, transaction);
+                        vehicleCmd.Parameters.AddWithValue("@Name", bus.Name);
+                        vehicleCmd.Parameters.AddWithValue("@KM", bus.KM);
+                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", bus.RegristrationNumber);
+                        vehicleCmd.Parameters.AddWithValue("@AgeGroup", bus.AgeGroup);
+                        vehicleCmd.Parameters.AddWithValue("@TowHook", bus.TowHook);
+                        vehicleCmd.Parameters.AddWithValue("@DriversLicenceClass", bus.DriversLicenceClass);
+                        vehicleCmd.Parameters.AddWithValue("@EngineSize", decimal.Parse(bus.EngineSize.TrimEnd('L', 'l')));
+                        vehicleCmd.Parameters.AddWithValue("@KmL", bus.KmL);
+                        vehicleCmd.Parameters.AddWithValue("@FuelType", bus.FuelType);
+                        vehicleCmd.Parameters.AddWithValue("@EnergyClass", bus.EnergyClass);
 
-                return bus;
+                        int vehicleId = Convert.ToInt32(vehicleCmd.ExecuteScalar());
+
+
+                        string heavyVehicleQuery = @"
+                            INSERT INTO HeavyVehicles (VehicleId, MaxLoadCapacity, NumberOfAxles)
+                            VALUES (@VehicleId, @MaxLoadCapacity, @NumberOfAxles);
+                            SELECT SCOPE_IDENTITY();";
+                        SqlCommand heavyVehicleCmd = new SqlCommand(heavyVehicleQuery, connection, transaction);
+                        heavyVehicleCmd.Parameters.AddWithValue("@VehicleId", vehicleId);
+                        heavyVehicleCmd.Parameters.AddWithValue("@MaxLoadCapacity", bus.MaxLoadCapacity);
+                        heavyVehicleCmd.Parameters.AddWithValue("@NumberOfAxles", bus.NumberOfAxles);
+
+                        int heavyVehicleId = Convert.ToInt32(heavyVehicleCmd.ExecuteScalar());
+
+                        string busQuery = @"
+                            INSERT INTO Buses (HeavyVehicleId, Height, Weight, Length, NumberOfSeats, NumberOfSleepingPlaces, HasToilet)
+                            VALUES (@HeavyVehicleId, @Height, @Weight, @Length, @NumberOfSeats, @NumberOfSleepingPlaces, @HasToilet);
+                            SELECT SCOPE_IDENTITY();";
+                        SqlCommand busCmd = new SqlCommand(busQuery, connection, transaction);
+                        busCmd.Parameters.AddWithValue("@HeavyVehicleId", heavyVehicleId);
+                        busCmd.Parameters.AddWithValue("@Height", bus.Height);
+                        busCmd.Parameters.AddWithValue("@Weight", bus.Weight);
+                        busCmd.Parameters.AddWithValue("@Length", bus.Length);
+                        busCmd.Parameters.AddWithValue("@NumberOfSeats", bus.NumberOfSeats);
+                        busCmd.Parameters.AddWithValue("@NumberOfSleepingPlaces", bus.NumberOfSleepingPlaces);
+                        busCmd.Parameters.AddWithValue("@HasToilet", bus.HasToilet);
+
+
+                        int busId = Convert.ToInt32(busCmd.ExecuteScalar());
+
+
+                        transaction.Commit();
+
+                        bus.BusId = busId;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error adding bus to database: " + ex.Message);
+                    }
+                }
             }
         }
-
-        public void DeleteBus(string busId)
+        public Bus GetBusById(int busId)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                string query = @"DELETE FROM Bus WHERE Id = @Id";
+                string query = @"
+                    SELECT v.Name, v.KM, v.RegistrationNumber, v.AgeGroup, v.TowHook, v.DriversLicenceClass, v.EngineSize, v.KmL, v.FuelType, v.EnergyClass,
+                           hv.MaxLoadCapacity, hv.NumberOfAxles,
+                           b.Height, b.Weight, b.Length, b.NumberOfSeats, b.NumberOfSleepingPlaces, b.HasToilet
+                    FROM Buses b
+                    INNER JOIN HeavyVehicles hv ON b.HeavyVehicleId = hv.HeavyVehicleId
+                    INNER JOIN Vehicles v ON hv.VehicleId = v.VehicleId
+                    WHERE b.BusId = @BusId;";
                 SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@Id", busId);
+                cmd.Parameters.AddWithValue("@BusId", busId);
 
-                cmd.ExecuteNonQuery();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Bus(
+                            id: busId.ToString(),  
+                            name: reader["Name"].ToString(),
+                            km: reader["KM"].ToString(),
+                            regristrationNumber: reader["RegistrationNumber"].ToString(),
+                            ageGroup: reader["AgeGroup"].ToString(),
+                            towHook: Convert.ToBoolean(reader["TowHook"]),
+                            engineSize: reader["EngineSize"].ToString() + "L",  
+                            kmL: Convert.ToDecimal(reader["KmL"]),
+                            fuelType: reader["FuelType"].ToString(),
+                            energyClass: reader["EnergyClass"].ToString(),
+                            maxLoadCapacity: Convert.ToInt32(reader["MaxLoadCapacity"]),
+                            numberOfAxles: Convert.ToInt32(reader["NumberOfAxles"]),
+                            height: Convert.ToDecimal(reader["Height"]),
+                            weight: Convert.ToDecimal(reader["Weight"]),
+                            length: Convert.ToDecimal(reader["Length"]),
+                            numberOfSeats: Convert.ToInt32(reader["NumberOfSeats"]),
+                            numberOfSleepingPlaces: Convert.ToInt32(reader["NumberOfSleepingPlaces"]),
+                            hasToilet: Convert.ToBoolean(reader["HasToilet"])
+                        );
+                    }
+                    else
+                    {
+                        return null;  
+                    }
+                }
+            }
+        }
+
+                
+        public void DeleteBus(int busId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string deleteBusQuery = "DELETE FROM Buses WHERE BusId = @BusId;";
+                        SqlCommand deleteBusCmd = new SqlCommand(deleteBusQuery, connection, transaction);
+                        deleteBusCmd.Parameters.AddWithValue("@BusId", busId);
+                        deleteBusCmd.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error deleting bus from database: " + ex.Message);
+                    }
+                }
             }
         }
 
