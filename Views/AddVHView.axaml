@@ -12,3 +12,4 @@
         <Button Content="Go Back to Main Menu" Command="{Binding GoToMainMenuViewCommand}" />
     </StackPanel>
 </UserControl>
+       

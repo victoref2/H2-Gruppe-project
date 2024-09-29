@@ -66,3 +66,21 @@ CREATE TABLE CommercialVehicles (
     LoadCapacity INT NOT NULL CHECK (LoadCapacity >= 0),
     FOREIGN KEY (NormalVehicleId) REFERENCES NormalVehicles(NormalVehicleId) ON DELETE CASCADE
 );
+CREATE TABLE Users (
+    UserId INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    PassWord NVARCHAR(255) NOT NULL,
+    Mail NVARCHAR(100) NOT NULL UNIQUE
+);
+CREATE TABLE Auctions (
+    AuctionId INT IDENTITY(1,1) PRIMARY KEY,
+    VehicleId INT NOT NULL,
+    UserId INT NOT NULL,
+    Price INT NOT NULL,
+    FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId) ON DELETE CASCADE,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE           
+);
+
+
+
+

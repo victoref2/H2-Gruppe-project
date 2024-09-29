@@ -8,9 +8,9 @@ namespace H2_Gruppe_project.Classes;
 
 public class Auction
 {
-    public string Id {  get; private set; }
-    Vehicle vehicle {get; set; }
-    User user {get; set; }
+    public string Id {  get; set; }
+    public Vehicle Vehicle {get; set; }
+    public User User {get; set; }
     public int Price {  get; set; }
     public Auction(string id, Vehicle vehicle, User user,int price)
     {

@@ -8,7 +8,7 @@ namespace H2_Gruppe_project.Classes;
 
 public class User
 {
-    public string Id { get; private set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public string PassWord { get; set; }
     public string Mail { get; set; }

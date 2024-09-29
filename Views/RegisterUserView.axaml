@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Class="H2_Gruppe_project.Views.RegisterUserView"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:H2_Gruppe_project.ViewModels"
+             x:DataType="vm:RegisterUserViewModel">
+
+    <StackPanel Margin="20">
+        <TextBlock Text="Register New User" FontSize="24" HorizontalAlignment="Center" Margin="0,20,0,10"/>
+
+        <TextBox Watermark="Enter Name" Text="{Binding Name}" Margin="0,10"/>
+        <TextBox Watermark="Enter Email" Text="{Binding Email}" Margin="0,10"/>
+        <TextBox Watermark="Enter Password" Text="{Binding Password}" Margin="0,10" PasswordChar="•"/>
+
+        <Button Content="Register" Command="{Binding RegisterUserCommand}" Margin="0,20" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding Message}" Foreground="Green" HorizontalAlignment="Center" Margin="0,10"/>
+    </StackPanel>
+</UserControl>

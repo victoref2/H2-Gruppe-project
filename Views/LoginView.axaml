@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Class="H2_Gruppe_project.Views.LoginView"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:H2_Gruppe_project.ViewModels"
+             x:DataType="vm:LoginViewModel">
+
+    <StackPanel Margin="20">
+        <TextBlock Text="Login" FontSize="24" HorizontalAlignment="Center" Margin="0,20,0,10"/>
+
+        <TextBox Watermark="Enter Email" Text="{Binding Email}" Margin="0,10"/>
+        <TextBox Watermark="Enter Password" Text="{Binding Password}" Margin="0,10" PasswordChar="•"/>
+
+        <Button Content="Login" Command="{Binding LoginAsync}" Margin="0,20" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" HorizontalAlignment="Center" Margin="0,10"/>
+        <Button Content="Create Account" Command="{Binding GoToRegisterUser}" Margin="0,20" HorizontalAlignment="Center"/>
+    </StackPanel>
+</UserControl>
