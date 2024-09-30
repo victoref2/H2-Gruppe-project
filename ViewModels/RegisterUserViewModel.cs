@@ -62,5 +62,10 @@ namespace H2_Gruppe_project.ViewModels
                 Message = $"Error occurred: {ex.Message}";
             }
         }
+
+        public void GoBackCancel()
+        {
+            _mainWindowViewModel.SwitchViewModel(new LoginViewModel(_mainWindowViewModel, _database));
+        }
     }
 }

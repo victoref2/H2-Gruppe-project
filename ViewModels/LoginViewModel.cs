@@ -46,7 +46,7 @@ namespace H2_Gruppe_project.ViewModels
                 ErrorMessage = $"Login error: {ex.Message}";
             }
         }
-
+        [RelayCommand]
         public void GoToRegisterUser()
         {
             _mainWindowViewModel.SwitchViewModel(new RegisterUserViewModel(_mainWindowViewModel));

@@ -17,10 +17,10 @@ namespace H2_Gruppe_project.ViewModels
             set => SetProperty(ref _currentViewModel, value);
         }
 
-        private void SetProperty(ref ViewModelBase currentViewModel, ViewModelBase value)
-        {
-            throw new NotImplementedException();
-        }
+        // private void SetProperty(ref ViewModelBase currentViewModel, ViewModelBase value)
+        // {
+        //     throw new NotImplementedException();
+        // }
 
         public MainWindowViewModel()
         {
