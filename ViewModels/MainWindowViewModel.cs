@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using H2_Gruppe_project.Classes;
 using H2_Gruppe_project.DatabaseClasses;
+using System;
 using System.Threading.Tasks;
 
 namespace H2_Gruppe_project.ViewModels
@@ -14,6 +15,11 @@ namespace H2_Gruppe_project.ViewModels
         {
             get => _currentViewModel;
             set => SetProperty(ref _currentViewModel, value);
+        }
+
+        private void SetProperty(ref ViewModelBase currentViewModel, ViewModelBase value)
+        {
+            throw new NotImplementedException();
         }
 
         public MainWindowViewModel()

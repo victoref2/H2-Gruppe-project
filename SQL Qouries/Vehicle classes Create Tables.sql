@@ -80,7 +80,3 @@ CREATE TABLE Auctions (
     FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId) ON DELETE CASCADE,
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE           
 );
-
-
-
-

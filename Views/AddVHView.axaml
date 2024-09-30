@@ -2,14 +2,110 @@
              x:Class="H2_Gruppe_project.Views.AddVHView"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:H2_Gruppe_project.ViewModels"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:AddVHViewModel">
 
-    <StackPanel>
-        <TextBlock Text="Add a New Vehicle!" />
-        <Button Content="Go Back to Main Menu" Command="{Binding GoToMainMenuViewCommand}" />
-    </StackPanel>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<!-- Left Panel -->
+		<StackPanel Grid.Column="0" Margin="10">
+			<TextBlock Text="Set for sale" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+			<!-- Name -->
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Name" Width="100"/>
+				<TextBox Width="200"/>
+			</StackPanel>
+
+			<!-- Mileage -->
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Milage" Width="100"/>
+				<TextBox Width="200"/>
+			</StackPanel>
+
+			<!-- Registration Number -->
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Reg. num" Width="100"/>
+				<TextBox Width="200"/>
+			</StackPanel>
+
+			<!-- Year -->
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Year" Width="100"/>
+				<DatePicker Width="200" DayVisible="False" MonthVisible="False"/>
+			</StackPanel>
+
+			<!-- Starting Bid -->
+			<StackPanel Orientation="Horizontal" Margin="0,20,0,10">
+				<TextBlock Text="Starting bid" Width="100"/>
+				<TextBox Width="200" IsReadOnly="True" Watermark="85000"/>
+			</StackPanel>
+
+			<!-- Close Auction Date -->
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Close Auction" Width="100"/>
+				<DatePicker Width="300" SelectedDate="09/21/2022"/>
+			</StackPanel>
+
+			<!-- Cancel and Create auction buttons -->
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,30,0,0">
+				<Button Content="Cancel" Width="100" Margin="0,0,10,0"/>
+				<Button Content="Create auction" Width="150"/>
+			</StackPanel>
+		</StackPanel>
+
+		<Border Grid.Column="1" Margin="10" BorderBrush="Black" BorderThickness="1" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<StackPanel>
+				<!-- Vehicle Type -->
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					<TextBlock Text="Vehicle type" Width="100"/>
+					<ComboBox Width="150">
+						<ComboBoxItem Content="Truck"/>
+						<ComboBoxItem Content="Bus"/>
+						<ComboBoxItem Content="Private Car"/>
+						<ComboBoxItem Content="Comercial Car"/>
+					</ComboBox>
+				</StackPanel>
+
+				<!-- Height -->
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					<TextBlock Text="Height" Width="100"/>
+					<TextBox Width="150"/>
+				</StackPanel>
+
+				<!-- Length -->
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					<TextBlock Text="Length" Width="100"/>
+					<TextBox Width="150"/>
+				</StackPanel>
+
+				<!-- Weight -->
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					<TextBlock Text="Weight" Width="100"/>
+					<TextBox Width="150"/>
+				</StackPanel>
+
+				<!-- Engine Size -->
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					<TextBlock Text="Engine size" Width="100"/>
+					<TextBox Width="150"/>
+				</StackPanel>
+
+				<!-- Tow Bar -->
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					<TextBlock Text="Tow bar" Width="100"/>
+					<StackPanel Orientation="Horizontal">
+						<RadioButton Content="Yes" GroupName="TowBar" Padding="10,0,20,0"/>
+						<RadioButton Content="No" GroupName="TowBar" IsChecked="True"/>
+					</StackPanel>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+	</Grid>
 </UserControl>
-       

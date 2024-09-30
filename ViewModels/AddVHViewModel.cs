@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using H2_Gruppe_project.DatabaseClasses;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -11,10 +12,15 @@ namespace H2_Gruppe_project.ViewModels
             _mainViewModel = mainViewModel;
         }
 
-        [RelayCommand]
+        /*[RelayCommand]
         public void GoToMainMenuView()
         {
             _mainViewModel.CurrentViewModel = new MainMenuViewModel(_mainViewModel);
+        }*/
+        [RelayCommand]
+        public void AddVHToDB()
+        {
+
         }
     }
 }
