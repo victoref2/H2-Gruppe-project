@@ -39,34 +39,34 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        public Auction GetAuction(int auctionId)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
+        // public Auction GetAuction(int auctionId)
+        // {
+        //     using (SqlConnection connection = GetConnection())
+        //     {
+        //         connection.Open();
 
-                string query = @"SELECT * FROM Auctions WHERE AuctionId = @AuctionId";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@AuctionId", auctionId);
+        //         string query = @"SELECT * FROM Auctions WHERE AuctionId = @AuctionId";
+        //         SqlCommand cmd = new SqlCommand(query, connection);
+        //         cmd.Parameters.AddWithValue("@AuctionId", auctionId);
 
-                SqlDataReader reader = cmd.ExecuteReader();
-                Auction auction = null;
+        //         SqlDataReader reader = cmd.ExecuteReader();
+        //         Auction auction = null;
 
-                if (reader.Read())
-                {
-                    var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));
-                    var user = GetUser(reader["UserId"].ToString());
+        //         if (reader.Read())
+        //         {
+        //             var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));
+        //             var user = GetUser(reader["UserId"].ToString());
 
-                    auction = new Auction(
-                        id: reader["AuctionId"].ToString(),
-                        vehicle: vehicle,
-                        user: user,
-                        price: Convert.ToInt32(reader["Price"])
-                    );
-                }
-                return auction;
-            }
-        }
+        //             auction = new Auction(
+        //                 id: reader["AuctionId"].ToString(),
+        //                 vehicle: vehicle,
+        //                 user: user,
+        //                 price: Convert.ToInt32(reader["Price"])
+        //             );
+        //         }
+        //         return auction;
+        //     }
+        // }
 
          public void DeleteAuction(int auctionId)
         {

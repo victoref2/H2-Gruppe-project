@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
 using H2_Gruppe_project.DatabaseClasses;
+using H2_Gruppe_project.Classes;
+
 using System;
 
 namespace H2_Gruppe_project.ViewModels
@@ -32,7 +34,8 @@ namespace H2_Gruppe_project.ViewModels
             try
             {
                 var user = _database.GetUserByEmail(Email);
-                if (user != null && user.PassWord == Password)
+                
+                if (user != null && user.PassWord == User.HashPassword(Password))
                 {
                     _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, user));
                 }
