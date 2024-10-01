@@ -20,3 +20,6 @@ namespace H2_Gruppe_project
                 .LogToTrace();
     }
 }
+
+
+// test for rules
