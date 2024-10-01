@@ -22,9 +22,3 @@ jobs:
         run: dotnet restore
       - name: Build project
         run: dotnet build --configuration Release --no-restore
-      - name: Run application
-        run: dotnet run --configuration Release
-
-
-
-      
