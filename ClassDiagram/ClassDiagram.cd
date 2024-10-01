@@ -24,7 +24,7 @@
   <Class Name="H2_Gruppe_project.Classes.Bus" Collapsed="true">
     <Position X="3" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAABAAAAAAEAAAACABAACAACAABAAAAAAAAAAA=</HashCode>
+      <HashCode>AABAAAAABAAAAAAEAAAACABABCAACAABAAAAAAAAAAA=</HashCode>
       <FileName>Classes\VehicleClasses\Bus.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -59,7 +59,7 @@
   <Class Name="H2_Gruppe_project.Classes.Truck" Collapsed="true">
     <Position X="0.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAAAAAAEAQAAAABAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAABAAAAAAEAQAAAABAACAEAAABAAAAAAAAAAA=</HashCode>
       <FileName>Classes\VehicleClasses\Truck.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -73,8 +73,8 @@
   <Class Name="H2_Gruppe_project.DatabaseClasses.Database" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAACQAAAAAAAAAEAEAABAAAAgAABBAAAAA=</HashCode>
-      <FileName>DatabaseClasses\BusDB.cs</FileName>
+      <HashCode>AAIAAAAAABAACQAMgAAAAAAEAEIABQAgEgBQBBAAAQA=</HashCode>
+      <FileName>DatabaseClasses\AuctionDB.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
