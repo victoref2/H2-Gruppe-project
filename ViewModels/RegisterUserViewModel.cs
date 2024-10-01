@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using H2_Gruppe_project.Classes;
 using H2_Gruppe_project.DatabaseClasses;
 using System;
+using System.Globalization;
+using Avalonia.Data.Converters;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -19,6 +21,19 @@ namespace H2_Gruppe_project.ViewModels
         private string password;
 
         [ObservableProperty]
+        private string cprNumber;
+
+        [ObservableProperty]
+        private string cvrNumber;
+
+        [ObservableProperty]
+        private decimal credit;
+
+        [ObservableProperty]
+        private bool isCorporateUser; 
+        
+
+        [ObservableProperty]
         private string message;
 
         private readonly MainWindowViewModel _mainWindowViewModel;
@@ -27,7 +42,7 @@ namespace H2_Gruppe_project.ViewModels
         public RegisterUserViewModel(MainWindowViewModel mainWindowViewModel)
         {
             _mainWindowViewModel = mainWindowViewModel;
-            _database = new Database(); 
+            _database = new Database();
         }
 
         [RelayCommand]
@@ -41,17 +56,35 @@ namespace H2_Gruppe_project.ViewModels
                     return;
                 }
 
+                var hashedPassword = User.HashPassword(Password);
+
                 await Task.Run(() =>
                 {
-                    var newUser = new User(
-                        id: null, 
-                        name: Name,
-                        passWord: Password,
-                        mail: Email
-                    );
-
-                    
-                    _database.AddUser(newUser);
+                    if (IsCorporateUser)
+                    {
+                        var newCorporateUser = new CorporateUser(
+                            id: null,
+                            name: Name,
+                            passWord: hashedPassword,
+                            mail: Email,
+                            balance: 0, // Initial balance
+                            credit: Credit,
+                            cvrNumber: CvrNumber
+                        );
+                        _database.AddCorporateUser(newCorporateUser);
+                    }
+                    else
+                    {
+                        var newPrivateUser = new PrivateUser(
+                            id: null,
+                            name: Name,
+                            passWord: hashedPassword,
+                            mail: Email,
+                            balance: 0, // Initial balance
+                            cprNumber: CprNumber
+                        );
+                        _database.AddPrivateUser(newPrivateUser);
+                    }
                 });
 
                 Message = "Registration successful!";
@@ -61,6 +94,10 @@ namespace H2_Gruppe_project.ViewModels
             {
                 Message = $"Error occurred: {ex.Message}";
             }
+        }
+        public void GoBackCancel()
+        {
+            _mainWindowViewModel.SwitchViewModel(new LoginViewModel(_mainWindowViewModel, _database));
         }
     }
 }

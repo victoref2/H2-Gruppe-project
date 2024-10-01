@@ -55,7 +55,7 @@
 
 			<!-- Cancel and Create auction buttons -->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,30,0,0">
-				<Button Content="Cancel" Width="100" Margin="0,0,10,0"/>
+				<Button Content="Cancel" Command="{Binding GoBackCancel}" Width="100" Margin="0,0,10,0"/>
 				<Button Content="Create auction" Width="150"/>
 			</StackPanel>
 		</StackPanel>

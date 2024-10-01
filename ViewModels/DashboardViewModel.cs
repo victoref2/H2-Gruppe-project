@@ -22,5 +22,11 @@ namespace H2_Gruppe_project.ViewModels
 
             UserName = _loggedInUser.Name;
         }
+
+        [RelayCommand]
+        public void GoToAddVehicle()
+        {
+            _mainWindowViewModel.SwitchViewModel(new AddVHViewModel(_mainWindowViewModel, _loggedInUser));
+        }
     }
 }

@@ -66,12 +66,31 @@ CREATE TABLE CommercialVehicles (
     LoadCapacity INT NOT NULL CHECK (LoadCapacity >= 0),
     FOREIGN KEY (NormalVehicleId) REFERENCES NormalVehicles(NormalVehicleId) ON DELETE CASCADE
 );
+
 CREATE TABLE Users (
     UserId INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(100) NOT NULL,
-    PassWord NVARCHAR(255) NOT NULL,
+    UserName NVARCHAR(100) NOT NULL UNIQUE, 
+    Password NVARCHAR(255) NOT NULL,
+    CorporateUser BIT NOT NULL DEFAULT 0,
+    Balance DECIMAL(10,2) NOT NULL DEFAULT 0,
     Mail NVARCHAR(100) NOT NULL UNIQUE
 );
+
+CREATE TABLE CorporateUsers (
+    CorporateUserId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    Credit DECIMAL(10,2) NOT NULL,
+    CVRNumber NVARCHAR(20) NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
+CREATE TABLE PrivateUsers (
+    PrivateUserId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    CPRNumber NVARCHAR(11) NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
 CREATE TABLE Auctions (
     AuctionId INT IDENTITY(1,1) PRIMARY KEY,
     VehicleId INT NOT NULL,
