@@ -6,6 +6,7 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
+        // Create - Add Vehicle
         public void AddVehicle(Vehicle vehicle)
         {
             using (SqlConnection connection = GetConnection())
@@ -32,8 +33,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
 
                         int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                        vehicle.Id = vehicleId.ToString(); 
-
+                        vehicle.Id = vehicleId.ToString();
 
                         transaction.Commit();
                     }
@@ -46,6 +46,7 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        // Read - Get Vehicle by ID
         public Vehicle GetVehicle(int vehicleId)
         {
             using (SqlConnection connection = GetConnection())
@@ -80,6 +81,48 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        // Update - Update Vehicle
+        public void UpdateVehicle(Vehicle vehicle)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                            UPDATE Vehicles 
+                            SET Name = @Name, KM = @Km, RegistrationNumber = @RegistrationNumber, AgeGroup = @AgeGroup, TowHook = @TowHook, 
+                                DriversLicenceClass = @DriversLicenceClass, EngineSize = @EngineSize, KmL = @KmL, FuelType = @FuelType, EnergyClass = @EnergyClass
+                            WHERE VehicleId = @VehicleId";
+
+                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        cmd.Parameters.AddWithValue("@Name", vehicle.Name);
+                        cmd.Parameters.AddWithValue("@Km", vehicle.KM);
+                        cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegristrationNumber);
+                        cmd.Parameters.AddWithValue("@AgeGroup", vehicle.AgeGroup);
+                        cmd.Parameters.AddWithValue("@TowHook", vehicle.TowHook);
+                        cmd.Parameters.AddWithValue("@DriversLicenceClass", vehicle.DriversLicenceClass);
+                        cmd.Parameters.AddWithValue("@EngineSize", vehicle.EngineSize);
+                        cmd.Parameters.AddWithValue("@KmL", vehicle.KmL);
+                        cmd.Parameters.AddWithValue("@FuelType", vehicle.FuelType);
+                        cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
+                        cmd.Parameters.AddWithValue("@VehicleId", vehicle.Id);
+
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error updating vehicle in database: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        // Delete - Delete Vehicle by ID
         public void DeleteVehicle(int vehicleId)
         {
             using (SqlConnection connection = GetConnection())

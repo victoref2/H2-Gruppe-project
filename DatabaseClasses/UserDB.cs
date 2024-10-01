@@ -6,66 +6,71 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        //  public void AddUser(User user)
-        // {
-        //     using (SqlConnection connection = GetConnection())
-        //     {
-        //         connection.Open();
-        //         using (SqlTransaction transaction = connection.BeginTransaction())
-        //         {
-        //             try
-        //             {
-        //                 string query = @"
-        //                     INSERT INTO Users (Name, PassWord, Mail) 
-        //                     VALUES (@Name, @PassWord, @Mail);
-        //                     SELECT SCOPE_IDENTITY();";
+        // Create - Add User
+        public void AddUser(User user)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                            INSERT INTO Users (UserName, PassWord, Mail, Balance) 
+                            VALUES (@Name, @PassWord, @Mail, @Balance);
+                            SELECT SCOPE_IDENTITY();";
 
-        //                 SqlCommand cmd = new SqlCommand(query, connection, transaction);
-        //                 cmd.Parameters.AddWithValue("@Name", user.Name);
-        //                 cmd.Parameters.AddWithValue("@PassWord", user.PassWord);
-        //                 cmd.Parameters.AddWithValue("@Mail", user.Mail);
+                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        cmd.Parameters.AddWithValue("@Name", user.Name);
+                        cmd.Parameters.AddWithValue("@PassWord", user.PassWord);
+                        cmd.Parameters.AddWithValue("@Mail", user.Mail);
+                        cmd.Parameters.AddWithValue("@Balance", user.Balance);
 
-        //                 int userId = Convert.ToInt32(cmd.ExecuteScalar());
-        //                 user.Id = userId.ToString();  
+                        int userId = Convert.ToInt32(cmd.ExecuteScalar());
+                        user.Id = userId.ToString();
 
-        //                 transaction.Commit();
-        //             }
-        //             catch (Exception ex)
-        //             {
-        //                 transaction.Rollback();
-        //                 throw new Exception("Error adding user to database: " + ex.Message);
-        //             }
-        //         }
-        //     }
-        // }
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error adding user to database: " + ex.Message);
+                    }
+                }
+            }
+        }
 
-        // public User GetUser(string userId)
-        // {
-        //     using (SqlConnection connection = GetConnection())
-        //     {
-        //         connection.Open();
+        // Read - Get User by UserId
+        public User GetUser(string userId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
 
-        //         string query = @"SELECT * FROM Users WHERE UserId = @UserId";
-        //         SqlCommand cmd = new SqlCommand(query, connection);
-        //         cmd.Parameters.AddWithValue("@UserId", userId);
+                string query = @"SELECT * FROM Users WHERE UserId = @UserId";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@UserId", userId);
 
-        //         SqlDataReader reader = cmd.ExecuteReader();
-        //         User user = null;
+                SqlDataReader reader = cmd.ExecuteReader();
+                User user = null;
 
-        //         if (reader.Read())
-        //         {
-        //             user = new User(
-        //                 id: reader["UserId"].ToString(),
-        //                 name: reader["Name"].ToString(),
-        //                 passWord: reader["PassWord"].ToString(),
-        //                 mail: reader["Mail"].ToString()
-        //             );
-        //         }
+                if (reader.Read())
+                {
+                    user = new User(
+                        id: reader["UserId"].ToString(),
+                        name: reader["UserName"].ToString(),
+                        passWord: reader["PassWord"].ToString(),
+                        mail: reader["Mail"].ToString(),
+                        balance: Convert.ToDecimal(reader["Balance"])
+                    );
+                }
 
-        //         return user;
-        //     }
-        // }
+                return user;
+            }
+        }
 
+        // Read - Get User by Email (Already implemented)
         public User GetUserByEmail(string email)
         {
             using (SqlConnection connection = GetConnection())
@@ -116,30 +121,45 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        // public void DeleteUser(string userId)
-        // {
-        //     using (SqlConnection connection = GetConnection())
-        //     {
-        //         connection.Open();
-        //         using (SqlTransaction transaction = connection.BeginTransaction())
-        //         {
-        //             try
-        //             {
-        //                 string query = "DELETE FROM Users WHERE UserId = @UserId";
-        //                 SqlCommand cmd = new SqlCommand(query, connection, transaction);
-        //                 cmd.Parameters.AddWithValue("@UserId", userId);
+        // Delete - Delete User by UserId
+        public void DeleteUser(string userId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // First, delete from PrivateUsers or CorporateUsers (if applicable)
+                        string deleteCorporateUserQuery = "DELETE FROM CorporateUsers WHERE UserId = @UserId";
+                        string deletePrivateUserQuery = "DELETE FROM PrivateUsers WHERE UserId = @UserId";
 
-        //                 cmd.ExecuteNonQuery();
+                        SqlCommand deleteCorporateUserCmd = new SqlCommand(deleteCorporateUserQuery, connection, transaction);
+                        SqlCommand deletePrivateUserCmd = new SqlCommand(deletePrivateUserQuery, connection, transaction);
 
-        //                 transaction.Commit();
-        //             }
-        //             catch (Exception ex)
-        //             {
-        //                 transaction.Rollback();
-        //                 throw new Exception("Error deleting user from database: " + ex.Message);
-        //             }
-        //         }
-        //     }
-        // }
+                        deleteCorporateUserCmd.Parameters.AddWithValue("@UserId", userId);
+                        deletePrivateUserCmd.Parameters.AddWithValue("@UserId", userId);
+
+                        // Try to delete in both tables (only one will succeed)
+                        deleteCorporateUserCmd.ExecuteNonQuery();
+                        deletePrivateUserCmd.ExecuteNonQuery();
+
+                        // Finally, delete from Users table
+                        string query = "DELETE FROM Users WHERE UserId = @UserId";
+                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+                        cmd.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error deleting user from database: " + ex.Message);
+                    }
+                }
+            }
+        }
     }
 }

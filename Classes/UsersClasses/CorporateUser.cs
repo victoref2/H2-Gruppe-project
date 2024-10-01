@@ -17,6 +17,41 @@ public class CorporateUser:User
         CVRNumber = cvrNumber;
     }
 
+    public decimal AvailableFunds
+    {
+        get
+        {
+            return Credit + Balance;
+        }
+    }
+
+    public bool SpendFunds(decimal amount)
+    {
+        if (amount <= 0)
+        {
+            throw new ArgumentException("Amount must be positive.");
+        }
+
+        if (amount <= Balance)
+        {
+            // Deduct from balance if there's enough
+            Balance -= amount;
+            return true;
+        }
+        else if (amount <= AvailableFunds)
+        {
+            // Deduct the entire balance and take the rest from credit
+            decimal remainingAmount = amount - Balance;
+            Balance = 0; // Balance fully used
+            Credit -= remainingAmount; // Deduct the remainder from credit
+            return true;
+        }
+        else
+        {
+            // Not enough funds available
+            return false;
+        }
+    }
     public override string ToString()
     {
         return base.ToString() + $", Credit: {Credit}, CVR Number: {CVRNumber}";

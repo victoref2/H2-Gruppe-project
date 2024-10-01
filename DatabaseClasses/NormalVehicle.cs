@@ -6,6 +6,7 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
+        // Create - Add NormalVehicle
         public void AddNormalVehicle(NormalVehicle normalVehicle)
         {
             using (SqlConnection connection = GetConnection())
@@ -15,6 +16,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                 {
                     try
                     {
+                        // Insert into Vehicles table
                         string vehicleQuery = @"
                             INSERT INTO Vehicles (Name, KM, RegistrationNumber, AgeGroup, TowHook, DriversLicenceClass, EngineSize, KmL, FuelType, EnergyClass)
                             VALUES (@Name, @KM, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, @EngineSize, @KmL, @FuelType, @EnergyClass);
@@ -33,6 +35,7 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         int vehicleId = Convert.ToInt32(vehicleCmd.ExecuteScalar());
 
+                        // Insert into NormalVehicles table
                         string normalVehicleQuery = @"
                             INSERT INTO NormalVehicles (VehicleId, NumberOfSeats, TrunkDimensions, IsCommercial)
                             VALUES (@VehicleId, @NumberOfSeats, @TrunkDimensions, @IsCommercial);
@@ -41,7 +44,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         normalVehicleCmd.Parameters.AddWithValue("@VehicleId", vehicleId);
                         normalVehicleCmd.Parameters.AddWithValue("@NumberOfSeats", normalVehicle.NumberOfSeats);
                         normalVehicleCmd.Parameters.AddWithValue("@TrunkDimensions", normalVehicle.TrunkDimensions);
-                        normalVehicleCmd.Parameters.AddWithValue("@IsCommercial", false); // or pass the actual value if needed
+                        normalVehicleCmd.Parameters.AddWithValue("@IsCommercial", normalVehicle.IsCommercial);
 
                         int normalVehicleId = Convert.ToInt32(normalVehicleCmd.ExecuteScalar());
 
@@ -59,6 +62,7 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        // Read - Get NormalVehicle by ID
         public NormalVehicle GetNormalVehicleById(int normalVehicleId)
         {
             using (SqlConnection connection = GetConnection())
@@ -84,7 +88,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                             ageGroup: reader["AgeGroup"].ToString(),
                             towHook: Convert.ToBoolean(reader["TowHook"]),
                             driversLicenceClass: reader["DriversLicenceClass"].ToString(),
-                            engineSize: reader["EngineSize"].ToString() + "L",  
+                            engineSize: reader["EngineSize"].ToString() + "L",
                             kmL: Convert.ToDecimal(reader["KmL"]),
                             fuelType: reader["FuelType"].ToString(),
                             energyClass: reader["EnergyClass"].ToString(),
@@ -104,6 +108,63 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        // Update - Update NormalVehicle
+        public void UpdateNormalVehicle(NormalVehicle normalVehicle)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // Update Vehicles table
+                        string vehicleQuery = @"
+                            UPDATE Vehicles
+                            SET Name = @Name, KM = @KM, RegistrationNumber = @RegistrationNumber, AgeGroup = @AgeGroup,
+                                TowHook = @TowHook, DriversLicenceClass = @DriversLicenceClass, EngineSize = @EngineSize, KmL = @KmL, 
+                                FuelType = @FuelType, EnergyClass = @EnergyClass
+                            WHERE VehicleId = (SELECT VehicleId FROM NormalVehicles WHERE NormalVehicleId = @NormalVehicleId)";
+                        SqlCommand vehicleCmd = new SqlCommand(vehicleQuery, connection, transaction);
+                        vehicleCmd.Parameters.AddWithValue("@Name", normalVehicle.Name);
+                        vehicleCmd.Parameters.AddWithValue("@KM", normalVehicle.KM);
+                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", normalVehicle.RegristrationNumber);
+                        vehicleCmd.Parameters.AddWithValue("@AgeGroup", normalVehicle.AgeGroup);
+                        vehicleCmd.Parameters.AddWithValue("@TowHook", normalVehicle.TowHook);
+                        vehicleCmd.Parameters.AddWithValue("@DriversLicenceClass", normalVehicle.DriversLicenceClass);
+                        vehicleCmd.Parameters.AddWithValue("@EngineSize", decimal.Parse(normalVehicle.EngineSize.TrimEnd('L', 'l')));
+                        vehicleCmd.Parameters.AddWithValue("@KmL", normalVehicle.KmL);
+                        vehicleCmd.Parameters.AddWithValue("@FuelType", normalVehicle.FuelType);
+                        vehicleCmd.Parameters.AddWithValue("@EnergyClass", normalVehicle.EnergyClass);
+                        vehicleCmd.Parameters.AddWithValue("@NormalVehicleId", normalVehicle.NormalVehicleId);
+
+                        vehicleCmd.ExecuteNonQuery();
+
+                        // Update NormalVehicles table
+                        string normalVehicleQuery = @"
+                            UPDATE NormalVehicles
+                            SET NumberOfSeats = @NumberOfSeats, TrunkDimensions = @TrunkDimensions, IsCommercial = @IsCommercial
+                            WHERE NormalVehicleId = @NormalVehicleId";
+                        SqlCommand normalVehicleCmd = new SqlCommand(normalVehicleQuery, connection, transaction);
+                        normalVehicleCmd.Parameters.AddWithValue("@NumberOfSeats", normalVehicle.NumberOfSeats);
+                        normalVehicleCmd.Parameters.AddWithValue("@TrunkDimensions", normalVehicle.TrunkDimensions);
+                        normalVehicleCmd.Parameters.AddWithValue("@IsCommercial", normalVehicle.IsCommercial);
+                        normalVehicleCmd.Parameters.AddWithValue("@NormalVehicleId", normalVehicle.NormalVehicleId);
+
+                        normalVehicleCmd.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error updating normal vehicle in database: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        // Delete - Delete NormalVehicle by ID
         public void DeleteNormalVehicle(int normalVehicleId)
         {
             using (SqlConnection connection = GetConnection())
@@ -113,16 +174,23 @@ namespace H2_Gruppe_project.DatabaseClasses
                 {
                     try
                     {
+                        // Retrieve VehicleId first
                         string getVehicleIdQuery = "SELECT VehicleId FROM NormalVehicles WHERE NormalVehicleId = @NormalVehicleId;";
                         SqlCommand getVehicleIdCmd = new SqlCommand(getVehicleIdQuery, connection, transaction);
                         getVehicleIdCmd.Parameters.AddWithValue("@NormalVehicleId", normalVehicleId);
 
                         int vehicleId = (int)getVehicleIdCmd.ExecuteScalar();
 
+                        // Delete from NormalVehicles table
+                        string deleteNormalVehicleQuery = "DELETE FROM NormalVehicles WHERE NormalVehicleId = @NormalVehicleId;";
+                        SqlCommand deleteNormalVehicleCmd = new SqlCommand(deleteNormalVehicleQuery, connection, transaction);
+                        deleteNormalVehicleCmd.Parameters.AddWithValue("@NormalVehicleId", normalVehicleId);
+                        deleteNormalVehicleCmd.ExecuteNonQuery();
+
+                        // Delete from Vehicles table
                         string deleteVehicleQuery = "DELETE FROM Vehicles WHERE VehicleId = @VehicleId;";
                         SqlCommand deleteVehicleCmd = new SqlCommand(deleteVehicleQuery, connection, transaction);
                         deleteVehicleCmd.Parameters.AddWithValue("@VehicleId", vehicleId);
-
                         deleteVehicleCmd.ExecuteNonQuery();
 
                         transaction.Commit();

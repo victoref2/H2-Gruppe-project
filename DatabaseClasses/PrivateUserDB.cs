@@ -6,6 +6,7 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
+        // Create - Add PrivateUser
         public void AddPrivateUser(PrivateUser privateUser)
         {
             using (SqlConnection connection = GetConnection())
@@ -21,12 +22,11 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
 
-
                         cmd.Parameters.AddWithValue("@UserName", privateUser.Name);
                         cmd.Parameters.AddWithValue("@Password", privateUser.PassWord);
                         cmd.Parameters.AddWithValue("@Mail", privateUser.Mail);
                         cmd.Parameters.AddWithValue("@CPRNumber", privateUser.CPRNumber);
-                        cmd.Parameters.AddWithValue("@Balance", privateUser.Balance); 
+                        cmd.Parameters.AddWithValue("@Balance", privateUser.Balance);
 
                         int userId = Convert.ToInt32(cmd.ExecuteScalar());
                         privateUser.Id = userId.ToString();
@@ -42,6 +42,7 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        // Read - Get PrivateUser by ID
         public PrivateUser GetPrivateUser(int userId)
         {
             using (SqlConnection connection = GetConnection())
@@ -74,5 +75,76 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        // Update - Update PrivateUser
+        public void UpdatePrivateUser(PrivateUser privateUser)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                            UPDATE Users
+                            SET UserName = @UserName, Password = @Password, Mail = @Mail, Balance = @Balance
+                            WHERE UserId = @UserId;
+
+                            UPDATE PrivateUsers
+                            SET CPRNumber = @CPRNumber
+                            WHERE UserId = @UserId;";
+
+                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        cmd.Parameters.AddWithValue("@UserName", privateUser.Name);
+                        cmd.Parameters.AddWithValue("@Password", privateUser.PassWord);
+                        cmd.Parameters.AddWithValue("@Mail", privateUser.Mail);
+                        cmd.Parameters.AddWithValue("@Balance", privateUser.Balance);
+                        cmd.Parameters.AddWithValue("@CPRNumber", privateUser.CPRNumber);
+                        cmd.Parameters.AddWithValue("@UserId", privateUser.Id);
+
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error updating private user in database: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        // Delete - Delete PrivateUser by ID
+        public void DeletePrivateUser(int userId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // First, delete the record from PrivateUsers table
+                        string deletePrivateUserQuery = "DELETE FROM PrivateUsers WHERE UserId = @UserId;";
+                        SqlCommand deletePrivateUserCmd = new SqlCommand(deletePrivateUserQuery, connection, transaction);
+                        deletePrivateUserCmd.Parameters.AddWithValue("@UserId", userId);
+                        deletePrivateUserCmd.ExecuteNonQuery();
+
+                        // Then, delete the record from Users table
+                        string deleteUserQuery = "DELETE FROM Users WHERE UserId = @UserId;";
+                        SqlCommand deleteUserCmd = new SqlCommand(deleteUserQuery, connection, transaction);
+                        deleteUserCmd.Parameters.AddWithValue("@UserId", userId);
+                        deleteUserCmd.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error deleting private user from database: " + ex.Message);
+                    }
+                }
+            }
+        }
     }
 }
