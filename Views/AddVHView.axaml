@@ -4,7 +4,7 @@
              xmlns:vm="using:H2_Gruppe_project.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:DataType="vm:AddVHViewModel">
 
 	<Grid>
@@ -19,92 +19,250 @@
 
 			<!-- Name -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Name" Width="100"/>
+				<TextBlock Text="Name" Width="120"/>
 				<TextBox Width="200"/>
 			</StackPanel>
 
 			<!-- Mileage -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Milage" Width="100"/>
+				<TextBlock Text="Milage" Width="120"/>
 				<TextBox Width="200"/>
 			</StackPanel>
 
 			<!-- Registration Number -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Reg. num" Width="100"/>
+				<TextBlock Text="Reg. num" Width="120"/>
 				<TextBox Width="200"/>
 			</StackPanel>
 
 			<!-- Year -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Year" Width="100"/>
+				<TextBlock Text="Year" Width="120"/>
 				<DatePicker Width="200" DayVisible="False" MonthVisible="False"/>
 			</StackPanel>
 
 			<!-- Starting Bid -->
 			<StackPanel Orientation="Horizontal" Margin="0,20,0,10">
-				<TextBlock Text="Starting bid" Width="100"/>
+				<TextBlock Text="Starting bid" Width="120"/>
 				<TextBox Width="200" IsReadOnly="True" Watermark="85000"/>
 			</StackPanel>
 
 			<!-- Close Auction Date -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<TextBlock Text="Close Auction" Width="100"/>
+				<TextBlock Text="Close Auction" Width="120"/>
 				<DatePicker Width="300" SelectedDate="09/21/2022"/>
 			</StackPanel>
 
 			<!-- Cancel and Create auction buttons -->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,30,0,0">
-				<Button Content="Cancel" Command="{Binding GoBackCancel}" Width="100" Margin="0,0,10,0"/>
+				<Button Content="Cancel" Command="{Binding GoBackCancel}" Width="120" Margin="0,0,10,0"/>
 				<Button Content="Create auction" Width="150"/>
 			</StackPanel>
 		</StackPanel>
 
-		<Border Grid.Column="1" Margin="10" BorderBrush="Black" BorderThickness="1" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<Border Grid.Column="1" Margin="10" BorderBrush="Black" BorderThickness="1" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Top">
 			<StackPanel>
 				<!-- Vehicle Type -->
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Vehicle type" Width="100"/>
-					<ComboBox Width="150">
+					<TextBlock Text="Vehicle type" Width="120"/>
+					<ComboBox Width="150" SelectedItem="{Binding SelectedVehicleType}">
 						<ComboBoxItem Content="Truck"/>
 						<ComboBoxItem Content="Bus"/>
-						<ComboBoxItem Content="Private Car"/>
-						<ComboBoxItem Content="Comercial Car"/>
+						<ComboBoxItem Content="Normal Vehicel"/>
 					</ComboBox>
 				</StackPanel>
 
 				<!-- Height -->
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Height" Width="100"/>
+					<TextBlock Text="Height" Width="120"/>
 					<TextBox Width="150"/>
 				</StackPanel>
 
 				<!-- Length -->
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Length" Width="100"/>
+					<TextBlock Text="Length" Width="120"/>
 					<TextBox Width="150"/>
 				</StackPanel>
 
 				<!-- Weight -->
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Weight" Width="100"/>
+					<TextBlock Text="Weight" Width="120"/>
 					<TextBox Width="150"/>
 				</StackPanel>
 
 				<!-- Engine Size -->
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Engine size" Width="100"/>
+					<TextBlock Text="Engine size" Width="120"/>
 					<TextBox Width="150"/>
 				</StackPanel>
 
 				<!-- Tow Bar -->
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Tow bar" Width="100"/>
+					<TextBlock Text="Tow bar" Width="120"/>
 					<StackPanel Orientation="Horizontal">
 						<RadioButton Content="Yes" GroupName="TowBar" Padding="10,0,20,0"/>
 						<RadioButton Content="No" GroupName="TowBar" IsChecked="True"/>
 					</StackPanel>
 				</StackPanel>
+				
+				<!--NormalVH-->
+				<StackPanel IsVisible="False" x:Name="NormalVHBlocks">
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Width="120" Text="Number of Seats"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Trunk Dimensions" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+					
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Is Commercial" Width="120"/>
+						<StackPanel Margin="0,-7,0,0">
+							<CheckBox/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+				
+				<!--PrivateVH-->
+				<StackPanel IsVisible="False" x:Name="PrivateVHBlocks">
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Isofix Mount" Width="120"/>
+						<StackPanel Margin="0,-7,0,0">
+							<CheckBox/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+				
+				<!--CommercialVH-->
+				<StackPanel IsVisible="False" x:Name="CommercialVH">
+					<!-- RollCage property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Roll Cage" Width="120"/>
+						<StackPanel Margin="0,-7,0,0">
+							<CheckBox/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- LoadCapacity property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Load Capacity" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+				
+				<!--HeavyVehicle-->
+				<StackPanel IsVisible="{Binding IsHeavyVehicleVisible}">
+					<!-- MaxLoadCapacity property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Max Load Capacity" Width="130"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- NumberOfAxles property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Number of Axles" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+				
+				<!--Bus-->
+				<StackPanel IsVisible="{Binding IsBusVisible}">
+					<!-- Height property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Height" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- Weight property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Weight" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- Length property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Length" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- NumberOfSeats property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Number of Seats" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- NumberOfSleepingPlaces property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Number of Sleeping Places" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- HasToilet property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Has Toilet" Width="120"/>
+						<StackPanel Margin="0,-7,0,0">
+							<CheckBox/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+				
+				<!--Truck-->
+				<StackPanel IsVisible="{Binding IsTruckVisible}">
+					<!-- Height property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Height" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- Weight property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Weight" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- Length property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Length" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- LoadCapacity property -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Load Capacity" Width="120"/>
+						<StackPanel>
+							<TextBox Width="150"/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+
 			</StackPanel>
 		</Border>
 	</Grid>

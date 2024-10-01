@@ -59,12 +59,12 @@ namespace H2_Gruppe_project.DatabaseClasses
                     var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));
                     var user = GetUser(reader["UserId"].ToString());
 
-                    auction = new Auction(
+                    /*auction = new Auction(
                         id: reader["AuctionId"].ToString(),
                         vehicle: vehicle,
                         user: user,
                         price: Convert.ToDecimal(reader["Price"])
-                    );
+                    );*/
                 }
                 return auction;
             }
