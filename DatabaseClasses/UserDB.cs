@@ -23,9 +23,9 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@Name", user.Name);
-                        cmd.Parameters.AddWithValue("@PassWord", user.PassWord)
-                        cmd.Parameters.AddWithValue("@Mail", user.Mail)
-                        cmd.Parameters.AddWithValue("@Balance", user.Balance)
+                        cmd.Parameters.AddWithValue("@PassWord", user.PassWord);
+                        cmd.Parameters.AddWithValue("@Mail", user.Mail);
+                        cmd.Parameters.AddWithValue("@Balance", user.Balance);
 
                         int userId = Convert.ToInt32(cmd.ExecuteScalar());
                         user.Id = userId.ToString();
