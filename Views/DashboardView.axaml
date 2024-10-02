@@ -9,5 +9,6 @@
         <TextBlock Text="Welcome," FontSize="18" HorizontalAlignment="Center"/>
         <TextBlock Text="{Binding UserName}" FontSize="18" HorizontalAlignment="Center" Margin="0,10"/>
         <Button Content="Add Vehicle" Command="{Binding GoToAddVehicleCommand}" HorizontalAlignment="Center" Margin="0,10"/>
+        <Button Content="Profile" Command="{Binding GoToProfileCommand}" HorizontalAlignment="Center" Margin="0,10"/>
     </StackPanel>
 </UserControl>

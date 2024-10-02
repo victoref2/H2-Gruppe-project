@@ -12,10 +12,16 @@ namespace H2_Gruppe_project.ViewModels
         private readonly MainWindowViewModel _mainViewModel;
         private readonly User _loggedInUser;
 
-        public AddVHViewModel(MainWindowViewModel mainViewModel, User loggedInUser)
+        private readonly Database _database;
+
+        
+
+        public AddVHViewModel(MainWindowViewModel mainViewModel, User loggedInUser, Database database)
         {
             _mainViewModel = mainViewModel;
             _loggedInUser = loggedInUser;
+            _database = database;
+
         }
 
         // ComboBox selection binding
@@ -36,7 +42,7 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void GoBackCancel()
         {
-            _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser));
+            _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser, _database));
         }
 
         // Method to handle ComboBox selection changes

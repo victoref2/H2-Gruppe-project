@@ -41,6 +41,39 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        public void UpdateUserPassword(string userId, string newPassword)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                            UPDATE Users
+                            SET PassWord = @PassWord
+                            WHERE UserId = @UserId";
+
+                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+
+                        string hashedPassword = User.HashPassword(newPassword);
+                        cmd.Parameters.AddWithValue("@PassWord", hashedPassword);
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error updating user password: " + ex.Message);
+                    }
+                }
+            }
+        }
+
+
         // Read - Get User by UserId
         public User GetUser(string userId)
         {

@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Class="H2_Gruppe_project.Views.ProfileView"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:H2_Gruppe_project.ViewModels"
+             x:DataType="vm:ProfileViewModel">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Your profile" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <TextBlock Grid.Row="1" Text="{Binding SuccessMessage}" Foreground="Green" HorizontalAlignment="Center" 
+                   Margin="0,10,0,10" IsVisible="{Binding IsSuccessMessageVisible}"/>
+
+        <StackPanel Grid.Row="2" Margin="0,20,0,0">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Username:" Width="100" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Username}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Password:" Width="100" FontWeight="Bold"/>
+                <Button Content="Change password" Foreground="Blue" Background="Transparent" BorderThickness="0"
+                        Command="{Binding ChangePasswordCommand}" 
+                        HorizontalAlignment="Left" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Balance:" Width="100" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Balance}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,20,0,10">
+                <TextBlock Text="Your auctions:" Width="100"/>
+                <TextBlock Text="{Binding AuctionCount}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Auctions won:" Width="100"/>
+                <TextBlock Text="{Binding WonAuctionCount}" />
+            </StackPanel>
+
+            <Button Content="Back" Command="{Binding GoBackCommand}" Width="100" HorizontalAlignment="Left" Margin="0,20,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
