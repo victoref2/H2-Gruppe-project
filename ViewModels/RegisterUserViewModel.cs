@@ -21,6 +21,9 @@ namespace H2_Gruppe_project.ViewModels
         private string password;
 
         [ObservableProperty]
+        private string passwordConfirm;
+
+        [ObservableProperty]
         private string cprNumber;
 
         [ObservableProperty]
@@ -53,6 +56,12 @@ namespace H2_Gruppe_project.ViewModels
                 if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
                 {
                     Message = "All fields are required.";
+                    return;
+                }
+
+                if (Password != PasswordConfirm)
+                {
+                    Message = "Passwords do not match!";
                     return;
                 }
 
