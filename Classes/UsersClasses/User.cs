@@ -21,7 +21,7 @@ public class User
         Name = name;
         PassWord = passWord;
         Mail = mail;
-        Balance = 0;
+        Balance = balance;
     }
 
     public static string HashPassword(string password)

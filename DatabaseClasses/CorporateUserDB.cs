@@ -17,7 +17,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                     try
                     {
                         string query = @"
-                            EXEC AddCorporateUser @UserName, @Password, @Mail, @Credit, @CVRNumber;
+                            EXEC AddCorporateUser @UserName, @Password, @Mail, @Credit, @CVRNumber, @Balance;
                             SELECT SCOPE_IDENTITY();";
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
@@ -27,6 +27,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@Mail", corporateUser.Mail);
                         cmd.Parameters.AddWithValue("@Credit", corporateUser.Credit);
                         cmd.Parameters.AddWithValue("@CVRNumber", corporateUser.CVRNumber);
+                        cmd.Parameters.AddWithValue("@Balance", corporateUser.Balance);
 
                         int userId = Convert.ToInt32(cmd.ExecuteScalar());
                         corporateUser.Id = userId.ToString();

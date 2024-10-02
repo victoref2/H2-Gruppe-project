@@ -6,6 +6,7 @@ using H2_Gruppe_project.DatabaseClasses;
 using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
+using System.Text.RegularExpressions;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -46,6 +47,7 @@ namespace H2_Gruppe_project.ViewModels
         {
             _mainWindowViewModel = mainWindowViewModel;
             _database = new Database();
+            Credit = 0;
         }
 
         [RelayCommand]
@@ -65,12 +67,55 @@ namespace H2_Gruppe_project.ViewModels
                     return;
                 }
 
+                if (!ValidatePassword(Password))
+                {
+                    Message = "Password must be at least 8 characters long, and contain at least one upper case and one special character.";
+                    return;
+                }
+
+                if (!ValidateEmail(Email))
+                {
+                    Message = "Email must be from hotmail, gmail, or similar domain.";
+                    return;
+                }
+
+                if (!IsCorporateUser)
+                {
+                    if (!ValidateCPR(CprNumber))
+                    {
+                        Message = "CPR number must be in the format DDMMYY-XXXX";
+                        return;
+                    }
+                }
+
+                if (IsCorporateUser)
+                {
+                    if (string.IsNullOrWhiteSpace(CvrNumber))
+                    {
+                        Message = "CVR Number cannot be empty.";
+                        return;
+                    }
+
+                    if (!ValidateCVR(CvrNumber))
+                    {
+                        Message = "CVR number must be an 8-digit number.";
+                        return;
+                    }
+                }
+
+
                 var hashedPassword = User.HashPassword(Password);
 
                 await Task.Run(() =>
                 {
                     if (IsCorporateUser)
                     {
+
+                        if (string.IsNullOrWhiteSpace(CvrNumber))
+                        {
+                            Message = "CVR Number cannot be empty.";
+                            return;
+                        }
                         var newCorporateUser = new CorporateUser(
                             id: null,
                             name: Name,
@@ -104,6 +149,30 @@ namespace H2_Gruppe_project.ViewModels
                 Message = $"Error occurred: {ex.Message}";
             }
         }
+
+        private bool ValidatePassword(string password)
+        {
+            return password.Length >= 8 &&
+            Regex.IsMatch(password, @"[A-Z]") &&
+            Regex.IsMatch(password, @"[\W_]");
+        }
+
+        private bool ValidateCPR(string cprNumber)
+        {
+            return Regex.IsMatch(cprNumber, @"^\d{6}-\d{4}$");
+        }
+
+        private bool ValidateCVR(string cvrNumber)
+        {
+            return Regex.IsMatch(cvrNumber, @"^\d{8}$");
+        }
+
+        private bool ValidateEmail(string email)
+        {
+            return Regex.IsMatch(email, @"@(hotmail|gmail|outlook|yahoo)\.(com|dk)");
+        }
+
+
         public void GoBackCancel()
         {
             _mainWindowViewModel.SwitchViewModel(new LoginViewModel(_mainWindowViewModel, _database));
