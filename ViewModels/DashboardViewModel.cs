@@ -37,5 +37,11 @@ namespace H2_Gruppe_project.ViewModels
         {
             _mainWindowViewModel.SwitchViewModel(new ProfileViewModel(_mainWindowViewModel, _loggedInUser, _database));
         }
+
+        [RelayCommand]
+        public void Logout()
+        {
+            _mainWindowViewModel.SwitchViewModel(new LoginViewModel(_mainWindowViewModel, _database));
+        }
     }
 }
