@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
 namespace H2_Gruppe_project.Views
 {
@@ -7,6 +8,10 @@ namespace H2_Gruppe_project.Views
         public ChangePasswordView()
         {
             InitializeComponent();
+        }
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
         }
     }
 }
