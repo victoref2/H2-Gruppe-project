@@ -9,5 +9,9 @@ namespace H2_Gruppe_project.Views
         {
             InitializeComponent();
         }
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }
