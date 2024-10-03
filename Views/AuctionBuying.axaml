@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:H2_Gruppe_project.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="local:AuctionBuyingModel"
+             x:Class="H2_Gruppe_project.Views.AuctionBuying">
+
+	<Grid>
+		<!-- Define Columns -->
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="3*" />
+		</Grid.ColumnDefinitions>
+
+		<!-- Auction Info Section -->
+		<StackPanel Grid.Column="0" Margin="10">
+			<TextBlock Text="Buyer of Auction" FontSize="24" />
+			<Border Width="200" Height="200" BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+				<!-- Placeholder for Auction Info (Image or Text) -->
+				<TextBlock Text="Auction info" VerticalAlignment="Center" HorizontalAlignment="Center" />
+			</Border>
+			<Button Content="Back" HorizontalAlignment="Left" Margin="10,20,0,0" Width="80" />
+		</StackPanel>
+
+		<!-- Current Bid and Make a Bid Section -->
+		<StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10">
+			<!-- Closing Date and Current Bid -->
+			<TextBlock Text="{Binding ClosingDate, StringFormat='Closing {0:MM/dd/yy}'}" FontSize="18" HorizontalAlignment="Right" />
+			<TextBlock Text="{Binding CurrentBid}" FontSize="24" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Right" Margin="0,10,0,0" />
+
+			<!-- Make a Bid Button -->
+			<Button Content="Make a bid" Width="120" Height="40" HorizontalAlignment="Right" Margin="0,20,0,0" Command="{Binding MakeBidCommand}" />
+
+			<!-- Popup for Bidding -->
+			<Popup IsOpen="{Binding IsBidWindowVisible}" PlacementMode="Pointer">
+				<Border BorderThickness="2" BorderBrush="Gray" Background="White" Padding="10">
+					<StackPanel>
+						<TextBlock Text="Make a bid" FontSize="20" HorizontalAlignment="Center" />
+						<TextBox Width="200" Height="40" Watermark="Your bid" Text="{Binding BidAmount}" HorizontalAlignment="Center" Margin="0,20,0,0" />
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+							<Button Content="Cancel" Width="80" Command="{Binding CancelBidCommand}" Margin="10,0" />
+							<Button Content="Bid" Width="80" Command="{Binding SubmitBidCommand}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+			</Popup>
+		</StackPanel>
+	</Grid>
+</UserControl>
