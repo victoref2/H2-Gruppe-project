@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace H2_Gruppe_project.Classes
 {
@@ -14,6 +16,7 @@ namespace H2_Gruppe_project.Classes
         public List<decimal> Bids { get; private set; } // List of bids
 
         private Action<decimal> _notifySeller; // Notification method for the seller
+        private readonly object _bidLock = new object(); // Lock for bid modification
 
         public Auction(string id, Vehicle vehicle, User seller, decimal minimumPrice)
         {
@@ -41,40 +44,54 @@ namespace H2_Gruppe_project.Classes
             this._notifySeller = notifySeller; // Set the notification method
         }
 
-        // Method to receive a bid (ModtagBud)
-        public bool ModtagBud(User buyer, string auctionNumber, decimal bid)
+        // Method to receive a bid (ModtagBud) asynchronously
+        public async Task<bool> ModtagBudAsync(User buyer, string auctionNumber, decimal bid)
         {
-            if (bid >= MinimumPrice && bid > CurrentPrice)
+            return await Task.Run(() =>
             {
-                Bids.Add(bid); // Add the bid to the list
-                CurrentBuyer = buyer; // Set the current buyer to the highest bidder
-                CurrentPrice = bid; // Update the current price to the highest bid
-                Console.WriteLine($"Bid accepted: {bid} from {buyer.Name}");
+                lock (_bidLock) // Ensure thread-safe access to bids
+                {
+                    if (bid >= MinimumPrice && bid > CurrentPrice)
+                    {
+                        Bids.Add(bid); // Add the bid to the list
+                        CurrentBuyer = buyer; // Set the current buyer to the highest bidder
+                        CurrentPrice = bid; // Update the current price to the highest bid
+                        Console.WriteLine($"Bid accepted: {bid} from {buyer.Name}");
 
-                _notifySeller?.Invoke(bid); // Notify the seller if a notification method exists
-                return true;
-            }
+                        // Notify the seller asynchronously
+                        Task.Run(() => _notifySeller?.Invoke(bid)); // Run notification in parallel
 
-            Console.WriteLine("Bid rejected: Lower than minimum price or current highest bid.");
-            return false;
+                        return true;
+                    }
+
+                    Console.WriteLine("Bid rejected: Lower than minimum price or current highest bid.");
+                    return false;
+                }
+            });
         }
 
-        // Method to accept the highest bid (AccepterBud)
-        public bool AccepterBud(User seller, string auctionNumber)
+        // Method to accept the highest bid (AccepterBud) asynchronously
+        public async Task<bool> AccepterBudAsync(User seller, string auctionNumber)
         {
-            if (CurrentPrice >= MinimumPrice && seller == this.Seller)
+            return await Task.Run(() =>
             {
-                Console.WriteLine($"Bid accepted: {CurrentPrice} from {CurrentBuyer.Name} for Auction {auctionNumber}");
+                lock (_bidLock) // Ensure thread-safe access to the bid and current buyer
+                {
+                    if (CurrentPrice >= MinimumPrice && seller == this.Seller)
+                    {
+                        Console.WriteLine($"Bid accepted: {CurrentPrice} from {CurrentBuyer.Name} for Auction {auctionNumber}");
 
-                // Here you can add logic to transfer the vehicle to the buyer and complete the sale
-                return true;
-            }
+                        // Logic to transfer the vehicle to the buyer and complete the sale
+                        return true;
+                    }
 
-            Console.WriteLine("No valid bids or seller does not match.");
-            return false;
+                    Console.WriteLine("No valid bids or seller does not match.");
+                    return false;
+                }
+            });
         }
 
-        // Find auction by ID (FindAuktionMedID)
+        // Find auction by ID (FindAuktionMedID) - Could be made async if accessing an external source like a DB
         public static Auction FindAuktionMedID(List<Auction> auctions, string auctionId)
         {
             return auctions.Find(a => a.Id == auctionId); // Find auction by ID
