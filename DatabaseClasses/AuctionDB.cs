@@ -23,8 +23,8 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id);
-                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.User.Id));
-                        cmd.Parameters.AddWithValue("@Price", auction.Price);
+                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id));
+                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice);
 
                         int auctionId = Convert.ToInt32(cmd.ExecuteScalar());
                         auction.Id = auctionId.ToString();
@@ -89,8 +89,8 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id);
-                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.User.Id));
-                        cmd.Parameters.AddWithValue("@Price", auction.Price);
+                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id));
+                        cmd.Parameters.AddWithValue("@Price", auction.CurrentBuyer);
                         cmd.Parameters.AddWithValue("@AuctionId", auction.Id);
 
                         cmd.ExecuteNonQuery();
