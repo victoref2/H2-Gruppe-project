@@ -23,8 +23,8 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id);
-                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id));
-                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice);
+                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id)); // Changed from auction.User to auction.Seller
+                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice);  // Changed from auction.Price to auction.CurrentPrice
 
                         int auctionId = Convert.ToInt32(cmd.ExecuteScalar());
                         auction.Id = auctionId.ToString();
@@ -56,15 +56,15 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                 if (reader.Read())
                 {
-                    var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));
-                    var user = GetUser(reader["UserId"].ToString());
+                    var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));  // Assuming GetVehicle method exists
+                    var seller = GetUser(reader["UserId"].ToString());  // Changed from user to seller to match Auction class
 
-                    /*auction = new Auction(
+                    auction = new Auction(
                         id: reader["AuctionId"].ToString(),
                         vehicle: vehicle,
-                        user: user,
-                        price: Convert.ToDecimal(reader["Price"])
-                    );*/
+                        seller: seller,  // Changed to seller
+                        CurrentPrice: Convert.ToDecimal(reader["Price"])  // Changed from price to CurrentPrice
+                    );
                 }
                 return auction;
             }
@@ -89,8 +89,8 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id);
-                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id));
-                        cmd.Parameters.AddWithValue("@Price", auction.CurrentBuyer);
+                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id));  // Changed from auction.User.Id to auction.Seller.Id
+                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice);  // Changed from auction.Price to auction.CurrentPrice
                         cmd.Parameters.AddWithValue("@AuctionId", auction.Id);
 
                         cmd.ExecuteNonQuery();
