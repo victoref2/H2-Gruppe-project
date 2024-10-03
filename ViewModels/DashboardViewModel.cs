@@ -34,6 +34,18 @@ namespace H2_Gruppe_project.ViewModels
         }
 
         [RelayCommand]
+        public void GoToAuctionSellerModel()
+        {
+            _mainWindowViewModel.SwitchViewModel(new AuctionSellerViewModel(_mainWindowViewModel, _loggedInUser, _database));
+        }
+
+        [RelayCommand]
+        public void GoToAuctionBuyingModel()
+        {
+            _mainWindowViewModel.SwitchViewModel(new AuctionBuyingViewModel(_mainWindowViewModel, _loggedInUser, _database));
+        }
+
+        [RelayCommand]
         public void GoToProfile()
         {
             _mainWindowViewModel.SwitchViewModel(new ProfileViewModel(_mainWindowViewModel, _loggedInUser, _database));

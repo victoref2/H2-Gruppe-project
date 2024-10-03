@@ -2,10 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.ComponentModel;
+using H2_Gruppe_project.Classes;
+using H2_Gruppe_project.DatabaseClasses;
 
 namespace H2_Gruppe_project.ViewModels
 {
-    internal class AuctionBuyingModel : ViewModelBase
+    public partial class AuctionBuyingViewModel : ViewModelBase
     {
         private readonly MainWindowViewModel _mainWindowViewModel;
 
@@ -14,6 +16,9 @@ namespace H2_Gruppe_project.ViewModels
         private string _currentBid;
         private bool _isBidWindowVisible;
         private string _bidAmount;
+
+        private readonly User _loggedInUser;
+        private readonly Database _database;
 
         // Property for CurrentBid
         public string CurrentBid
@@ -46,10 +51,16 @@ namespace H2_Gruppe_project.ViewModels
         public IRelayCommand MakeBidCommand { get; }
         public IRelayCommand CancelBidCommand { get; }
         public IRelayCommand SubmitBidCommand { get; }
+        public IRelayCommand BackCommand { get; }
 
-        public AuctionBuyingModel(MainWindowViewModel mainWindowViewModel)
+
+        public AuctionBuyingViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser, Database database)
         {
             _mainWindowViewModel = mainWindowViewModel;
+
+            _loggedInUser = loggedInUser;
+            _database = database;
+
 
             // Initialize properties
             ClosingDate = new DateTime(2022, 12, 12);
@@ -60,6 +71,7 @@ namespace H2_Gruppe_project.ViewModels
             MakeBidCommand = new RelayCommand(OpenBidWindow);
             CancelBidCommand = new RelayCommand(CloseBidWindow);
             SubmitBidCommand = new RelayCommand(SubmitBid);
+            BackCommand = new RelayCommand(GoBack);
         }
 
         // Command methods
@@ -86,5 +98,12 @@ namespace H2_Gruppe_project.ViewModels
                 // Handle invalid bid (optional: show an error message)
             }
         }
+
+        private void GoBack()
+        {
+            _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, _loggedInUser, _database));
+        }
+
+        
     }
 }

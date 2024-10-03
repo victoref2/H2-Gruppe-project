@@ -1,16 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using H2_Gruppe_project.Classes;
+using H2_Gruppe_project.DatabaseClasses;
 
 namespace H2_Gruppe_project.ViewModels
 {
-    public partial class AuctionSellerModel : ViewModelBase
+    public partial class AuctionSellerViewModel : ViewModelBase
     {
         private readonly MainWindowViewModel _mainWindowViewModel;
 
         // Properties
         private DateTime _closingDate;
         private string _currentBid;
+
+        private readonly User _loggedInUser;
+        private readonly Database _database;
 
         public string CurrentBid
         {
@@ -28,9 +33,11 @@ namespace H2_Gruppe_project.ViewModels
         public IRelayCommand AcceptBidCommand { get; }
         public IRelayCommand BackCommand { get; }
 
-        public AuctionSellerModel(MainWindowViewModel mainWindowViewModel)
+        public AuctionSellerViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser, Database database)
         {
             _mainWindowViewModel = mainWindowViewModel;
+            _loggedInUser = loggedInUser;
+            _database = database;
 
             // Initialize properties
             ClosingDate = new DateTime(2022, 12, 12); // Example closing date
@@ -49,10 +56,10 @@ namespace H2_Gruppe_project.ViewModels
             Console.WriteLine("Bid Accepted");
         }
 
-        private void GoBack()
+        [RelayCommand]
+        public void GoBack()
         {
-            // Logic to navigate back to the previous page or the main auction page
-            Console.WriteLine("Navigating back");
+            _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, _loggedInUser, _database));
         }
     }
 }
