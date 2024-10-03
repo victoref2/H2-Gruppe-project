@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Class="H2_Gruppe_project.Views.ProfileView"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:H2_Gruppe_project.ViewModels"
+             x:DataType="vm:ProfileViewModel">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Your profile" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <!-- Success Message -->
+        <TextBlock Grid.Row="0" Text="{Binding SuccessMessage}" Foreground="Green" HorizontalAlignment="Center" Margin="0,30,0,0"
+                   IsVisible="{Binding IsSuccessMessageVisible}" />
+
+        <StackPanel Grid.Row="1" Margin="0,20,0,0">
+            <!-- Username -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Username:" Width="100" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Username}" />
+            </StackPanel>
+
+            <!-- Balance -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Balance:" Width="100" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Balance}" />
+            </StackPanel>
+
+            <!-- Credit (Visible only for Corporate Users) -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10" IsVisible="{Binding IsCorporateUser}">
+                <TextBlock Text="Credit:" Width="100" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Credit}" />
+            </StackPanel>
+
+            <!-- Add/Subtract Credit (Visible only for Corporate Users) -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10" IsVisible="{Binding IsCorporateUser}">
+                <TextBlock Text="Update Credit:" Width="100" FontWeight="Bold"/>
+                <TextBox Width="150" Text="{Binding AmountToChange}" />
+                <Button Content="Update" Command="{Binding UpdateCreditCommand}" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <!-- Change password -->
+            <StackPanel Orientation="Horizontal" Margin="0,20,0,10">
+                <TextBlock Text="Password:" Width="100" FontWeight="Bold"/>
+                <Button Content="Change Password" Foreground="Blue" Background="Transparent" BorderThickness="0"
+                        Command="{Binding ChangePasswordCommand}" 
+                        HorizontalAlignment="Left" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Back Button -->
+            <Button Content="Back" Command="{Binding GoBackCommand}" Width="100" HorizontalAlignment="Left" Margin="0,20,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

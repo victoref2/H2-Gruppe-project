@@ -37,7 +37,7 @@ namespace H2_Gruppe_project.ViewModels
                 
                 if (user != null && user.PassWord == User.HashPassword(Password))
                 {
-                    _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, user));
+                    _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, user, _database));
                 }
                 else
                 {
