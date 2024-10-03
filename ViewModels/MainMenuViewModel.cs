@@ -22,7 +22,7 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void GoToAddVHView()
         {
-            _mainViewModel.CurrentViewModel = new AddVHViewModel(_mainViewModel, _loggedInUser, _database);
+            _mainViewModel.CurrentViewModel = new AddVHViewModel(_mainViewModel, _loggedInUser);
         }
     }
 }

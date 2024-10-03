@@ -15,15 +15,12 @@ namespace H2_Gruppe_project.ViewModels
         private readonly MainWindowViewModel _mainViewModel;
         private readonly User _loggedInUser;
 
-        private readonly Database _database;
-
         
 
-        public AddVHViewModel(MainWindowViewModel mainViewModel, User loggedInUser, Database database)
+        public AddVHViewModel(MainWindowViewModel mainViewModel, User loggedInUser)
         {
             _mainViewModel = mainViewModel;
             _loggedInUser = loggedInUser;
-            _database = database;
 
         }
 
@@ -49,7 +46,7 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void GoBackCancel()
         {
-            _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser, _database));
+            _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser));
         }
 
         [ObservableProperty]

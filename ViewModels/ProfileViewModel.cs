@@ -124,7 +124,7 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void GoBack()
         {
-            _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, _loggedInUser, _database));
+            _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, _loggedInUser));
         }
         [RelayCommand]
         public void ChangePassword()

@@ -15,7 +15,7 @@ namespace H2_Gruppe_project.ViewModels
         private readonly MainWindowViewModel _mainWindowViewModel;
         private readonly User _loggedInUser;
 
-        public DashboardViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser, Database _database)
+        public DashboardViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser)
         {
             _mainWindowViewModel = mainWindowViewModel;
             _loggedInUser = loggedInUser;
