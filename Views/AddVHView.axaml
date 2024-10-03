@@ -34,6 +34,19 @@
 				<TextBlock Text="Reg. num" Width="120"/>
 				<TextBox Width="200"/>
 			</StackPanel>
+			
+			<!--fuel type-->
+			<StackPanel>
+				<TextBlock Text="Fuel Type:"/>
+				<StackPanel>
+					<ComboBox Width="200">
+						<ComboBoxItem Content="Diesel"/>
+						<ComboBoxItem Content="Petrol"/>
+						<ComboBoxItem Content="Electric"/>
+						<ComboBoxItem Content="Hybrid"/>
+					</ComboBox>
+				</StackPanel>
+			</StackPanel>
 
 			<!-- Year -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -62,75 +75,71 @@
 
 		<Border Grid.Column="1" Margin="10" BorderBrush="Black" BorderThickness="1" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Top">
 			<StackPanel>
-				<!-- Vehicle Type -->
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Vehicle type" Width="120"/>
-					<ComboBox Width="150" SelectedItem="{Binding SelectedVehicleType}">
-						<ComboBoxItem Content="Truck"/>
-						<ComboBoxItem Content="Bus"/>
-						<ComboBoxItem Content="Normal Vehicel"/>
-					</ComboBox>
-				</StackPanel>
-
-				<!-- Height -->
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Height" Width="120"/>
-					<TextBox Width="150"/>
-				</StackPanel>
-
-				<!-- Length -->
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Length" Width="120"/>
-					<TextBox Width="150"/>
-				</StackPanel>
-
-				<!-- Weight -->
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Weight" Width="120"/>
-					<TextBox Width="150"/>
-				</StackPanel>
-
-				<!-- Engine Size -->
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Engine size" Width="120"/>
-					<TextBox Width="150"/>
-				</StackPanel>
-
-				<!-- Tow Bar -->
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-					<TextBlock Text="Tow bar" Width="120"/>
-					<StackPanel Orientation="Horizontal">
-						<RadioButton Content="Yes" GroupName="TowBar" Padding="10,0,20,0"/>
-						<RadioButton Content="No" GroupName="TowBar" IsChecked="True"/>
-					</StackPanel>
-				</StackPanel>
-				
-				<!--NormalVH-->
-				<StackPanel IsVisible="False" x:Name="NormalVHBlocks">
+					<!-- Vehicle Type -->
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-						<TextBlock Width="120" Text="Number of Seats"/>
-						<StackPanel>
-							<TextBox Width="150"/>
+						<TextBlock Text="Vehicle type" Width="120"/>
+						<ComboBox Width="150" ItemsSource="{Binding VehicleTypes}" SelectedItem="{Binding SelectedVehicleType, Mode=TwoWay}"/>
+					</StackPanel>
+
+					<!-- Height -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Height" Width="120"/>
+						<TextBox Width="150"/>
+					</StackPanel>
+
+					<!-- Length -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Length" Width="120"/>
+						<TextBox Width="150"/>
+					</StackPanel>
+
+					<!-- Weight -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Weight" Width="120"/>
+						<TextBox Width="150"/>
+					</StackPanel>
+
+					<!-- Engine Size -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Engine size" Width="120"/>
+						<TextBox Width="150"/>
+					</StackPanel>
+
+					<!-- Tow Bar -->
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Tow bar" Width="120"/>
+						<StackPanel Orientation="Horizontal">
+							<RadioButton Content="Yes" GroupName="TowBar" Padding="10,0,20,0"/>
+							<RadioButton Content="No" GroupName="TowBar" IsChecked="True"/>
 						</StackPanel>
 					</StackPanel>
 
-					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-						<TextBlock Text="Trunk Dimensions" Width="120"/>
-						<StackPanel>
-							<TextBox Width="150"/>
+					<!--NormalVH-->
+					<StackPanel IsVisible="{Binding IsNormalVHVisible}">
+						<StackPanel Margin="0,0,0,10">
+							<TextBlock Width="120" Text="Number of Seats"/>
+							<StackPanel>
+								<TextBox Width="150"/>
+							</StackPanel>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+							<TextBlock Text="Trunk Dimensions" Width="120"/>
+							<StackPanel>
+								<TextBox Width="150"/>
+							</StackPanel>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+							<TextBlock Text="Is Commercial" Width="120"/>
+							<StackPanel Margin="0,-7,0,0">
+								<CheckBox IsChecked="{Binding IsCommercialVH, Mode=TwoWay}"/>
+							</StackPanel>
 						</StackPanel>
 					</StackPanel>
-					
-					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-						<TextBlock Text="Is Commercial" Width="120"/>
-						<StackPanel Margin="0,-7,0,0">
-							<CheckBox/>
-						</StackPanel>
-					</StackPanel>
-				</StackPanel>
 				
 				<!--PrivateVH-->
-				<StackPanel IsVisible="False" x:Name="PrivateVHBlocks">
+				<StackPanel IsVisible="{Binding IsPrivateVisible}">
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 						<TextBlock Text="Isofix Mount" Width="120"/>
 						<StackPanel Margin="0,-7,0,0">
@@ -140,7 +149,7 @@
 				</StackPanel>
 				
 				<!--CommercialVH-->
-				<StackPanel IsVisible="False" x:Name="CommercialVH">
+				<StackPanel IsVisible="{Binding IsCommercialVisible}">
 					<!-- RollCage property -->
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 						<TextBlock Text="Roll Cage" Width="120"/>
@@ -262,7 +271,6 @@
 						</StackPanel>
 					</StackPanel>
 				</StackPanel>
-
 			</StackPanel>
 		</Border>
 	</Grid>
