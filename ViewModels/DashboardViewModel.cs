@@ -14,14 +14,11 @@ namespace H2_Gruppe_project.ViewModels
 
         private readonly MainWindowViewModel _mainWindowViewModel;
         private readonly User _loggedInUser;
-        private readonly Database _database;
 
-        public DashboardViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser, Database database)
+        public DashboardViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser, Database _database)
         {
             _mainWindowViewModel = mainWindowViewModel;
             _loggedInUser = loggedInUser;
-            _database = database;
-
 
             UserName = _loggedInUser.Name;
         }
@@ -29,19 +26,7 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void GoToAddVehicle()
         {
-            _mainWindowViewModel.SwitchViewModel(new AddVHViewModel(_mainWindowViewModel, _loggedInUser, _database));
-        }
-
-        [RelayCommand]
-        public void GoToProfile()
-        {
-            _mainWindowViewModel.SwitchViewModel(new ProfileViewModel(_mainWindowViewModel, _loggedInUser, _database));
-        }
-
-        [RelayCommand]
-        public void Logout()
-        {
-            _mainWindowViewModel.SwitchViewModel(new LoginViewModel(_mainWindowViewModel, _database));
+            _mainWindowViewModel.SwitchViewModel(new AddVHViewModel(_mainWindowViewModel, _loggedInUser));
         }
     }
 }
