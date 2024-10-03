@@ -35,5 +35,6 @@
 	<ItemGroup>
 		<Page Include="Views\MainMenuView.axaml" />
 		<Page Include="Views\AddVHView.axaml" />
+		<Page Include="Views\AuctionBuying.axaml" />
 	</ItemGroup>
 </Project>
