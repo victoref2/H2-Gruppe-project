@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Threading.Tasks;
 
 namespace H2_Gruppe_project.Classes
 {
-    public class Auction
+    public partial class Auction : ObservableObject
     {
-        public string Id { get; set; } // Auction ID
+        // Use ObservableProperty to enable two-way binding for IsSelected
+        [ObservableProperty]
+        private bool isSelected;
+
+        public int Id { get; set; } // Auction ID
         public Vehicle Vehicle { get; set; } // The vehicle being auctioned
         public User Seller { get; set; } // The seller
         public User CurrentBuyer { get; set; } // The current highest bidder (user)
@@ -18,7 +23,7 @@ namespace H2_Gruppe_project.Classes
         private readonly object _bidLock = new object(); // Lock for bid modification
 
         // Constructor without the Buyer initially (before any bids)
-        public Auction(string id, Vehicle vehicle, User seller, decimal currentPrice, DateTime closingDate)
+        public Auction(int id, Vehicle vehicle, User seller, decimal currentPrice, DateTime closingDate)
         {
             Id = id;
             Vehicle = vehicle;
@@ -29,7 +34,7 @@ namespace H2_Gruppe_project.Classes
         }
 
         // Constructor with Buyer (for auctions that already have a buyer)
-        public Auction(string id, Vehicle vehicle, User seller, decimal currentPrice, DateTime closingDate, User currentBuyer)
+        public Auction(int id, Vehicle vehicle, User seller, decimal currentPrice, DateTime closingDate, User currentBuyer)
         {
             Id = id;
             Vehicle = vehicle;

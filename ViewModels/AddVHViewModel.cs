@@ -341,7 +341,7 @@ namespace H2_Gruppe_project.ViewModels
                 {
                     _database.AddVehicle(vehicle);
                     Auction auction = new Auction(
-                        id: null,
+                        id: 0,
                         vehicle: vehicle,
                         seller: _loggedInUser,
                         currentPrice: StartingBid,

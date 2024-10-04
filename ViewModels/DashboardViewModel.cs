@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using H2_Gruppe_project.Classes;
 using H2_Gruppe_project.DatabaseClasses;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -63,5 +64,35 @@ namespace H2_Gruppe_project.ViewModels
         {
             // Implement navigation to Auction history page if needed.
         }
+
+
+        [RelayCommand]
+        public void OpenSelectedAuction()
+        {
+            // Find the selected auction in YourAuctions or CurrentAuctions
+            var selectedAuction = YourAuctions.FirstOrDefault(a => a.IsSelected) ??
+                                  CurrentAuctions.FirstOrDefault(a => a.IsSelected);
+
+            if (selectedAuction == null)
+            {
+                // Handle case where no auction is selected
+                return;
+            }
+
+            // Check if this is the user's own auction
+            if (selectedAuction.Seller.Id == _loggedInUser.Id)
+            {
+                // Navigate to the Auction Seller page
+                _mainWindowViewModel.SwitchViewModel(new AuctionSellerViewModel(_mainWindowViewModel, _loggedInUser, _database, selectedAuction));
+            }
+            else
+            {
+                // Navigate to the Auction Buyer page
+                _mainWindowViewModel.SwitchViewModel(new AuctionBuyingViewModel(_mainWindowViewModel, _loggedInUser, _database, selectedAuction));
+            }
+
+
+        }
+
     }
 }
