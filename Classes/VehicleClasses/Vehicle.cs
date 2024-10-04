@@ -47,48 +47,51 @@ public class Vehicle
         }
         throw new ArgumentException("Invalid registration number format. Must be a danish RegistrationNumber");
     }
-    public void EnergyClassCalc(Vehicle vehicle)
+    public string EnergyClassCalc(int year, string fuelType, decimal KmL)
     {
-        int year = int.Parse(AgeGroup);
-        if (vehicle.FuelType == "electric" || vehicle.FuelType == "hydrogen")
+        string energyClass = "";
+
+        if (fuelType == "electric" || fuelType == "hydrogen")
         {
-            EnergyClass = "Class A";
+            energyClass = "Class A";
         }
-        else if (vehicle.FuelType == "diesel")
-        {
-            if (year < 2010)
-            {
-                if (KmL >= 23) EnergyClass = "Class A";
-                else if (KmL >= 18) EnergyClass = "Class B";
-                else if (KmL >= 13) EnergyClass = "Class C";
-                else EnergyClass = "Class D";
-            }
-            else // After 2010
-            {
-                if (KmL >= 25) EnergyClass = "Class A";
-                else if (KmL >= 20) EnergyClass = "Class B";
-                else if (KmL >= 15) EnergyClass = "Class C";
-                else EnergyClass = "Class D";
-            }
-        }
-        else if (vehicle.FuelType == "petrol" || vehicle.FuelType == "benzin")
+        else if (fuelType == "diesel")
         {
             if (year < 2010)
             {
-                if (KmL >= 18) EnergyClass = "Class A";
-                else if (KmL >= 14) EnergyClass = "Class B";
-                else if (KmL >= 10) EnergyClass = "Class C";
-                else EnergyClass = "Class D";
+                if (KmL >= 23) energyClass = "Class A";
+                else if (KmL >= 18) energyClass = "Class B";
+                else if (KmL >= 13) energyClass = "Class C";
+                else energyClass = "Class D";
             }
             else // After 2010
             {
-                if (KmL >= 20) EnergyClass = "Class A";
-                else if (KmL >= 16) EnergyClass = "Class B";
-                else if (KmL >= 12) EnergyClass = "Class C";
-                else EnergyClass = "Class D";
+                if (KmL >= 25) energyClass = "Class A";
+                else if (KmL >= 20) energyClass = "Class B";
+                else if (KmL >= 15) energyClass = "Class C";
+                else energyClass = "Class D";
             }
         }
+        else if (fuelType == "petrol" || fuelType == "benzin")
+        {
+            if (year < 2010)
+            {
+                if (KmL >= 18) energyClass = "Class A";
+                else if (KmL >= 14) energyClass = "Class B";
+                else if (KmL >= 10) energyClass = "Class C";
+                else energyClass = "Class D";
+            }
+            else // After 2010
+            {
+                if (KmL >= 20) energyClass = "Class A";
+                else if (KmL >= 16) energyClass = "Class B";
+                else if (KmL >= 12) energyClass = "Class C";
+                else energyClass = "Class D";
+            }
+        }
+        return energyClass;
     }
+
     public override string ToString()
     {
         return $"Vehicle [ID: {Id}, Name: {Name}, Registration Number: {RegistrationNumber}, " +

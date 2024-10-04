@@ -6,7 +6,6 @@ using System;
 using H2_Gruppe_project.Classes;
 using Avalonia.Controls;
 using System.Collections.Generic;
-using Microsoft.SqlServer.Server;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -74,6 +73,9 @@ namespace H2_Gruppe_project.ViewModels
 
         [ObservableProperty]
         private string engineSize;
+
+        [ObservableProperty]
+        private decimal _KmL;
 
         [ObservableProperty]
         private bool towBar;
@@ -204,17 +206,27 @@ namespace H2_Gruppe_project.ViewModels
                     return;
                 }
 
- 
+
                 Vehicle vehicle = null;
                 string name = VehicleName;
                 string km = Mileage;
                 string registrationNumber = RegistrationNumber;
+
+                // Convert ageGroup from string to int
                 string ageGroup = AgeGroup.Year.ToString();
+                int ageGroupInt;
+                if (!int.TryParse(ageGroup, out ageGroupInt))
+                {
+                    // Handle invalid conversion, if necessary
+                    throw new FormatException("Invalid Age Group format");
+                }
+
+                decimal kmL = _KmL;
                 bool towHook = TowBar;
                 string driversLicenceClass = "";
-                decimal kmL = 10.5m; 
                 string fuelType = FuelType;
-
+                Vehicle vehicle1 = new(0,VehicleName, Mileage, RegistrationNumber, AgeGroup.Year.ToString(),TowBar,"",EngineSize,kmL,fuelType,"");
+                string energyclass = vehicle1.EnergyClassCalc(ageGroupInt, fuelType,kmL);
 
                 if (SelectedVehicleType == "Truck")
                 {
@@ -231,7 +243,7 @@ namespace H2_Gruppe_project.ViewModels
                         engineSize: EngineSize,
                         kmL: kmL,
                         fuelType: fuelType,
-                        energyClass: null,
+                        energyClass: energyclass,
                         maxLoadCapacity: MaxLoadCapacity,
                         numberOfAxles: NumberOfAxles,
                         height: Height,
@@ -324,8 +336,6 @@ namespace H2_Gruppe_project.ViewModels
                     StatusMessage = "Failed to create vehicle.";
                     return;
                 }
-
-                vehicle.EnergyClassCalc(vehicle);
 
                 await Task.Run(() =>
                 {

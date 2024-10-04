@@ -29,6 +29,12 @@
                 <TextBox Width="200" Text="{Binding Mileage, Mode=TwoWay}" Watermark="Enter mileage"/>
 			</StackPanel>
 
+			<!-- KmL -->
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Kml " Width="120"/>
+				<TextBox Width="200" Text="{Binding _KmL, Mode=TwoWay}" Watermark="Enter Kml"/>
+			</StackPanel>
+
 			<!-- Registration Number -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 				<TextBlock Text="Reg. num" Width="120"/>
@@ -57,7 +63,7 @@
 			<!-- Starting Bid -->
 			<StackPanel Orientation="Horizontal" Margin="0,20,0,10">
 				<TextBlock Text="Starting bid" Width="120"/>
-    			<TextBox Width="200" Text="{Binding StartingBid}" IsReadOnly="True" Watermark="Enter starting bid"/>
+    			<TextBox Width="200" Text="{Binding StartingBid}" Watermark="Enter starting bid"/>
 			</StackPanel>
 
 			<!-- Close Auction Date -->
