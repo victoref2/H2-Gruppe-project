@@ -5,14 +5,14 @@ namespace H2_Gruppe_project.Classes
     public class NormalVehicle : Vehicle
     {
         public int NormalVehicleId { get; set; }
-        public int NumberOfSeats { get; private set; }
-        public string TrunkDimensions { get; private set; } // e.g., "1.5m x 1m x 0.8m"
+        public int NumberOfSeats { get; set; }
+        public string TrunkDimensions { get; set; } // e.g., "1.5m x 1m x 0.8m"
         public bool IsCommercial { get; set; }  // Changed to follow naming conventions
 
-        public NormalVehicle(string id, string name, string km, string regristrationNumber, string ageGroup, bool towHook,
+        public NormalVehicle(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook,
             string driversLicenceClass, string engineSize, decimal kmL, string fuelType, string energyClass,
             int numberOfSeats, string trunkDimensions, bool isCommercial)
-            : base(id, name, km, regristrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass)
+            : base(id, name, km, registrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass)
         {
             IsCommercial = isCommercial;
 

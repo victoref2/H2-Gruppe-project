@@ -95,7 +95,8 @@ CREATE TABLE Auctions (
     AuctionId INT IDENTITY(1,1) PRIMARY KEY,
     VehicleId INT NOT NULL,
     UserId INT NOT NULL,
-    Price INT NOT NULL,
+    Price DECIMAL(18,2) NOT NULL,
+    ClosingDate DATETIME NOT NULL,
     FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId) ON DELETE CASCADE,
-    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE           
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
 );

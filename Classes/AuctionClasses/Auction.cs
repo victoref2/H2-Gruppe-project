@@ -10,19 +10,21 @@ namespace H2_Gruppe_project.Classes
         public string Id { get; set; } // Auction ID
         public Vehicle Vehicle { get; set; } // The vehicle being auctioned
         public User Seller { get; set; } // The seller
-        public User CurrentBuyer { get; private set; } // The current highest bidder (user)
-        public decimal CurrentPrice { get; private set; } // The current highest bid (price)
-        public List<decimal> Bids { get; private set; } // List of bids
+        public User CurrentBuyer { get; set; } // The current highest bidder (user)
+        public decimal CurrentPrice { get; set; } // The current highest bid (price)
+        public List<decimal> Bids { get; set; } // List of bids
+        public DateTime ClosingDate { get; set; }
 
         private readonly object _bidLock = new object(); // Lock for bid modification
 
-        public Auction(string id, Vehicle vehicle, User seller, decimal CurrentPrice)
+        public Auction(string id, Vehicle vehicle, User seller, decimal currentPrice, DateTime closingDate)
         {
             Id = id;
             Vehicle = vehicle;
             Seller = seller;
             Bids = new List<decimal>(); // Initialize the list of bids
-            CurrentPrice = 0m; // Initialize current price to 0
+            CurrentPrice = currentPrice; // Initialize current price to 0
+            ClosingDate = closingDate;
         }
 
         // Method to receive a bid (ModtagBud) asynchronously

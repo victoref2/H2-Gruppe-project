@@ -10,23 +10,23 @@ public class Vehicle
 {
     //change privacy and what it is as needed
     public string Id { get; set; }
-    public string Name { get; private set; }
-    public string KM { get; private set; }
-    public string RegristrationNumber { get; private set; }
-    public string AgeGroup { get; private set; }
+    public string Name { get; set; }
+    public string KM { get;  set; }
+    public string RegistrationNumber  { get; set; }
+    public string AgeGroup { get; set; }
     public bool TowHook { get; set; }
     public string DriversLicenceClass { get; protected set; }
-    public string EngineSize { get; private set; }
-    public decimal KmL { get; private set; }
-    public string FuelType { get; private set; }
-    public string EnergyClass { get; private set; }
-    public Vehicle(string id, string name, string km, string regristrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
+    public string EngineSize { get;  set; }
+    public decimal KmL { get;  set; }
+    public string FuelType { get;  set; }
+    public string EnergyClass { get;  set; }
+    public Vehicle(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
         string engineSize, decimal kmL, string fuelType, string energyClass)
     {
         Id = id;
         Name = name;
         KM = km;
-        RegristrationNumber = regristrationNumber;
+        RegistrationNumber = ValidateRegistrationNumber(registrationNumber);
         AgeGroup = ageGroup;
         TowHook = towHook;
         DriversLicenceClass = driversLicenceClass;
@@ -34,6 +34,18 @@ public class Vehicle
         KmL = kmL;
         FuelType = fuelType;
         EnergyClass = energyClass;
+    }
+
+    private string ValidateRegistrationNumber(string regNumber)
+    {
+        if (regNumber.Length == 7 &&
+            char.IsLetter(regNumber[0]) &&
+            char.IsLetter(regNumber[1]) &&
+            int.TryParse(regNumber.Substring(2), out _))
+        {
+            return regNumber;
+        }
+        throw new ArgumentException("Invalid registration number format. Must be a danish RegistrationNumber");
     }
     public void EnergyClassCalc(Vehicle vehicle)
     {
@@ -79,7 +91,7 @@ public class Vehicle
     }
     public override string ToString()
     {
-        return $"Vehicle [ID: {Id}, Name: {Name}, Registration Number: {RegristrationNumber}, " +
+        return $"Vehicle [ID: {Id}, Name: {Name}, Registration Number: {RegistrationNumber}, " +
                $"Kilometers: {KM}, Age Group: {AgeGroup}, Tow Hook: {(TowHook ? "Yes" : "No")}, " +
                $"Driver's Licence Class: {DriversLicenceClass}, Engine Size: {EngineSize}, " +
                $"Fuel Type: {FuelType}, Km/L: {KmL}, Energy Class: {EnergyClass}]";

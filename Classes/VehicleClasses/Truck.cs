@@ -5,15 +5,15 @@ namespace H2_Gruppe_project.Classes
     public class Truck : HeavyVehicle
     {
         public int TruckId { get; set; }
-        public decimal Height { get; private set; }
-        public decimal Weight { get; private set; }
-        public decimal Length { get; private set; }
-        public decimal LoadCapacity { get; private set; }
+        public decimal Height { get; set; }
+        public decimal Weight { get; set; }
+        public decimal Length { get; set; }
+        public decimal LoadCapacity { get; set; }
 
-        public Truck(string id, string name, string km, string regristrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
+        public Truck(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
             string engineSize, decimal kmL, string fuelType, string energyClass, int maxLoadCapacity, int numberOfAxles,
             decimal height, decimal weight, decimal length, decimal loadCapacity)
-            : base(id, name, km, regristrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass, maxLoadCapacity, numberOfAxles)
+            : base(id, name, km, registrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass, maxLoadCapacity, numberOfAxles)
         {
             Height = height;
             Weight = weight;

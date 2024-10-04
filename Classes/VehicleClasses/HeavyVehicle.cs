@@ -9,12 +9,12 @@ namespace H2_Gruppe_project.Classes;
 public class HeavyVehicle : Vehicle
 {
 
-    public int MaxLoadCapacity { get; private set; }
-    public int NumberOfAxles { get; private set; }
+    public int MaxLoadCapacity { get; set; }
+    public int NumberOfAxles { get; set; }
 
-    public HeavyVehicle(string id, string name, string km, string regristrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
+    public HeavyVehicle(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
         string engineSize, decimal kmL, string fuelType, string energyClass, int maxLoadCapacity, int numberOfAxles)
-        : base(id, name, km, regristrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass)
+        : base(id, name, km, registrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass)
     {
         MaxLoadCapacity = maxLoadCapacity;
         NumberOfAxles = numberOfAxles;

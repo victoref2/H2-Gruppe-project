@@ -26,7 +26,7 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                         cmd.Parameters.AddWithValue("@Name", privateVehicle.Name);
                         cmd.Parameters.AddWithValue("@KM", privateVehicle.KM);
-                        cmd.Parameters.AddWithValue("@RegistrationNumber", privateVehicle.RegristrationNumber);
+                        cmd.Parameters.AddWithValue("@RegistrationNumber", privateVehicle.RegistrationNumber);
                         cmd.Parameters.AddWithValue("@AgeGroup", privateVehicle.AgeGroup);
                         cmd.Parameters.AddWithValue("@TowHook", privateVehicle.TowHook);
                         cmd.Parameters.AddWithValue("@DriversLicenceClass", privateVehicle.DriversLicenceClass);
@@ -75,7 +75,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                             id: reader["VehicleId"].ToString(),
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
-                            regristrationNumber: reader["RegistrationNumber"].ToString(),
+                            registrationNumber: reader["RegistrationNumber"].ToString(),
                             ageGroup: reader["AgeGroup"].ToString(),
                             towHook: Convert.ToBoolean(reader["TowHook"]),
                             driversLicenceClass: reader["DriversLicenceClass"].ToString(),

@@ -27,7 +27,7 @@ public void AddNormalVehicle(NormalVehicle normalVehicle)
 
                 cmd.Parameters.AddWithValue("@Name", normalVehicle.Name);
                 cmd.Parameters.AddWithValue("@KM", normalVehicle.KM);
-                cmd.Parameters.AddWithValue("@RegistrationNumber", normalVehicle.RegristrationNumber);
+                cmd.Parameters.AddWithValue("@RegistrationNumber", normalVehicle.RegistrationNumber);
                 cmd.Parameters.AddWithValue("@AgeGroup", normalVehicle.AgeGroup);
                 cmd.Parameters.AddWithValue("@TowHook", normalVehicle.TowHook);
                 cmd.Parameters.AddWithValue("@DriversLicenceClass", normalVehicle.DriversLicenceClass);
@@ -75,7 +75,7 @@ public void AddNormalVehicle(NormalVehicle normalVehicle)
                             id: reader["VehicleId"].ToString(),
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
-                            regristrationNumber: reader["RegistrationNumber"].ToString(),
+                            registrationNumber: reader["RegistrationNumber"].ToString(),
                             ageGroup: reader["AgeGroup"].ToString(),
                             towHook: Convert.ToBoolean(reader["TowHook"]),
                             driversLicenceClass: reader["DriversLicenceClass"].ToString(),
@@ -119,7 +119,7 @@ public void AddNormalVehicle(NormalVehicle normalVehicle)
                         SqlCommand vehicleCmd = new SqlCommand(vehicleQuery, connection, transaction);
                         vehicleCmd.Parameters.AddWithValue("@Name", normalVehicle.Name);
                         vehicleCmd.Parameters.AddWithValue("@KM", normalVehicle.KM);
-                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", normalVehicle.RegristrationNumber);
+                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", normalVehicle.RegistrationNumber);
                         vehicleCmd.Parameters.AddWithValue("@AgeGroup", normalVehicle.AgeGroup);
                         vehicleCmd.Parameters.AddWithValue("@TowHook", normalVehicle.TowHook);
                         vehicleCmd.Parameters.AddWithValue("@DriversLicenceClass", normalVehicle.DriversLicenceClass);

@@ -23,7 +23,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@Name", vehicle.Name);
                         cmd.Parameters.AddWithValue("@Km", vehicle.KM);
-                        cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegristrationNumber);
+                        cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegistrationNumber);
                         cmd.Parameters.AddWithValue("@AgeGroup", vehicle.AgeGroup);
                         cmd.Parameters.AddWithValue("@TowHook", vehicle.TowHook);
                         cmd.Parameters.AddWithValue("@DriversLicenceClass", vehicle.DriversLicenceClass);
@@ -100,7 +100,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@Name", vehicle.Name);
                         cmd.Parameters.AddWithValue("@Km", vehicle.KM);
-                        cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegristrationNumber);
+                        cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegistrationNumber);
                         cmd.Parameters.AddWithValue("@AgeGroup", vehicle.AgeGroup);
                         cmd.Parameters.AddWithValue("@TowHook", vehicle.TowHook);
                         cmd.Parameters.AddWithValue("@DriversLicenceClass", vehicle.DriversLicenceClass);

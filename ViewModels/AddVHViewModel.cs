@@ -27,11 +27,95 @@ namespace H2_Gruppe_project.ViewModels
 
         }
 
-        // ComboBox selection binding
+        // Common Properties
+        [ObservableProperty]
+        private string vehicleName;
+
+        [ObservableProperty]
+        private string mileage;
+
+        [ObservableProperty]
+        private string registrationNumber;
+
+        [ObservableProperty]
+        private string fuelType;
+
+        [ObservableProperty]
+        private decimal startingBid;
+
+        [ObservableProperty]
+        private DateTimeOffset closingDate = DateTimeOffset.Now;
+
         [ObservableProperty]
         private string selectedVehicleType;
 
-        // Visibility properties for various vehicle sections
+        [ObservableProperty]
+        private DateTimeOffset ageGroup = DateTimeOffset.Now;
+
+        // Additional Common Properties
+        [ObservableProperty]
+        private string driversLicenseClass;
+
+        [ObservableProperty]
+        private decimal newPrice;
+
+        [ObservableProperty]
+        private string energyClass;
+
+        // Vehicle Type Specific Properties
+        [ObservableProperty]
+        private decimal height;
+
+        [ObservableProperty]
+        private decimal length;
+
+        [ObservableProperty]
+        private decimal weight;
+
+        [ObservableProperty]
+        private string engineSize;
+
+        [ObservableProperty]
+        private bool towBar;
+
+        [ObservableProperty]
+        private int numberOfSeats;
+
+        [ObservableProperty]
+        private string trunkDimensions;
+
+        [ObservableProperty]
+        private bool isCommercialVH;
+
+        [ObservableProperty]
+        private bool rollCage;
+
+        [ObservableProperty]
+        private int loadCapacity;
+
+        [ObservableProperty]
+        private int maxLoadCapacity;
+
+        [ObservableProperty]
+        private int numberOfAxles;
+
+        [ObservableProperty]
+        private int numberOfSleepingPlaces;
+
+        [ObservableProperty]
+        private bool hasToilet;
+
+        [ObservableProperty]
+        private string statusMessage;
+
+        // Validation State Properties (Optional but useful for providing specific feedback)
+        [ObservableProperty]
+        private string registrationNumberErrorMessage;
+
+        [ObservableProperty]
+        private string mileageErrorMessage;
+
+        // Visibility for Vehicle Types
         [ObservableProperty]
         private bool isTruckVisible;
 
@@ -44,6 +128,15 @@ namespace H2_Gruppe_project.ViewModels
         [ObservableProperty]
         private bool isNormalVHVisible;
 
+        [ObservableProperty]
+        private bool isPrivateVisible;
+
+        [ObservableProperty]
+        private bool isCommercialVisible;
+        
+        [ObservableProperty]
+        private bool isofixMount;
+
 
         // Command for going back to dashboard
         [RelayCommand]
@@ -51,16 +144,6 @@ namespace H2_Gruppe_project.ViewModels
         {
             _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser, _database));
         }
-
-        [ObservableProperty]
-        private bool isCommercialVH;
-
-        // Visibility properties for private and commercial vehicles
-        [ObservableProperty]
-        private bool isCommercialVisible;
-
-        [ObservableProperty]
-        private bool isPrivateVisible;
 
         partial void OnIsCommercialVHChanged(bool value)
         {
@@ -99,6 +182,172 @@ namespace H2_Gruppe_project.ViewModels
             {
                 IsNormalVHVisible = true;
                 IsPrivateVisible = true;
+            }
+        }
+
+        [RelayCommand]
+        public async Task CreateAuctionAsync()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(VehicleName) ||
+                    string.IsNullOrWhiteSpace(Mileage) ||
+                    string.IsNullOrWhiteSpace(RegistrationNumber))
+                {
+                    StatusMessage = "All fields are required.";
+                    return;
+                }
+
+                if (SelectedVehicleType == null)
+                {
+                    StatusMessage = "Please select a vehicle type.";
+                    return;
+                }
+
+ 
+                Vehicle vehicle = null;
+                string name = VehicleName;
+                string km = Mileage;
+                string registrationNumber = RegistrationNumber;
+                string ageGroup = AgeGroup.Year.ToString();
+                bool towHook = TowBar;
+                string driversLicenceClass = "";
+                decimal kmL = 10.5m; 
+                string fuelType = FuelType;
+
+
+                if (SelectedVehicleType == "Truck")
+                {
+                    driversLicenceClass = towHook ? "CE" : "C";
+
+                    vehicle = new Truck(
+                        id: null,
+                        name: name,
+                        km: km,
+                        registrationNumber: registrationNumber,
+                        ageGroup: ageGroup,
+                        towHook: towHook,
+                        driversLicenceClass: driversLicenceClass,
+                        engineSize: EngineSize,
+                        kmL: kmL,
+                        fuelType: fuelType,
+                        energyClass: null,
+                        maxLoadCapacity: MaxLoadCapacity,
+                        numberOfAxles: NumberOfAxles,
+                        height: Height,
+                        weight: Weight,
+                        length: Length,
+                        loadCapacity: LoadCapacity
+                    );
+                }
+                else if (SelectedVehicleType == "Bus")
+                {
+                    driversLicenceClass = towHook ? "DE" : "D";
+
+                    vehicle = new Bus(
+                        id: null,
+                        name: name,
+                        km: km,
+                        registrationNumber: registrationNumber,
+                        ageGroup: ageGroup,
+                        towHook: towHook,
+                        driversLicenceClass: driversLicenceClass,
+                        engineSize: EngineSize,
+                        kmL: kmL,
+                        fuelType: fuelType,
+                        energyClass: null,
+                        maxLoadCapacity: MaxLoadCapacity,
+                        numberOfAxles: NumberOfAxles,
+                        height: Height,
+                        weight: Weight,
+                        length: Length,
+                        numberOfSeats: NumberOfSeats,
+                        numberOfSleepingPlaces: NumberOfSleepingPlaces,
+                        hasToilet: HasToilet
+                    );
+                }
+                else if (SelectedVehicleType == "Normal Vehicle")
+                {
+                    bool isCommercial = IsCommercialVH;
+                    driversLicenceClass = "B";
+
+                    if (isCommercial)
+                    {
+                        if (LoadCapacity > 750)
+                        {
+                            driversLicenceClass = "BE";
+                        }
+
+                        vehicle = new ComercialVehicle(
+                            id: null,
+                            name: name,
+                            km: km,
+                            registrationNumber: registrationNumber,
+                            ageGroup: ageGroup,
+                            towHook: towHook,
+                            driversLicenceClass: driversLicenceClass,
+                            engineSize: EngineSize,
+                            kmL: kmL,
+                            fuelType: fuelType,
+                            energyClass: null,
+                            numberOfSeats: NumberOfSeats,
+                            trunkDimensions: TrunkDimensions,
+                            isCommercial: isCommercial,
+                            rollCage: RollCage,
+                            loadCapacity: LoadCapacity
+                        );
+                    }
+                    else
+                    {
+                        vehicle = new PrivateVehicle(
+                            id: null,
+                            name: name,
+                            km: km,
+                            registrationNumber: registrationNumber,
+                            ageGroup: ageGroup,
+                            towHook: towHook,
+                            driversLicenceClass: driversLicenceClass,
+                            engineSize: EngineSize,
+                            kmL: kmL,
+                            fuelType: fuelType,
+                            energyClass: null,
+                            numberOfSeats: NumberOfSeats,
+                            trunkDimensions: TrunkDimensions,
+                            isCommercial: isCommercial,
+                            isofixMount: IsofixMount
+                        );
+                    }
+                }
+
+                if (vehicle == null)
+                {
+                    StatusMessage = "Failed to create vehicle.";
+                    return;
+                }
+
+                vehicle.EnergyClassCalc(vehicle);
+
+                await Task.Run(() =>
+                {
+                    _database.AddVehicle(vehicle);
+                    Auction auction = new Auction(
+                        id: null,
+                        vehicle: vehicle,
+                        seller: _loggedInUser,
+                        currentPrice: StartingBid,
+                        closingDate: ClosingDate.DateTime
+                    );
+
+                    _database.AddAuction(auction);
+                });
+
+                StatusMessage = "Auction created successfully.";
+
+                _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser, _database));
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error creating auction: {ex.Message}";
             }
         }
     }

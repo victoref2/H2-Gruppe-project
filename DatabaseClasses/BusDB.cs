@@ -24,7 +24,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         SqlCommand vehicleCmd = new SqlCommand(vehicleQuery, connection, transaction);
                         vehicleCmd.Parameters.AddWithValue("@Name", bus.Name);
                         vehicleCmd.Parameters.AddWithValue("@KM", bus.KM);
-                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", bus.RegristrationNumber);
+                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", bus.RegistrationNumber);
                         vehicleCmd.Parameters.AddWithValue("@AgeGroup", bus.AgeGroup);
                         vehicleCmd.Parameters.AddWithValue("@TowHook", bus.TowHook);
                         vehicleCmd.Parameters.AddWithValue("@DriversLicenceClass", bus.DriversLicenceClass);
@@ -100,9 +100,10 @@ namespace H2_Gruppe_project.DatabaseClasses
                             id: busId.ToString(),
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
-                            regristrationNumber: reader["RegistrationNumber"].ToString(),
+                            registrationNumber: reader["RegistrationNumber"].ToString(),
                             ageGroup: reader["AgeGroup"].ToString(),
                             towHook: Convert.ToBoolean(reader["TowHook"]),
+                            driversLicenceClass: reader["DriversLicenceClass"].ToString(),
                             engineSize: reader["EngineSize"].ToString() + "L",
                             kmL: Convert.ToDecimal(reader["KmL"]),
                             fuelType: reader["FuelType"].ToString(),
@@ -145,7 +146,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         SqlCommand vehicleCmd = new SqlCommand(vehicleQuery, connection, transaction);
                         vehicleCmd.Parameters.AddWithValue("@Name", bus.Name);
                         vehicleCmd.Parameters.AddWithValue("@KM", bus.KM);
-                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", bus.RegristrationNumber);
+                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", bus.RegistrationNumber);
                         vehicleCmd.Parameters.AddWithValue("@AgeGroup", bus.AgeGroup);
                         vehicleCmd.Parameters.AddWithValue("@TowHook", bus.TowHook);
                         vehicleCmd.Parameters.AddWithValue("@DriversLicenceClass", bus.DriversLicenceClass);

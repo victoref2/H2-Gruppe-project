@@ -17,17 +17,22 @@ namespace H2_Gruppe_project.DatabaseClasses
                     try
                     {
                         string query = @"
-                            INSERT INTO Auctions (VehicleId, UserId, Price) 
-                            VALUES (@VehicleId, @UserId, @Price);
+                            EXEC AddAuction 
+                                @VehicleId, 
+                                @UserId, 
+                                @Price, 
+                                @ClosingDate;
                             SELECT SCOPE_IDENTITY();";
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
-                        cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id);
-                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id)); // Changed from auction.User to auction.Seller
-                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice);  // Changed from auction.Price to auction.CurrentPrice
+
+                        cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id); // Vehicle ID
+                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id)); // Seller/User ID
+                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice); // Auction starting/current price
+                        cmd.Parameters.AddWithValue("@ClosingDate", auction.ClosingDate); // Auction closing date
 
                         int auctionId = Convert.ToInt32(cmd.ExecuteScalar());
-                        auction.Id = auctionId.ToString();
+                        auction.Id = auctionId.ToString(); // Store the Auction ID in the auction object
 
                         transaction.Commit();
                     }
@@ -63,7 +68,9 @@ namespace H2_Gruppe_project.DatabaseClasses
                         id: reader["AuctionId"].ToString(),
                         vehicle: vehicle,
                         seller: seller,  // Changed to seller
-                        CurrentPrice: Convert.ToDecimal(reader["Price"])  // Changed from price to CurrentPrice
+                        currentPrice: Convert.ToDecimal(reader["Price"]),
+                        closingDate: Convert.ToDateTime(reader["ClosingDate"])
+
                     );
                 }
                 return auction;

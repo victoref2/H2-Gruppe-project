@@ -9,19 +9,19 @@ namespace H2_Gruppe_project.Classes;
 public class Bus : HeavyVehicle
 {
     public int BusId { get; set; }
-    public decimal Height { get; private set; }
-    public decimal Weight { get; private set; }
-    public decimal Length { get; private set; }
-    public int NumberOfSeats { get; private set; }
-    public int NumberOfSleepingPlaces { get; private set; }
-    public bool HasToilet { get; private set; }
+    public decimal Height { get; set; }
+    public decimal Weight { get; set; }
+    public decimal Length { get; set; }
+    public int NumberOfSeats { get; set; }
+    public int NumberOfSleepingPlaces { get;set; }
+    public bool HasToilet { get; set; }
 
-    public Bus(string id, string name, string km, string regristrationNumber, string ageGroup, bool towHook,
+    public Bus(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
                string engineSize, decimal kmL, string fuelType, string energyClass,
                int maxLoadCapacity, int numberOfAxles,
                decimal height, decimal weight, decimal length,
                int numberOfSeats, int numberOfSleepingPlaces, bool hasToilet)
-        : base(id, name, km, regristrationNumber, ageGroup, towHook, "D", engineSize, kmL, fuelType, energyClass, maxLoadCapacity, numberOfAxles)
+        : base(id, name, km, registrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass, maxLoadCapacity, numberOfAxles)
     {
         Height = height;
         Weight = weight;
@@ -30,12 +30,18 @@ public class Bus : HeavyVehicle
         NumberOfSleepingPlaces = numberOfSleepingPlaces;
         HasToilet = hasToilet;
 
-        if (TowHook)
+        if (TowHook && driversLicenceClass == "D")
         {
             DriversLicenceClass = "DE";
         }
 
         ValidateEngineSize(engineSize);
+    }
+
+        private static bool ValidateRegistrationNumber(string regNumber)
+    {
+        return regNumber.Length == 7 && char.IsLetter(regNumber[0]) && char.IsLetter(regNumber[1]) &&
+            int.TryParse(regNumber.Substring(2), out _);
     }
 
     private void ValidateEngineSize(string engineSize)
