@@ -73,19 +73,61 @@ namespace H2_Gruppe_project.ViewModels
         {
             if (decimal.TryParse(BidAmount, out decimal bidValue))
             {
-                // Logic for submitting the bid
-                Auction.CurrentPrice = bidValue; // Update the current price in the auction object
-                CloseBidWindow(); // Close the bid window after successful bid
+                // Check if bid is higher than current price
+                if (bidValue <= Auction.CurrentPrice)
+                {
+                    // Bid must be higher than the current price
+                    ShowErrorMessage("Bid must be higher than the current price.");
+                    return;
+                }
+
+                // Check if user has enough balance
+                if (_loggedInUser.Balance < bidValue)
+                {
+                    // User does not have enough money to place the bid
+                    ShowErrorMessage("You do not have enough balance to place this bid.");
+                    return;
+                }
+
+                // If there is a current buyer, refund their previous bid
+                if (Auction.CurrentBuyer != null)
+                {
+                    // Refund the previous highest bidder
+                    Auction.CurrentBuyer.Balance += Auction.CurrentPrice;
+                    _database.UpdateUserBalance(Auction.CurrentBuyer.Id, Auction.CurrentBuyer.Balance);
+                }
+
+                // Deduct the new bid amount from the logged-in user's balance
+                _loggedInUser.Balance -= bidValue;
+
+                // Update the auction's current price and buyer
+                Auction.CurrentPrice = bidValue;
+                Auction.CurrentBuyer = _loggedInUser;
+                    
+                // Update the auction and user balance in the database
+                _database.UpdateAuction(Auction);
+                _database.UpdateUserBalance(_loggedInUser.Id, _loggedInUser.Balance);
+
+                CloseBidWindow(); // Close the bid window after a successful bid
             }
             else
             {
                 // Handle invalid bid (optional: show an error message)
+                ShowErrorMessage("Invalid bid amount.");
             }
         }
+
+
 
         private void GoBack()
         {
             _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, _loggedInUser, _database));
+        }
+
+        // Utility method to show an error message (can be replaced with actual UI error handling)
+        private void ShowErrorMessage(string message)
+        {
+            Console.WriteLine(message); // Placeholder for real error message handling
         }
     }
 }
