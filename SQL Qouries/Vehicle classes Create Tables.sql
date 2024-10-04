@@ -6,7 +6,7 @@ CREATE TABLE Vehicles (
     AgeGroup VARCHAR(20) NOT NULL,
     TowHook BIT NOT NULL,
     DriversLicenceClass VARCHAR(5) NOT NULL,
-    EngineSize DECIMAL NOT NULL,
+    EngineSize VARCHAR NOT NULL,
     KmL DECIMAL(10, 2) NOT NULL,
     FuelType VARCHAR(20) NOT NULL,
     EnergyClass VARCHAR(10) NOT NULL
