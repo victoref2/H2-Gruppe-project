@@ -207,7 +207,6 @@ namespace H2_Gruppe_project.ViewModels
                 }
 
 
-                Vehicle vehicle = null;
                 string name = VehicleName;
                 string km = Mileage;
                 string registrationNumber = RegistrationNumber;
@@ -225,8 +224,8 @@ namespace H2_Gruppe_project.ViewModels
                 bool towHook = TowBar;
                 string driversLicenceClass = "";
                 string fuelType = FuelType;
-                Vehicle vehicle1 = new(0,VehicleName, Mileage, RegistrationNumber, AgeGroup.Year.ToString(),TowBar,"",EngineSize,kmL,fuelType,"");
-                string energyclass = vehicle1.EnergyClassCalc(ageGroupInt, fuelType, kmL);
+                Vehicle vehicle = new(0,VehicleName, Mileage, RegistrationNumber, AgeGroup.Year.ToString(),TowBar,"",EngineSize,kmL,fuelType,"");
+                string energyclass = vehicle.EnergyClassCalc(ageGroupInt, fuelType, kmL);
 
                 if (SelectedVehicleType == "Truck")
                 {
