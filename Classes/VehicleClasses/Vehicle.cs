@@ -33,7 +33,7 @@ public class Vehicle
         EngineSize = engineSize;
         KmL = kmL;
         FuelType = fuelType;
-        EnergyClass = energyClass;
+        EnergyClass = EnergyClassCalc(Convert.ToInt32(ageGroup), fuelType, KmL);
     }
 
     private string ValidateRegistrationNumber(string regNumber)
