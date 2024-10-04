@@ -97,7 +97,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                     if (reader.Read())
                     {
                         return new Bus(
-                            id: busId.ToString(),
+                            id: Convert.ToInt32(busId),
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
                             registrationNumber: reader["RegistrationNumber"].ToString(),

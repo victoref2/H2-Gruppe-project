@@ -7,6 +7,8 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using Tmds.DBus.Protocol;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -34,8 +36,8 @@ namespace H2_Gruppe_project.ViewModels
         private decimal credit;
 
         [ObservableProperty]
-        private bool isCorporateUser; 
-        
+        private bool isCorporateUser;
+
 
         [ObservableProperty]
         private string message;
@@ -117,7 +119,7 @@ namespace H2_Gruppe_project.ViewModels
                             return;
                         }
                         var newCorporateUser = new CorporateUser(
-                            id: null,
+                            id: 0,
                             name: Name,
                             passWord: hashedPassword,
                             mail: Email,
@@ -130,7 +132,7 @@ namespace H2_Gruppe_project.ViewModels
                     else
                     {
                         var newPrivateUser = new PrivateUser(
-                            id: null,
+                            id: 0,
                             name: Name,
                             passWord: hashedPassword,
                             mail: Email,

@@ -9,7 +9,7 @@ namespace H2_Gruppe_project.Classes
         public string TrunkDimensions { get; set; } // e.g., "1.5m x 1m x 0.8m"
         public bool IsCommercial { get; set; }  // Changed to follow naming conventions
 
-        public NormalVehicle(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook,
+        public NormalVehicle(int id, string name, string km, string registrationNumber, string ageGroup, bool towHook,
             string driversLicenceClass, string engineSize, decimal kmL, string fuelType, string energyClass,
             int numberOfSeats, string trunkDimensions, bool isCommercial)
             : base(id, name, km, registrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass)

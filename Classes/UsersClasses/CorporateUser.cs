@@ -10,7 +10,7 @@ public class CorporateUser:User
 {
     public decimal Credit {  get; set; }
     public string CVRNumber {  get; set; }
-    public CorporateUser(string id, string name, string passWord, string mail, decimal balance, decimal credit, string cvrNumber)
+    public CorporateUser(int id, string name, string passWord, string mail, decimal balance, decimal credit, string cvrNumber)
             : base(id, name, passWord, mail, balance)
     {
         Credit = credit;

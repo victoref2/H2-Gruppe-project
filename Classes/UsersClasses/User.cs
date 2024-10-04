@@ -9,13 +9,13 @@ namespace H2_Gruppe_project.Classes;
 
 public class User
 {
-    public string Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
     public string PassWord { get; set; }
     public string Mail { get; set; }
     public decimal Balance { get; set; }
 
-    public User(string id,string name,string passWord,string mail, decimal balance) 
+    public User(int id,string name,string passWord,string mail, decimal balance) 
     { 
         Id = id;
         Name = name;

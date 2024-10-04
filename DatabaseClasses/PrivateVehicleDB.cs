@@ -39,8 +39,9 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@IsCommercial", privateVehicle.IsCommercial);
                         cmd.Parameters.AddWithValue("@IsofixMount", privateVehicle.IsofixMount);
 
+                        // Now store the ID as an int instead of converting it to a string
                         int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                        privateVehicle.Id = vehicleId.ToString();
+                        privateVehicle.Id = vehicleId;
 
                         transaction.Commit();
                     }
@@ -71,8 +72,9 @@ namespace H2_Gruppe_project.DatabaseClasses
                 {
                     if (reader.Read())
                     {
+                        // Ensure ID is treated as an integer
                         return new PrivateVehicle(
-                            id: reader["VehicleId"].ToString(),
+                            id: Convert.ToInt32(reader["VehicleId"]),  // Use int for the ID
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
                             registrationNumber: reader["RegistrationNumber"].ToString(),

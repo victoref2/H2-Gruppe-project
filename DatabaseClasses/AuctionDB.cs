@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using H2_Gruppe_project.Classes;
 
@@ -6,6 +7,92 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
+        public List<Auction> GetUserAuctions(int userId)
+        {
+            var auctions = new List<Auction>();
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                string query = @"
+                    SELECT * FROM Auctions 
+                    WHERE SellerUserId = @SellerUserId";
+
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@SellerUserId", userId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));  // Assuming GetVehicle method exists
+                    var seller = GetUser(Convert.ToInt32(reader["SellerUserId"]));  // Seller
+                    User buyer = null;
+
+                    if (reader["BuyerUserId"] != DBNull.Value)
+                    {
+                        buyer = GetUser(Convert.ToInt32(reader["BuyerUserId"]));  // Buyer, if exists
+                    }
+
+                    var auction = new Auction(
+                        id: reader["AuctionId"].ToString(),
+                        vehicle: vehicle,
+                        seller: seller,
+                        currentPrice: Convert.ToDecimal(reader["Price"]),
+                        closingDate: Convert.ToDateTime(reader["ClosingDate"]),
+                        currentBuyer: buyer // Buyer, if exists
+                    );
+
+                    auctions.Add(auction);
+                }
+            }
+
+            return auctions;
+        }
+
+        // Method to get all auctions in the system
+        public List<Auction> GetAllAuctions()
+        {
+            var auctions = new List<Auction>();
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                string query = @"SELECT * FROM Auctions";
+
+                SqlCommand cmd = new SqlCommand(query, connection);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));  // Assuming GetVehicle method exists
+                    var seller = GetUser(Convert.ToInt32(reader["SellerUserId"]));  // Seller
+                    User buyer = null;
+
+                    if (reader["BuyerUserId"] != DBNull.Value)
+                    {
+                        buyer = GetUser(Convert.ToInt32(reader["BuyerUserId"]));  // Buyer, if exists
+                    }
+
+                    var auction = new Auction(
+                        id: reader["AuctionId"].ToString(),
+                        vehicle: vehicle,
+                        seller: seller,
+                        currentPrice: Convert.ToDecimal(reader["Price"]),
+                        closingDate: Convert.ToDateTime(reader["ClosingDate"]),
+                        currentBuyer: buyer // Buyer, if exists
+                    );
+
+                    auctions.Add(auction);
+                }
+            }
+
+            return auctions;
+        }
+
         // Create - Add Auction
         public void AddAuction(Auction auction)
         {
@@ -17,19 +104,17 @@ namespace H2_Gruppe_project.DatabaseClasses
                     try
                     {
                         string query = @"
-                            EXEC AddAuction 
-                                @VehicleId, 
-                                @UserId, 
-                                @Price, 
-                                @ClosingDate;
+                            INSERT INTO Auctions (VehicleId, SellerUserId, Price, ClosingDate, BuyerUserId) 
+                            VALUES (@VehicleId, @SellerUserId, @Price, @ClosingDate, @BuyerUserId);
                             SELECT SCOPE_IDENTITY();";
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
 
                         cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id); // Vehicle ID
-                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id)); // Seller/User ID
+                        cmd.Parameters.AddWithValue("@SellerUserId", auction.Seller.Id); // Seller/User ID (now int)
                         cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice); // Auction starting/current price
                         cmd.Parameters.AddWithValue("@ClosingDate", auction.ClosingDate); // Auction closing date
+                        cmd.Parameters.AddWithValue("@BuyerUserId", auction.CurrentBuyer != null ? auction.CurrentBuyer.Id : (object)DBNull.Value); // Buyer ID (can be null)
 
                         int auctionId = Convert.ToInt32(cmd.ExecuteScalar());
                         auction.Id = auctionId.ToString(); // Store the Auction ID in the auction object
@@ -45,37 +130,7 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        // Read - Get Auction by ID
-        public Auction GetAuction(int auctionId)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-
-                string query = @"SELECT * FROM Auctions WHERE AuctionId = @AuctionId";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@AuctionId", auctionId);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                Auction auction = null;
-
-                if (reader.Read())
-                {
-                    var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));  // Assuming GetVehicle method exists
-                    var seller = GetUser(reader["UserId"].ToString());  // Changed from user to seller to match Auction class
-
-                    auction = new Auction(
-                        id: reader["AuctionId"].ToString(),
-                        vehicle: vehicle,
-                        seller: seller,  // Changed to seller
-                        currentPrice: Convert.ToDecimal(reader["Price"]),
-                        closingDate: Convert.ToDateTime(reader["ClosingDate"])
-
-                    );
-                }
-                return auction;
-            }
-        }
+        
 
         // Update - Update Auction
         public void UpdateAuction(Auction auction)
@@ -90,14 +145,18 @@ namespace H2_Gruppe_project.DatabaseClasses
                         string query = @"
                             UPDATE Auctions 
                             SET VehicleId = @VehicleId, 
-                                UserId = @UserId, 
-                                Price = @Price 
+                                SellerUserId = @SellerUserId, 
+                                Price = @Price, 
+                                ClosingDate = @ClosingDate,
+                                BuyerUserId = @BuyerUserId
                             WHERE AuctionId = @AuctionId";
 
                         SqlCommand cmd = new SqlCommand(query, connection, transaction);
                         cmd.Parameters.AddWithValue("@VehicleId", auction.Vehicle.Id);
-                        cmd.Parameters.AddWithValue("@UserId", Convert.ToInt32(auction.Seller.Id));  // Changed from auction.User.Id to auction.Seller.Id
-                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice);  // Changed from auction.Price to auction.CurrentPrice
+                        cmd.Parameters.AddWithValue("@SellerUserId", auction.Seller.Id);  // Seller ID (now int)
+                        cmd.Parameters.AddWithValue("@Price", auction.CurrentPrice);  // Current price
+                        cmd.Parameters.AddWithValue("@ClosingDate", auction.ClosingDate);  // Closing date
+                        cmd.Parameters.AddWithValue("@BuyerUserId", auction.CurrentBuyer != null ? auction.CurrentBuyer.Id : (object)DBNull.Value); // Buyer ID (can be null)
                         cmd.Parameters.AddWithValue("@AuctionId", auction.Id);
 
                         cmd.ExecuteNonQuery();
@@ -139,5 +198,9 @@ namespace H2_Gruppe_project.DatabaseClasses
                 }
             }
         }
+
+        
+
+        
     }
 }

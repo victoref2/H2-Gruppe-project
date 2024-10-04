@@ -16,7 +16,7 @@ public class Bus : HeavyVehicle
     public int NumberOfSleepingPlaces { get;set; }
     public bool HasToilet { get; set; }
 
-    public Bus(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
+    public Bus(int id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
                string engineSize, decimal kmL, string fuelType, string energyClass,
                int maxLoadCapacity, int numberOfAxles,
                decimal height, decimal weight, decimal length,

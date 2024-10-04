@@ -62,15 +62,15 @@ namespace H2_Gruppe_project.ViewModels
             IsCorporateUser = IsUserCorporate(_loggedInUser.Id);
             if (IsCorporateUser)
             {
-                CorporateUser corporateUser = _database.GetCorporateUser(int.Parse(_loggedInUser.Id));
+                CorporateUser corporateUser = _database.GetCorporateUser(_loggedInUser.Id);
                 Credit = corporateUser.Credit;
             }
         }
 
 
-        private bool IsUserCorporate(string userId)
+        private bool IsUserCorporate(int userId)
         {
-            var user = _database.GetCorporateUser(int.Parse(userId));
+            var user = _database.GetCorporateUser(userId);
             return user != null;
         }
 
@@ -80,7 +80,7 @@ namespace H2_Gruppe_project.ViewModels
         {
             if (IsCorporateUser && AmountToChange != 0)
             {
-                CorporateUser corporateUser = _database.GetCorporateUser(int.Parse(_loggedInUser.Id));
+                CorporateUser corporateUser = _database.GetCorporateUser(_loggedInUser.Id);
                 corporateUser.Credit += AmountToChange;
                 _database.UpdateCorporateUser(corporateUser);
                 Credit = corporateUser.Credit;

@@ -96,7 +96,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                     if (reader.Read())
                     {
                         return new Truck(
-                            id: truckId.ToString(),
+                            id: truckId,
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
                             registrationNumber: reader["RegistrationNumber"].ToString(),

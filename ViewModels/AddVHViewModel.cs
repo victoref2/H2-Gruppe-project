@@ -221,7 +221,7 @@ namespace H2_Gruppe_project.ViewModels
                     driversLicenceClass = towHook ? "CE" : "C";
 
                     vehicle = new Truck(
-                        id: null,
+                        id: 0,
                         name: name,
                         km: km,
                         registrationNumber: registrationNumber,
@@ -245,7 +245,7 @@ namespace H2_Gruppe_project.ViewModels
                     driversLicenceClass = towHook ? "DE" : "D";
 
                     vehicle = new Bus(
-                        id: null,
+                        id: 0,
                         name: name,
                         km: km,
                         registrationNumber: registrationNumber,
@@ -279,7 +279,7 @@ namespace H2_Gruppe_project.ViewModels
                         }
 
                         vehicle = new ComercialVehicle(
-                            id: null,
+                            id: 0,
                             name: name,
                             km: km,
                             registrationNumber: registrationNumber,
@@ -300,7 +300,7 @@ namespace H2_Gruppe_project.ViewModels
                     else
                     {
                         vehicle = new PrivateVehicle(
-                            id: null,
+                            id: 0,
                             name: name,
                             km: km,
                             registrationNumber: registrationNumber,

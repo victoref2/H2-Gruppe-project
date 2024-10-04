@@ -41,7 +41,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@LoadCapacity", comercialVehicle.LoadCapacity);
 
                         int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                        comercialVehicle.Id = vehicleId.ToString();
+                        comercialVehicle.Id = Convert.ToInt32(vehicleId);
 
                         transaction.Commit();
                     }
@@ -73,7 +73,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                     if (reader.Read())
                     {
                         return new ComercialVehicle(
-                            id: reader["VehicleId"].ToString(),
+                            id: Convert.ToInt32(reader["VehicleId"]),
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
                             registrationNumber: reader["RegistrationNumber"].ToString(),

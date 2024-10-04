@@ -9,7 +9,7 @@ namespace H2_Gruppe_project.Classes;
 public class Vehicle
 {
     //change privacy and what it is as needed
-    public string Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
     public string KM { get;  set; }
     public string RegistrationNumber  { get; set; }
@@ -20,7 +20,7 @@ public class Vehicle
     public decimal KmL { get;  set; }
     public string FuelType { get;  set; }
     public string EnergyClass { get;  set; }
-    public Vehicle(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
+    public Vehicle(int id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
         string engineSize, decimal kmL, string fuelType, string energyClass)
     {
         Id = id;

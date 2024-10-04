@@ -6,42 +6,9 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        // Create - Add User
-        public void AddUser(User user)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        string query = @"
-                            INSERT INTO Users (UserName, PassWord, Mail, Balance) 
-                            VALUES (@Name, @PassWord, @Mail, @Balance);
-                            SELECT SCOPE_IDENTITY();";
 
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
-                        cmd.Parameters.AddWithValue("@Name", user.Name);
-                        cmd.Parameters.AddWithValue("@PassWord", user.PassWord);
-                        cmd.Parameters.AddWithValue("@Mail", user.Mail);
-                        cmd.Parameters.AddWithValue("@Balance", user.Balance);
 
-                        int userId = Convert.ToInt32(cmd.ExecuteScalar());
-                        user.Id = userId.ToString();
-
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error adding user to database: " + ex.Message);
-                    }
-                }
-            }
-        }
-
-        public void UpdateUserPassword(string userId, string newPassword)
+        public void UpdateUserPassword(int userId, string newPassword)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -73,7 +40,7 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        public void UpdateUserBalance(string userId, decimal newBalance)
+        public void UpdateUserBalance(int userId, decimal newBalance)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -103,45 +70,15 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
+        
 
-
-        // Read - Get User by UserId
-        public User GetUser(string userId)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-
-                string query = @"SELECT * FROM Users WHERE UserId = @UserId";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@UserId", userId);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                User user = null;
-
-                if (reader.Read())
-                {
-                    user = new User(
-                        id: reader["UserId"].ToString(),
-                        name: reader["UserName"].ToString(),
-                        passWord: reader["PassWord"].ToString(),
-                        mail: reader["Mail"].ToString(),
-                        balance: Convert.ToDecimal(reader["Balance"])
-                    );
-                }
-
-                return user;
-            }
-        }
-
-        // Read - Get User by Email (Already implemented)
+        // Read - Get User by Email
         public User GetUserByEmail(string email)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
 
-                // Fetch whether the user is a Corporate or Private user
                 string query = @"SELECT u.UserId, u.UserName, u.PassWord, u.Mail, u.Balance, 
                                         p.CPRNumber, c.CVRNumber, c.Credit
                                 FROM Users u
@@ -157,10 +94,11 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                 if (reader.Read())
                 {
+                    int userId = Convert.ToInt32(reader["UserId"]);  // Use int for UserId
                     if (reader["CVRNumber"] != DBNull.Value)
                     {
                         user = new CorporateUser(
-                            id: reader["UserId"].ToString(),
+                            id: userId,  // Use the integer UserId
                             name: reader["UserName"].ToString(),
                             passWord: reader["PassWord"].ToString(),
                             mail: reader["Mail"].ToString(),
@@ -172,7 +110,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                     else if (reader["CPRNumber"] != DBNull.Value)
                     {
                         user = new PrivateUser(
-                            id: reader["UserId"].ToString(),
+                            id: userId,  // Use the integer UserId
                             name: reader["UserName"].ToString(),
                             passWord: reader["PassWord"].ToString(),
                             mail: reader["Mail"].ToString(),
@@ -186,7 +124,7 @@ namespace H2_Gruppe_project.DatabaseClasses
         }
 
         // Delete - Delete User by UserId
-        public void DeleteUser(string userId)
+        public void DeleteUser(int userId)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -223,6 +161,58 @@ namespace H2_Gruppe_project.DatabaseClasses
                         throw new Exception("Error deleting user from database: " + ex.Message);
                     }
                 }
+            }
+        }
+        // Read - Get User by ID
+        public User GetUser(int userId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                // Fetch whether the user is a Corporate or Private user
+                string query = @"
+                    SELECT u.UserId, u.UserName, u.PassWord, u.Mail, u.Balance, 
+                           p.CPRNumber, c.CVRNumber, c.Credit
+                    FROM Users u
+                    LEFT JOIN PrivateUsers p ON u.UserId = p.UserId
+                    LEFT JOIN CorporateUsers c ON u.UserId = c.UserId
+                    WHERE u.UserId = @UserId";
+
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                User user = null;
+
+                if (reader.Read())
+                {
+                    // Identify if the user is corporate or private and return appropriate object
+                    if (reader["CVRNumber"] != DBNull.Value)
+                    {
+                        user = new CorporateUser(
+                            id: userId,  // Use the integer UserId
+                            name: reader["UserName"].ToString(),
+                            passWord: reader["PassWord"].ToString(),
+                            mail: reader["Mail"].ToString(),
+                            balance: Convert.ToDecimal(reader["Balance"]),
+                            credit: Convert.ToDecimal(reader["Credit"]),
+                            cvrNumber: reader["CVRNumber"].ToString()
+                        );
+                    }
+                    else if (reader["CPRNumber"] != DBNull.Value)
+                    {
+                        user = new PrivateUser(
+                            id: userId,  // Use the integer UserId
+                            name: reader["UserName"].ToString(),
+                            passWord: reader["PassWord"].ToString(),
+                            mail: reader["Mail"].ToString(),
+                            balance: Convert.ToDecimal(reader["Balance"]),
+                            cprNumber: reader["CPRNumber"].ToString()
+                        );
+                    }
+                }
+                return user;
             }
         }
     }

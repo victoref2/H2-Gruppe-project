@@ -33,7 +33,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
 
                         int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                        vehicle.Id = vehicleId.ToString();
+                        vehicle.Id = Convert.ToInt32(vehicleId);
 
                         transaction.Commit();
                     }
@@ -63,7 +63,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                 if (reader.Read())
                 {
                     vehicle = new Vehicle(
-                        reader["VehicleId"].ToString(),
+                        Convert.ToInt32(reader["VehicleId"]),
                         reader["Name"].ToString(),
                         reader["Km"].ToString(),
                         reader["RegistrationNumber"].ToString(),

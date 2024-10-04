@@ -13,18 +13,31 @@ namespace H2_Gruppe_project.Classes
         public User CurrentBuyer { get; set; } // The current highest bidder (user)
         public decimal CurrentPrice { get; set; } // The current highest bid (price)
         public List<decimal> Bids { get; set; } // List of bids
-        public DateTime ClosingDate { get; set; }
+        public DateTime ClosingDate { get; set; } // Auction closing date
 
         private readonly object _bidLock = new object(); // Lock for bid modification
 
+        // Constructor without the Buyer initially (before any bids)
         public Auction(string id, Vehicle vehicle, User seller, decimal currentPrice, DateTime closingDate)
         {
             Id = id;
             Vehicle = vehicle;
             Seller = seller;
+            CurrentPrice = currentPrice;
             Bids = new List<decimal>(); // Initialize the list of bids
-            CurrentPrice = currentPrice; // Initialize current price to 0
             ClosingDate = closingDate;
+        }
+
+        // Constructor with Buyer (for auctions that already have a buyer)
+        public Auction(string id, Vehicle vehicle, User seller, decimal currentPrice, DateTime closingDate, User currentBuyer)
+        {
+            Id = id;
+            Vehicle = vehicle;
+            Seller = seller;
+            CurrentPrice = currentPrice;
+            ClosingDate = closingDate;
+            CurrentBuyer = currentBuyer; // Set the current buyer (if already exists)
+            Bids = new List<decimal>(); // Initialize the list of bids
         }
 
         // Method to receive a bid (ModtagBud) asynchronously
@@ -34,7 +47,7 @@ namespace H2_Gruppe_project.Classes
             {
                 lock (_bidLock) // Ensure thread-safe access to bids
                 {
-                    if ( bid > CurrentPrice)
+                    if (bid > CurrentPrice)
                     {
                         Bids.Add(bid); // Add the bid to the list
                         CurrentBuyer = buyer; // Set the current buyer to the highest bidder
@@ -51,12 +64,12 @@ namespace H2_Gruppe_project.Classes
 
         // Method to accept the highest bid (AccepterBud) asynchronously
         public async Task<bool> AccepterBudAsync(User seller)
-        {   
+        {
             return await Task.Run(() =>
             {
                 lock (_bidLock) // Ensure thread-safe access to the bid and current buyer
                 {
-                    if (seller == this.Seller)
+                    if (seller == this.Seller && CurrentBuyer != null)
                     {
                         Console.WriteLine($"Bid accepted: {CurrentPrice} from {CurrentBuyer.Name} for Auction {Id}");
                         // Logic to transfer the vehicle to the buyer and complete the sale

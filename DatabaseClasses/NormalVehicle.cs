@@ -40,7 +40,7 @@ public void AddNormalVehicle(NormalVehicle normalVehicle)
                 cmd.Parameters.AddWithValue("@IsCommercial", normalVehicle.IsCommercial);
 
                 int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                normalVehicle.Id = vehicleId.ToString();
+                normalVehicle.Id = Convert.ToInt32(vehicleId);
 
                 transaction.Commit();
             }
@@ -72,7 +72,7 @@ public void AddNormalVehicle(NormalVehicle normalVehicle)
                     if (reader.Read())
                     {
                         return new NormalVehicle(
-                            id: reader["VehicleId"].ToString(),
+                            id: Convert.ToInt32(reader["VehicleId"]),
                             name: reader["Name"].ToString(),
                             km: reader["KM"].ToString(),
                             registrationNumber: reader["RegistrationNumber"].ToString(),

@@ -12,7 +12,7 @@ public class HeavyVehicle : Vehicle
     public int MaxLoadCapacity { get; set; }
     public int NumberOfAxles { get; set; }
 
-    public HeavyVehicle(string id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
+    public HeavyVehicle(int id, string name, string km, string registrationNumber, string ageGroup, bool towHook, string driversLicenceClass,
         string engineSize, decimal kmL, string fuelType, string energyClass, int maxLoadCapacity, int numberOfAxles)
         : base(id, name, km, registrationNumber, ageGroup, towHook, driversLicenceClass, engineSize, kmL, fuelType, energyClass)
     {

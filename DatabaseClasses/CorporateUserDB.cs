@@ -30,7 +30,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@Balance", corporateUser.Balance);
 
                         int userId = Convert.ToInt32(cmd.ExecuteScalar());
-                        corporateUser.Id = userId.ToString();
+                        corporateUser.Id = userId;
 
                         transaction.Commit();
                     }
@@ -66,7 +66,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                 if (reader.Read())
                 {
                     corporateUser = new CorporateUser(
-                        id: reader["UserId"].ToString(),
+                        id: Convert.ToInt32(reader["UserId"]),
                         name: reader["UserName"].ToString(),
                         passWord: reader["Password"].ToString(),
                         mail: reader["Mail"].ToString(),
