@@ -36,7 +36,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                     }
 
                     var auction = new Auction(
-                        id: reader["AuctionId"].ToString(),
+                        id: Convert.ToInt32(reader["AuctionId"]),
                         vehicle: vehicle,
                         seller: seller,
                         currentPrice: Convert.ToDecimal(reader["Price"]),
@@ -78,7 +78,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                     }
 
                     var auction = new Auction(
-                        id: reader["AuctionId"].ToString(),
+                        id: Convert.ToInt32(reader["AuctionId"]),
                         vehicle: vehicle,
                         seller: seller,
                         currentPrice: Convert.ToDecimal(reader["Price"]),
@@ -117,7 +117,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@BuyerUserId", auction.CurrentBuyer != null ? auction.CurrentBuyer.Id : (object)DBNull.Value); // Buyer ID (can be null)
 
                         int auctionId = Convert.ToInt32(cmd.ExecuteScalar());
-                        auction.Id = auctionId.ToString(); // Store the Auction ID in the auction object
+                        auction.Id = auctionId; // Store the Auction ID in the auction object
 
                         transaction.Commit();
                     }
@@ -199,8 +199,45 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        
+        // Read - Get Auction by ID
+        public Auction GetAuction(int auctionId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
 
-        
+                string query = @"SELECT * FROM Auctions WHERE AuctionId = @AuctionId";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@AuctionId", auctionId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                Auction auction = null;
+
+                if (reader.Read())
+                {
+                    var vehicle = GetVehicle(Convert.ToInt32(reader["VehicleId"]));  // Assuming GetVehicle method exists
+                    var seller = GetUser(Convert.ToInt32(reader["SellerUserId"]));  // Seller
+                    User buyer = null;
+
+                    if (reader["BuyerUserId"] != DBNull.Value)
+                    {
+                        buyer = GetUser(Convert.ToInt32(reader["BuyerUserId"]));  // Buyer, if exists
+                    }
+
+                    auction = new Auction(
+                        id: Convert.ToInt32(reader["AuctionId"]),
+                        vehicle: vehicle,
+                        seller: seller,
+                        currentPrice: Convert.ToDecimal(reader["Price"]),
+                        closingDate: Convert.ToDateTime(reader["ClosingDate"]),
+                        currentBuyer: buyer // Buyer, if exists
+                    );
+                }
+
+                return auction;
+            }
+        }
+
+
     }
 }
