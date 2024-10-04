@@ -75,7 +75,7 @@ namespace H2_Gruppe_project.ViewModels
         private string engineSize;
 
         [ObservableProperty]
-        private decimal _KmL;
+        private decimal _Bomber;
 
         [ObservableProperty]
         private bool towBar;
@@ -221,12 +221,12 @@ namespace H2_Gruppe_project.ViewModels
                     throw new FormatException("Invalid Age Group format");
                 }
 
-                decimal kmL = _KmL;
+                decimal kmL = _Bomber;
                 bool towHook = TowBar;
                 string driversLicenceClass = "";
                 string fuelType = FuelType;
                 Vehicle vehicle1 = new(0,VehicleName, Mileage, RegistrationNumber, AgeGroup.Year.ToString(),TowBar,"",EngineSize,kmL,fuelType,"");
-                string energyclass = vehicle1.EnergyClassCalc(ageGroupInt, fuelType,kmL);
+                string energyclass = vehicle1.EnergyClassCalc(ageGroupInt, fuelType, kmL);
 
                 if (SelectedVehicleType == "Truck")
                 {
@@ -267,7 +267,7 @@ namespace H2_Gruppe_project.ViewModels
                         engineSize: EngineSize,
                         kmL: kmL,
                         fuelType: fuelType,
-                        energyClass: null,
+                        energyClass: energyclass,
                         maxLoadCapacity: MaxLoadCapacity,
                         numberOfAxles: NumberOfAxles,
                         height: Height,
@@ -301,7 +301,7 @@ namespace H2_Gruppe_project.ViewModels
                             engineSize: EngineSize,
                             kmL: kmL,
                             fuelType: fuelType,
-                            energyClass: null,
+                            energyClass: energyclass,
                             numberOfSeats: NumberOfSeats,
                             trunkDimensions: TrunkDimensions,
                             isCommercial: isCommercial,
@@ -322,7 +322,7 @@ namespace H2_Gruppe_project.ViewModels
                             engineSize: EngineSize,
                             kmL: kmL,
                             fuelType: fuelType,
-                            energyClass: null,
+                            energyClass: energyclass,
                             numberOfSeats: NumberOfSeats,
                             trunkDimensions: TrunkDimensions,
                             isCommercial: isCommercial,
