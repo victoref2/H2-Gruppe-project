@@ -7,7 +7,7 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        public List<Auction> GetUserAuctions(int userId)
+        /*public List<Auction> GetUserAuctions(int userId)
         {
             var auctions = new List<Auction>();
 
@@ -49,10 +49,10 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
 
             return auctions;
-        }
+        }*/
 
         // Method to get all auctions in the system
-        public List<Auction> GetAllAuctions()
+        /*public List<Auction> GetAllAuctions()
         {
             var auctions = new List<Auction>();
 
@@ -91,7 +91,7 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
 
             return auctions;
-        }
+        }*/
 
         // Create - Add Auction
         public void AddAuction(Auction auction)
@@ -200,7 +200,7 @@ namespace H2_Gruppe_project.DatabaseClasses
         }
 
         // Read - Get Auction by ID
-        public Auction GetAuction(int auctionId)
+        /*public Auction GetAuction(int auctionId)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -236,7 +236,7 @@ namespace H2_Gruppe_project.DatabaseClasses
 
                 return auction;
             }
-        }
+        }*/
 
 
     }

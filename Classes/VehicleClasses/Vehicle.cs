@@ -15,7 +15,7 @@ public class Vehicle
     public string RegistrationNumber  { get; set; }
     public string AgeGroup { get; set; }
     public bool TowHook { get; set; }
-    public string DriversLicenceClass { get; protected set; }
+    public string DriversLicenceClass { get; set; }
     public string EngineSize { get;  set; }
     public decimal KmL { get;  set; }
     public string FuelType { get;  set; }
@@ -51,11 +51,11 @@ public class Vehicle
     {
         string energyClass = "";
 
-        if (fuelType == "electric" || fuelType == "hydrogen")
+        if (fuelType == "Electric" || fuelType == "Hydrogen")
         {
             energyClass = "Class A";
         }
-        else if (fuelType == "diesel")
+        else if (fuelType == "Diesel")
         {
             if (year < 2010)
             {
@@ -72,7 +72,7 @@ public class Vehicle
                 else energyClass = "Class D";
             }
         }
-        else if (fuelType == "petrol" || fuelType == "benzin")
+        else if (fuelType == "Petrol" || fuelType == "Benzin")
         {
             if (year < 2010)
             {

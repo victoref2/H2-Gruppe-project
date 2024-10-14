@@ -32,14 +32,14 @@ namespace H2_Gruppe_project.ViewModels
             UserName = _loggedInUser.Name;
 
             // Initialize collections
-            LoadAuctions();
+            //LoadAuctions();
         }
 
-        private void LoadAuctions()
+        /*private void LoadAuctions()
         {
             YourAuctions = new ObservableCollection<Auction>(_database.GetUserAuctions(_loggedInUser.Id));
             CurrentAuctions = new ObservableCollection<Auction>(_database.GetAllAuctions());
-        }
+        }*/
 
         [RelayCommand]
         public void GoToAddVehicle()

@@ -37,7 +37,7 @@ namespace H2_Gruppe_project.ViewModels
         private string registrationNumber;
 
         [ObservableProperty]
-        private string fuelType;
+        private string selectedFuelType;
 
         [ObservableProperty]
         private decimal startingBid;
@@ -75,7 +75,7 @@ namespace H2_Gruppe_project.ViewModels
         private string engineSize;
 
         [ObservableProperty]
-        private decimal _Bomber;
+        private decimal kml;
 
         [ObservableProperty]
         private bool towBar;
@@ -139,7 +139,6 @@ namespace H2_Gruppe_project.ViewModels
         [ObservableProperty]
         private bool isofixMount;
 
-
         // Command for going back to dashboard
         [RelayCommand]
         public void GoBackCancel()
@@ -153,7 +152,7 @@ namespace H2_Gruppe_project.ViewModels
             IsCommercialVisible = value;
             IsPrivateVisible = !value;
         }
-
+        public List<string> FuelType { get; } = new List<string> {"Diesel", "Petrol", "Electric", "Hybrid" };
 
         public List<string> VehicleTypes { get; } = new List<string> { "Truck", "Bus", "Normal Vehicle" };
 
@@ -186,7 +185,7 @@ namespace H2_Gruppe_project.ViewModels
                 IsPrivateVisible = true;
             }
         }
-
+        
         [RelayCommand]
         public async Task CreateAuctionAsync()
         {
@@ -206,11 +205,6 @@ namespace H2_Gruppe_project.ViewModels
                     return;
                 }
 
-
-                string name = VehicleName;
-                string km = Mileage;
-                string registrationNumber = RegistrationNumber;
-
                 // Convert ageGroup from string to int
                 string ageGroup = AgeGroup.Year.ToString();
                 int ageGroupInt;
@@ -219,116 +213,16 @@ namespace H2_Gruppe_project.ViewModels
                     // Handle invalid conversion, if necessary
                     throw new FormatException("Invalid Age Group format");
                 }
-
-                decimal kmL = _Bomber;
+                string name = VehicleName;
+                string km = Mileage;
+                string registrationNumber = RegistrationNumber;
+                decimal kmL = kml;
                 bool towHook = TowBar;
                 string driversLicenceClass = "";
-                string fuelType = FuelType;
+                string fuelType = selectedFuelType;
                 Vehicle vehicle = new(0,VehicleName, Mileage, RegistrationNumber, AgeGroup.Year.ToString(),TowBar,"",EngineSize,kmL,fuelType,"");
                 string energyclass = vehicle.EnergyClassCalc(ageGroupInt, fuelType, kmL);
-
-                if (SelectedVehicleType == "Truck")
-                {
-                    driversLicenceClass = towHook ? "CE" : "C";
-
-                    vehicle = new Truck(
-                        id: 0,
-                        name: name,
-                        km: km,
-                        registrationNumber: registrationNumber,
-                        ageGroup: ageGroup,
-                        towHook: towHook,
-                        driversLicenceClass: driversLicenceClass,
-                        engineSize: EngineSize,
-                        kmL: kmL,
-                        fuelType: fuelType,
-                        energyClass: energyclass,
-                        maxLoadCapacity: MaxLoadCapacity,
-                        numberOfAxles: NumberOfAxles,
-                        height: Height,
-                        weight: Weight,
-                        length: Length,
-                        loadCapacity: LoadCapacity
-                    );
-                }
-                else if (SelectedVehicleType == "Bus")
-                {
-                    driversLicenceClass = towHook ? "DE" : "D";
-
-                    vehicle = new Bus(
-                        id: 0,
-                        name: name,
-                        km: km,
-                        registrationNumber: registrationNumber,
-                        ageGroup: ageGroup,
-                        towHook: towHook,
-                        driversLicenceClass: driversLicenceClass,
-                        engineSize: EngineSize,
-                        kmL: kmL,
-                        fuelType: fuelType,
-                        energyClass: energyclass,
-                        maxLoadCapacity: MaxLoadCapacity,
-                        numberOfAxles: NumberOfAxles,
-                        height: Height,
-                        weight: Weight,
-                        length: Length,
-                        numberOfSeats: NumberOfSeats,
-                        numberOfSleepingPlaces: NumberOfSleepingPlaces,
-                        hasToilet: HasToilet
-                    );
-                }
-                else if (SelectedVehicleType == "Normal Vehicle")
-                {
-                    bool isCommercial = IsCommercialVH;
-                    driversLicenceClass = "B";
-
-                    if (isCommercial)
-                    {
-                        if (LoadCapacity > 750)
-                        {
-                            driversLicenceClass = "BE";
-                        }
-
-                        vehicle = new ComercialVehicle(
-                            id: 0,
-                            name: name,
-                            km: km,
-                            registrationNumber: registrationNumber,
-                            ageGroup: ageGroup,
-                            towHook: towHook,
-                            driversLicenceClass: driversLicenceClass,
-                            engineSize: EngineSize,
-                            kmL: kmL,
-                            fuelType: fuelType,
-                            energyClass: energyclass,
-                            numberOfSeats: NumberOfSeats,
-                            trunkDimensions: TrunkDimensions,
-                            isCommercial: isCommercial,
-                            rollCage: RollCage,
-                            loadCapacity: LoadCapacity
-                        );
-                    }
-                    else
-                    {
-                        vehicle = new PrivateVehicle(
-                            id: 0,
-                            name: name,
-                            km: km,
-                            registrationNumber: registrationNumber,
-                            ageGroup: ageGroup,
-                            towHook: towHook,
-                            driversLicenceClass: driversLicenceClass,
-                            engineSize: EngineSize,
-                            kmL: kmL,
-                            fuelType: fuelType,
-                            energyClass: energyclass,
-                            numberOfSeats: NumberOfSeats,
-                            trunkDimensions: TrunkDimensions,
-                            isCommercial: isCommercial,
-                            isofixMount: IsofixMount
-                        );
-                    }
-                }
+                vehicle.EnergyClass = energyclass;
 
                 if (vehicle == null)
                 {
@@ -336,23 +230,16 @@ namespace H2_Gruppe_project.ViewModels
                     return;
                 }
 
-                await Task.Run(() =>
+                ViewModelVHToDatabase ViewModelVH = new(_mainViewModel, _loggedInUser, _database);
+                bool succes = ViewModelVH.VHFromViewmodelToDatabase(vehicle,SelectedVehicleType, IsCommercialVH, LoadCapacity,NumberOfAxles,
+                                Height,Weight,Length,MaxLoadCapacity,NumberOfSeats,NumberOfSleepingPlaces,hasToilet,TrunkDimensions,rollCage,
+                                IsofixMount,StartingBid,ClosingDate.DateTime);
+                if (succes)
                 {
-                    _database.AddVehicle(vehicle);
-                    Auction auction = new Auction(
-                        id: 0,
-                        vehicle: vehicle,
-                        seller: _loggedInUser,
-                        currentPrice: StartingBid,
-                        closingDate: ClosingDate.DateTime
-                    );
+                    StatusMessage = "Auction created successfully.";
 
-                    _database.AddAuction(auction);
-                });
-
-                StatusMessage = "Auction created successfully.";
-
-                _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser, _database));
+                    _mainViewModel.SwitchViewModel(new DashboardViewModel(_mainViewModel, _loggedInUser, _database));
+                }
             }
             catch (Exception ex)
             {

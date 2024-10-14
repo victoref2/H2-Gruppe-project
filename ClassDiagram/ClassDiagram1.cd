@@ -1,35 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="H2_Gruppe_project.Classes.Auction" Collapsed="true">
-    <Position X="10" Y="0.5" Width="1.5" />
+  <Class Name="H2_Gruppe_project.Classes.Auction">
+    <Position X="11.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAQAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQA=</HashCode>
+      <HashCode>ACACAAAQAQAAAAAABAAAAAAAhAIAAAAAAAAgAAgACAA=</HashCode>
       <FileName>Classes\AuctionClasses\Auction.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="H2_Gruppe_project.Classes.CorporateUser" Collapsed="true">
     <Position X="0.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AABAAAAAAAIAAAAFAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Classes\UsersClasses\CorporateUser.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="H2_Gruppe_project.Classes.User" Collapsed="true">
-    <Position X="0.5" Y="4.5" Width="1.5" />
+  <Class Name="H2_Gruppe_project.Classes.PrivateUser" Collapsed="true">
+    <Position X="2.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAgAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <HashCode>CAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\UsersClasses\PrivateUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="H2_Gruppe_project.Classes.User" Collapsed="true">
+    <Position X="1.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgAAAAAEAAAEAAgAAAQAAAAAAAAAAAAAAQAAAAA=</HashCode>
       <FileName>Classes\UsersClasses\User.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="H2_Gruppe_project.Classes.Bus" Collapsed="true">
-    <Position X="3" Y="3.25" Width="1.5" />
+    <Position X="0.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAABAAAAAAEAAAACABABCAACAABAAAAAAAAAAA=</HashCode>
+      <HashCode>AABAAAAABAAAAAAMAAAACABABCAACAABAAAAAAAAAAA=</HashCode>
       <FileName>Classes\VehicleClasses\Bus.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="H2_Gruppe_project.Classes.ComercialVehicle" Collapsed="true">
-    <Position X="5.25" Y="3.25" Width="1.5" />
+    <Position X="7.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAQAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Classes\VehicleClasses\ComercialVehicle.cs</FileName>
@@ -45,19 +52,19 @@
   <Class Name="H2_Gruppe_project.Classes.NormalVehicle" Collapsed="true">
     <Position X="6.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAAAAIAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AABAAAAAAAAAIAAEAACBAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
       <FileName>Classes\VehicleClasses\NormalVehicle.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="H2_Gruppe_project.Classes.PrivateVehicle" Collapsed="true">
-    <Position X="7.5" Y="3.25" Width="1.5" />
+    <Position X="5.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Classes\VehicleClasses\PrivateVehicle.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="H2_Gruppe_project.Classes.Truck" Collapsed="true">
-    <Position X="0.75" Y="3.25" Width="1.5" />
+    <Position X="3" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAAEAQAAAABAACAEAAABAAAAAAAAAAA=</HashCode>
       <FileName>Classes\VehicleClasses\Truck.cs</FileName>
@@ -66,14 +73,14 @@
   <Class Name="H2_Gruppe_project.Classes.Vehicle" Collapsed="true">
     <Position X="4" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQiAAQEAAAAAAAEAABAAAQAQAgAAAAAEAAAAAAAAIA=</HashCode>
+      <HashCode>AAQiAAQEAAAAAAAMAABAAAQAQAgAAEAAEAAAAAAAAIA=</HashCode>
       <FileName>Classes\VehicleClasses\Vehicle.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="H2_Gruppe_project.DatabaseClasses.Database" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+  <Class Name="H2_Gruppe_project.DatabaseClasses.Database">
+    <Position X="9.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAABAACQAMgAAAAAAEAEIABQAgEgBQBBAAAQA=</HashCode>
+      <HashCode>IAOCQAAAABCECQAMjAgAAAAEIEJBBQEAEgBQFhBNAwA=</HashCode>
       <FileName>DatabaseClasses\AuctionDB.cs</FileName>
     </TypeIdentifier>
   </Class>

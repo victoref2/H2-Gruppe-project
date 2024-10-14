@@ -32,7 +32,7 @@
 			<!-- KmL -->
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 				<TextBlock Text="Kml " Width="120"/>
-				<TextBox Width="200" Text="{Binding Bomber, Mode=TwoWay}" Watermark="Enter Kml"/>
+				<TextBox Width="200" Text="{Binding Kml, Mode=TwoWay}" Watermark="Enter Kml"/>
 			</StackPanel>
 
 			<!-- Registration Number -->
@@ -42,16 +42,9 @@
 			</StackPanel>
 			
 			<!--fuel type-->
-			<StackPanel>
-				<TextBlock Text="Fuel Type:"/>
-				<StackPanel>
-                <ComboBox Width="200" SelectedItem="{Binding FuelType, Mode=TwoWay}">
-						<ComboBoxItem Content="Diesel"/>
-						<ComboBoxItem Content="Petrol"/>
-						<ComboBoxItem Content="Electric"/>
-						<ComboBoxItem Content="Hybrid"/>
-					</ComboBox>
-				</StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<TextBlock Text="Fuel Type:" Width="120"/>	
+				<ComboBox Width="200" ItemsSource="{Binding FuelType}" SelectedItem="{Binding SelectedFuelType, Mode=TwoWay}"/>
 			</StackPanel>
 
 			<!-- Year -->
@@ -78,7 +71,6 @@
 				<Button Content="Create auction" Command="{Binding CreateAuctionAsync}" Width="150"/>
 			</StackPanel>
 		</StackPanel>
-
 		<!-- Status Message -->
         <TextBlock Text="{Binding StatusMessage}" Foreground="Red" Margin="0,20,0,0" FontWeight="Bold"/>
 
@@ -88,24 +80,6 @@
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 						<TextBlock Text="Vehicle type" Width="120"/>
 						<ComboBox Width="150" ItemsSource="{Binding VehicleTypes}" SelectedItem="{Binding SelectedVehicleType, Mode=TwoWay}"/>
-					</StackPanel>
-
-					<!-- Height -->
-					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-						<TextBlock Text="Height" Width="120"/>
-            		<TextBox Width="150" Text="{Binding Height, Mode=TwoWay}"/>
-					</StackPanel>
-
-					<!-- Length -->
-					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-						<TextBlock Text="Length" Width="120"/>
-            			<TextBox Width="150" Text="{Binding Length, Mode=TwoWay}"/>
-					</StackPanel>
-
-					<!-- Weight -->
-					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-						<TextBlock Text="Weight" Width="120"/>
-            			<TextBox Width="150" Text="{Binding Weight, Mode=TwoWay}"/>
 					</StackPanel>
 
 					<!-- Engine Size -->
@@ -122,11 +96,9 @@
 
 					<!--NormalVH-->
 					<StackPanel IsVisible="{Binding IsNormalVHVisible}">
-						<StackPanel Margin="0,0,0,10">
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 							<TextBlock Width="120" Text="Number of Seats"/>
-							<StackPanel>
 								<TextBox Width="150" Text="{Binding NumberOfSeats, Mode=TwoWay}"/>
-							</StackPanel>
 						</StackPanel>
 
 						<StackPanel Orientation="Horizontal" Margin="0,0,0,10">

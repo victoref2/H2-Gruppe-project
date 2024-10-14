@@ -1,77 +1,57 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
+using System.Transactions;
 using H2_Gruppe_project.Classes;
+using Tmds.DBus.Protocol;
 
 namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        // Create - Add Bus
-        public void AddBus(Bus bus)
+        public int AddBusFlow(Bus bus, Vehicle vehicle, HeavyVehicle heavyVehicle)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
                 {
-                    try
-                    {
-                        // Insert into Vehicles table
-                        string vehicleQuery = @"
-                            INSERT INTO Vehicles (Name, KM, RegistrationNumber, AgeGroup, TowHook, DriversLicenceClass, EngineSize, KmL, FuelType, EnergyClass)
-                            VALUES (@Name, @KM, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, @EngineSize, @KmL, @FuelType, @EnergyClass);
-                            SELECT SCOPE_IDENTITY();";
-                        SqlCommand vehicleCmd = new SqlCommand(vehicleQuery, connection, transaction);
-                        vehicleCmd.Parameters.AddWithValue("@Name", bus.Name);
-                        vehicleCmd.Parameters.AddWithValue("@KM", bus.KM);
-                        vehicleCmd.Parameters.AddWithValue("@RegistrationNumber", bus.RegistrationNumber);
-                        vehicleCmd.Parameters.AddWithValue("@AgeGroup", bus.AgeGroup);
-                        vehicleCmd.Parameters.AddWithValue("@TowHook", bus.TowHook);
-                        vehicleCmd.Parameters.AddWithValue("@DriversLicenceClass", bus.DriversLicenceClass);
-                        vehicleCmd.Parameters.AddWithValue("@EngineSize", decimal.Parse(bus.EngineSize.TrimEnd('L', 'l')));
-                        vehicleCmd.Parameters.AddWithValue("@KmL", bus.KmL);
-                        vehicleCmd.Parameters.AddWithValue("@FuelType", bus.FuelType);
-                        vehicleCmd.Parameters.AddWithValue("@EnergyClass", bus.EnergyClass);
+                    int vehicleId = AddVehicle(connection, transaction, vehicle);
 
-                        int vehicleId = Convert.ToInt32(vehicleCmd.ExecuteScalar());
+                    int HeavyVHId = AddHeavyVehicle(connection, transaction, vehicleId, heavyVehicle);
 
-                        // Insert into HeavyVehicles table
-                        string heavyVehicleQuery = @"
-                            INSERT INTO HeavyVehicles (VehicleId, MaxLoadCapacity, NumberOfAxles)
-                            VALUES (@VehicleId, @MaxLoadCapacity, @NumberOfAxles);
-                            SELECT SCOPE_IDENTITY();";
-                        SqlCommand heavyVehicleCmd = new SqlCommand(heavyVehicleQuery, connection, transaction);
-                        heavyVehicleCmd.Parameters.AddWithValue("@VehicleId", vehicleId);
-                        heavyVehicleCmd.Parameters.AddWithValue("@MaxLoadCapacity", bus.MaxLoadCapacity);
-                        heavyVehicleCmd.Parameters.AddWithValue("@NumberOfAxles", bus.NumberOfAxles);
+                    AddBus(connection, transaction, HeavyVHId, bus);
 
-                        int heavyVehicleId = Convert.ToInt32(heavyVehicleCmd.ExecuteScalar());
+                    transaction.Commit();
 
-                        // Insert into Buses table
-                        string busQuery = @"
-                            INSERT INTO Buses (HeavyVehicleId, Height, Weight, Length, NumberOfSeats, NumberOfSleepingPlaces, HasToilet)
-                            VALUES (@HeavyVehicleId, @Height, @Weight, @Length, @NumberOfSeats, @NumberOfSleepingPlaces, @HasToilet);
-                            SELECT SCOPE_IDENTITY();";
-                        SqlCommand busCmd = new SqlCommand(busQuery, connection, transaction);
-                        busCmd.Parameters.AddWithValue("@HeavyVehicleId", heavyVehicleId);
-                        busCmd.Parameters.AddWithValue("@Height", bus.Height);
-                        busCmd.Parameters.AddWithValue("@Weight", bus.Weight);
-                        busCmd.Parameters.AddWithValue("@Length", bus.Length);
-                        busCmd.Parameters.AddWithValue("@NumberOfSeats", bus.NumberOfSeats);
-                        busCmd.Parameters.AddWithValue("@NumberOfSleepingPlaces", bus.NumberOfSleepingPlaces);
-                        busCmd.Parameters.AddWithValue("@HasToilet", bus.HasToilet);
-
-                        int busId = Convert.ToInt32(busCmd.ExecuteScalar());
-
-                        transaction.Commit();
-                        bus.BusId = busId;
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error adding bus to database: " + ex.Message);
-                    }
+                    connection.Close();
+                    return vehicleId;
                 }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Error during vehicle creation", ex);
+                }
+            }
+        }
+        // Create - Add Bus
+        public void AddBus(SqlConnection connection, SqlTransaction transaction, int HeavyVHId, Bus bus)
+        {
+            using (SqlCommand cmd = new SqlCommand("AddBus", connection, transaction))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@HeavyVehicleId", HeavyVHId);
+                cmd.Parameters.AddWithValue("@Height", bus.Height);
+                cmd.Parameters.AddWithValue("@Weight", bus.Weight);
+                cmd.Parameters.AddWithValue("@Length", bus.Length);
+                cmd.Parameters.AddWithValue("@NumberOfSeats", bus.NumberOfSeats);
+                cmd.Parameters.AddWithValue("@NumberOfSleepingPlaces", bus.NumberOfSleepingPlaces);
+                cmd.Parameters.AddWithValue("@HasToilet", bus.HasToilet);
+
+                cmd.ExecuteNonQuery();
             }
         }
 

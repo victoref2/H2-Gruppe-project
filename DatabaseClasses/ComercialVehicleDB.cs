@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using H2_Gruppe_project.Classes;
 
@@ -6,51 +7,44 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        public void AddComercialVehicle(ComercialVehicle comercialVehicle)
+        public int AddCVehicleFlow(ComercialVehicle comercialVehicle, Vehicle vehicle, NormalVehicle normalVehicle)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
                 {
-                    try
-                    {
-                        string query = @"
-                            EXEC AddComercialVehicle 
-                                @Name, @KM, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, 
-                                @EngineSize, @KmL, @FuelType, @EnergyClass, 
-                                @NumberOfSeats, @TrunkDimensions, @IsCommercial, @RollCage, @LoadCapacity;
-                            SELECT SCOPE_IDENTITY();";
+                    int vehicleId = AddVehicle(connection, transaction, vehicle);
 
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                    int normalVehicleId = AddNormalVehicle(connection, transaction, vehicleId, normalVehicle);
 
-                        cmd.Parameters.AddWithValue("@Name", comercialVehicle.Name);
-                        cmd.Parameters.AddWithValue("@KM", comercialVehicle.KM);
-                        cmd.Parameters.AddWithValue("@RegistrationNumber", comercialVehicle.RegistrationNumber);
-                        cmd.Parameters.AddWithValue("@AgeGroup", comercialVehicle.AgeGroup);
-                        cmd.Parameters.AddWithValue("@TowHook", comercialVehicle.TowHook);
-                        cmd.Parameters.AddWithValue("@DriversLicenceClass", comercialVehicle.DriversLicenceClass);
-                        cmd.Parameters.AddWithValue("@EngineSize", decimal.Parse(comercialVehicle.EngineSize.TrimEnd('L', 'l')));
-                        cmd.Parameters.AddWithValue("@KmL", comercialVehicle.KmL);
-                        cmd.Parameters.AddWithValue("@FuelType", comercialVehicle.FuelType);
-                        cmd.Parameters.AddWithValue("@EnergyClass", comercialVehicle.EnergyClass);
-                        cmd.Parameters.AddWithValue("@NumberOfSeats", comercialVehicle.NumberOfSeats);
-                        cmd.Parameters.AddWithValue("@TrunkDimensions", comercialVehicle.TrunkDimensions);
-                        cmd.Parameters.AddWithValue("@IsCommercial", comercialVehicle.IsCommercial);
-                        cmd.Parameters.AddWithValue("@RollCage", comercialVehicle.RollCage);
-                        cmd.Parameters.AddWithValue("@LoadCapacity", comercialVehicle.LoadCapacity);
+                    AddComercialVehicle(connection, transaction, normalVehicleId, comercialVehicle);
 
-                        int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                        comercialVehicle.Id = Convert.ToInt32(vehicleId);
+                    transaction.Commit();
 
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error adding comercial vehicle to the database: " + ex.Message);
-                    }
+                    connection.Close();
+                    return vehicleId;
                 }
+                catch (Exception ex) 
+                {
+                    transaction.Rollback();
+                    throw new Exception("Error during vehicle creation", ex);
+                }
+            }
+        }
+        public void AddComercialVehicle(SqlConnection connection, SqlTransaction transaction, int normalVehicleId, ComercialVehicle comercialVehicle)
+        {
+            using (SqlCommand cmd = new SqlCommand("AddCommercialVehicles", connection, transaction)) 
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@NormalVehiclesId", comercialVehicle.NormalVehicleId);
+                cmd.Parameters.AddWithValue("@RollCage", comercialVehicle.RollCage);
+                cmd.Parameters.AddWithValue("@LoadCapacity", comercialVehicle.LoadCapacity);
+
+                cmd.ExecuteNonQuery();
             }
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using H2_Gruppe_project.Classes;
 
@@ -6,51 +7,44 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        public void AddPrivateVehicle(PrivateVehicle privateVehicle)
+        public int AddPVehicleFlow(PrivateVehicle privateVehicle, Vehicle vehicle, NormalVehicle normalVehicle)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
                 {
-                    try
-                    {
-                        string query = @"
-                            EXEC AddPrivateVehicle 
-                                @Name, @KM, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, 
-                                @EngineSize, @KmL, @FuelType, @EnergyClass, 
-                                @NumberOfSeats, @TrunkDimensions, @IsCommercial, @IsofixMount;
-                            SELECT SCOPE_IDENTITY();";
+                    int vehicleId = AddVehicle(connection, transaction, vehicle);
 
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                    int normalVehicleId = AddNormalVehicle(connection, transaction, vehicleId, normalVehicle);
 
-                        cmd.Parameters.AddWithValue("@Name", privateVehicle.Name);
-                        cmd.Parameters.AddWithValue("@KM", privateVehicle.KM);
-                        cmd.Parameters.AddWithValue("@RegistrationNumber", privateVehicle.RegistrationNumber);
-                        cmd.Parameters.AddWithValue("@AgeGroup", privateVehicle.AgeGroup);
-                        cmd.Parameters.AddWithValue("@TowHook", privateVehicle.TowHook);
-                        cmd.Parameters.AddWithValue("@DriversLicenceClass", privateVehicle.DriversLicenceClass);
-                        cmd.Parameters.AddWithValue("@EngineSize", decimal.Parse(privateVehicle.EngineSize.TrimEnd('L', 'l')));
-                        cmd.Parameters.AddWithValue("@KmL", privateVehicle.KmL);
-                        cmd.Parameters.AddWithValue("@FuelType", privateVehicle.FuelType);
-                        cmd.Parameters.AddWithValue("@EnergyClass", privateVehicle.EnergyClass);
-                        cmd.Parameters.AddWithValue("@NumberOfSeats", privateVehicle.NumberOfSeats);
-                        cmd.Parameters.AddWithValue("@TrunkDimensions", privateVehicle.TrunkDimensions);
-                        cmd.Parameters.AddWithValue("@IsCommercial", privateVehicle.IsCommercial);
-                        cmd.Parameters.AddWithValue("@IsofixMount", privateVehicle.IsofixMount);
+                    AddPrivateVehicle(connection, transaction, normalVehicleId, privateVehicle);
 
-                        // Now store the ID as an int instead of converting it to a string
-                        int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                        privateVehicle.Id = vehicleId;
+                    transaction.Commit();
 
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error adding private vehicle to the database: " + ex.Message);
-                    }
+                    connection.Close();
+                    return vehicleId;
                 }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Error during vehicle creation", ex);
+                }
+            }
+        }
+
+        private void AddPrivateVehicle(SqlConnection connection, SqlTransaction transaction, int normalVehicleId, PrivateVehicle privateVehicle)
+        {
+            using (SqlCommand cmd = new SqlCommand("AddPrivateVehicles", connection, transaction))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@NormalVehiclesId", normalVehicleId);
+                cmd.Parameters.AddWithValue("@IsofixMount", privateVehicle.IsofixMount);
+
+                cmd.ExecuteNonQuery();
             }
         }
 

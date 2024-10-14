@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using H2_Gruppe_project.Classes;
 
@@ -7,42 +8,24 @@ namespace H2_Gruppe_project.DatabaseClasses
     public partial class Database
     {
         // Create - Add Vehicle
-        public void AddVehicle(Vehicle vehicle)
+        private int AddVehicle(SqlConnection connection, SqlTransaction transaction, Vehicle vehicle)
         {
-            using (SqlConnection connection = GetConnection())
+            using (SqlCommand cmd = new SqlCommand("AddVehicle", connection, transaction))
             {
-                connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        string query = @"
-                            INSERT INTO Vehicles (Name, KM, RegistrationNumber, AgeGroup, TowHook, DriversLicenceClass, EngineSize, KmL, FuelType, EnergyClass) 
-                            VALUES (@Name, @Km, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, @EngineSize, @KmL, @FuelType, @EnergyClass);
-                            SELECT SCOPE_IDENTITY();";
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
-                        cmd.Parameters.AddWithValue("@Name", vehicle.Name);
-                        cmd.Parameters.AddWithValue("@Km", vehicle.KM);
-                        cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegistrationNumber);
-                        cmd.Parameters.AddWithValue("@AgeGroup", vehicle.AgeGroup);
-                        cmd.Parameters.AddWithValue("@TowHook", vehicle.TowHook);
-                        cmd.Parameters.AddWithValue("@DriversLicenceClass", vehicle.DriversLicenceClass);
-                        cmd.Parameters.AddWithValue("@EngineSize", vehicle.EngineSize);
-                        cmd.Parameters.AddWithValue("@KmL", vehicle.KmL);
-                        cmd.Parameters.AddWithValue("@FuelType", vehicle.FuelType);
-                        cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                        int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                        vehicle.Id = Convert.ToInt32(vehicleId);
+                cmd.Parameters.AddWithValue("@Name", vehicle.Name);
+                cmd.Parameters.AddWithValue("@KM", vehicle.KM);
+                cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegistrationNumber);
+                cmd.Parameters.AddWithValue("@AgeGroup", vehicle.AgeGroup);
+                cmd.Parameters.AddWithValue("@TowHook", vehicle.TowHook);
+                cmd.Parameters.AddWithValue("@DriversLicenceClass", vehicle.DriversLicenceClass);
+                cmd.Parameters.AddWithValue("@EngineSize", vehicle.EngineSize);
+                cmd.Parameters.AddWithValue("@KmL", vehicle.KmL);
+                cmd.Parameters.AddWithValue("@FuelType", vehicle.FuelType);
+                cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
 
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error adding vehicle to database: " + ex.Message);
-                    }
-                }
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
 

@@ -35,7 +35,6 @@
 	<ItemGroup>
 		<Page Include="Views\MainMenuView.axaml" />
 		<Page Include="Views\AddVHView.axaml" />
-		<Page Include="Views\AuctionBuying.axaml" />
         <Page Include="Views\ProfileView.axaml" />
         <Page Include="Views\AuctionSellerView.axaml" />
         <Page Include="Views\LoginView.axaml" />

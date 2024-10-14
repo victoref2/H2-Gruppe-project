@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using H2_Gruppe_project.Classes;
 
@@ -6,53 +7,20 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-public void AddNormalVehicle(NormalVehicle normalVehicle)
-{
-    using (SqlConnection connection = GetConnection())
-    {
-        connection.Open();
-        using (SqlTransaction transaction = connection.BeginTransaction())
+        private int AddNormalVehicle(SqlConnection connection, SqlTransaction transaction, int vehicleId, NormalVehicle normalVehicle)
         {
-            try
+            using (SqlCommand cmd = new SqlCommand("AddNormalVehicles", connection, transaction))
             {
-                string query = @"
-                    EXEC AddNormalVehicle 
-                        @Name, @KM, @RegistrationNumber, @AgeGroup, @TowHook, @DriversLicenceClass, 
-                        @EngineSize, @KmL, @FuelType, @EnergyClass, 
-                        @NumberOfSeats, @TrunkDimensions, @IsCommercial;
-                    SELECT SCOPE_IDENTITY();";
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(query, connection, transaction);
-
-
-                cmd.Parameters.AddWithValue("@Name", normalVehicle.Name);
-                cmd.Parameters.AddWithValue("@KM", normalVehicle.KM);
-                cmd.Parameters.AddWithValue("@RegistrationNumber", normalVehicle.RegistrationNumber);
-                cmd.Parameters.AddWithValue("@AgeGroup", normalVehicle.AgeGroup);
-                cmd.Parameters.AddWithValue("@TowHook", normalVehicle.TowHook);
-                cmd.Parameters.AddWithValue("@DriversLicenceClass", normalVehicle.DriversLicenceClass);
-                cmd.Parameters.AddWithValue("@EngineSize", decimal.Parse(normalVehicle.EngineSize.TrimEnd('L', 'l')));
-                cmd.Parameters.AddWithValue("@KmL", normalVehicle.KmL);
-                cmd.Parameters.AddWithValue("@FuelType", normalVehicle.FuelType);
-                cmd.Parameters.AddWithValue("@EnergyClass", normalVehicle.EnergyClass);
+                cmd.Parameters.AddWithValue("@VehicleId", vehicleId);
                 cmd.Parameters.AddWithValue("@NumberOfSeats", normalVehicle.NumberOfSeats);
                 cmd.Parameters.AddWithValue("@TrunkDimensions", normalVehicle.TrunkDimensions);
-                cmd.Parameters.AddWithValue("@IsCommercial", normalVehicle.IsCommercial);
+                cmd.Parameters.AddWithValue("@IsComercial", normalVehicle.IsCommercial);
 
-                int vehicleId = Convert.ToInt32(cmd.ExecuteScalar());
-                normalVehicle.Id = Convert.ToInt32(vehicleId);
-
-                transaction.Commit();
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw new Exception("Error adding normal vehicle to the database: " + ex.Message);
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
-    }
-}
-
         // Read - Get NormalVehicle by ID
         public NormalVehicle GetNormalVehicleById(int normalVehicleId)
         {
