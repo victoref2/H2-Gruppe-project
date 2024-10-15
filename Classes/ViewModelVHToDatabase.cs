@@ -165,10 +165,11 @@ namespace H2_Gruppe_project.Classes
                    vehicle.Id = _database.AddPVehicleFlow(PVehicle, vehicle, normalVehicle);
                 }
             }
-            Task task = CreateAuction(vehicle, StartingBid, ClosingDate);
-            return true;
+            Task<bool> task = CreateAuction(vehicle, StartingBid, ClosingDate);
+
+            return task.Result;
         }
-        public async Task CreateAuction( Vehicle vehicle, decimal StartingBid, DateTime ClosingDate)
+        public async Task<bool> CreateAuction(Vehicle vehicle, decimal StartingBid, DateTime ClosingDate)
         {
             await Task.Run(() =>
             {
@@ -182,6 +183,8 @@ namespace H2_Gruppe_project.Classes
 
                 _database.AddAuction(auction);
             });
+            return true;
         }
+
     }
 }

@@ -138,9 +138,9 @@ BEGIN
 END;
 GO
 
--- GetABus procedure
 DROP PROCEDURE IF EXISTS GetABus;
 GO
+
 CREATE PROCEDURE GetABus
     @BusId INT
 AS
@@ -176,6 +176,7 @@ BEGIN
     END CATCH;
 END;
 GO
+
 
 -- GetATruck procedure
 DROP PROCEDURE IF EXISTS GetATruck;
@@ -342,10 +343,15 @@ BEGIN
         T.LoadCapacity, 
         HV.MaxLoadCapacity, 
         HV.NumberOfAxles,
+        V.VehicleId, 
         V.Name AS VehicleName, 
-        V.RegistrationNumber, 
         V.KM, 
+        V.RegistrationNumber, 
         V.AgeGroup, 
+        V.TowHook, 
+        V.DriversLicenceClass, 
+        V.EngineSize, 
+        V.KmL, 
         V.FuelType, 
         V.EnergyClass
     FROM Trucks T
@@ -353,6 +359,7 @@ BEGIN
     JOIN Vehicles V ON HV.VehicleId = V.VehicleId;
 END;
 GO
+
 
 -- Edit a Truck and its related Vehicle and Heavy Vehicle details
 CREATE PROCEDURE EditTruck
@@ -410,7 +417,6 @@ BEGIN
 END;
 GO
 
--- Get all Buses with relevant information
 CREATE PROCEDURE GetAllBuses
 AS
 BEGIN
@@ -424,10 +430,15 @@ BEGIN
         B.HasToilet,
         HV.MaxLoadCapacity, 
         HV.NumberOfAxles,
+        V.VehicleId, 
         V.Name AS VehicleName, 
-        V.RegistrationNumber, 
         V.KM, 
+        V.RegistrationNumber, 
         V.AgeGroup, 
+        V.TowHook, 
+        V.DriversLicenceClass, 
+        V.EngineSize, 
+        V.KmL, 
         V.FuelType, 
         V.EnergyClass
     FROM Buses B
@@ -435,6 +446,7 @@ BEGIN
     JOIN Vehicles V ON HV.VehicleId = V.VehicleId;
 END;
 GO
+
 
 -- Edit a Bus and its related Vehicle and Heavy Vehicle details
 CREATE PROCEDURE EditBus
@@ -456,22 +468,27 @@ CREATE PROCEDURE EditBus
 AS
 BEGIN
     BEGIN TRY
-        -- Update Buses table
         UPDATE Buses
-        SET Height = @Height, Weight = @Weight, Length = @Length, 
-            NumberOfSeats = @NumberOfSeats, NumberOfSleepingPlaces = @NumberOfSleepingPlaces, 
+        SET Height = @Height, 
+            Weight = @Weight, 
+            Length = @Length, 
+            NumberOfSeats = @NumberOfSeats, 
+            NumberOfSleepingPlaces = @NumberOfSleepingPlaces, 
             HasToilet = @HasToilet
         WHERE BusId = @BusId;
 
-        -- Update HeavyVehicles table
         UPDATE HeavyVehicles
-        SET MaxLoadCapacity = @MaxLoadCapacity, NumberOfAxles = @NumberOfAxles
+        SET MaxLoadCapacity = @MaxLoadCapacity, 
+            NumberOfAxles = @NumberOfAxles
         WHERE HeavyVehicleId = (SELECT HeavyVehicleId FROM Buses WHERE BusId = @BusId);
 
-        -- Update Vehicles table
         UPDATE Vehicles
-        SET Name = @VehicleName, KM = @KM, RegistrationNumber = @RegistrationNumber, 
-            AgeGroup = @AgeGroup, FuelType = @FuelType, EnergyClass = @EnergyClass
+        SET Name = @VehicleName, 
+            KM = @KM, 
+            RegistrationNumber = @RegistrationNumber, 
+            AgeGroup = @AgeGroup, 
+            FuelType = @FuelType, 
+            EnergyClass = @EnergyClass
         WHERE VehicleId = (SELECT VehicleId FROM HeavyVehicles WHERE HeavyVehicleId = 
             (SELECT HeavyVehicleId FROM Buses WHERE BusId = @BusId));
     END TRY
@@ -481,13 +498,14 @@ BEGIN
 END;
 GO
 
+
 -- Delete a Bus and related records from HeavyVehicles and Vehicles
 CREATE PROCEDURE DeleteABus
     @BusId INT
 AS
 BEGIN
     BEGIN TRY
-        -- Delete the Bus, this will also delete associated HeavyVehicle and Vehicle due to cascading delete
+
         DELETE FROM Buses WHERE BusId = @BusId;
     END TRY
     BEGIN CATCH
@@ -577,19 +595,26 @@ CREATE PROCEDURE GetAllPrivateVehicles
 AS
 BEGIN
     SELECT 
-        PV.PrivateVehicleId,
-        PV.IsofixMount, 
-        NV.NumberOfSeats, 
-        NV.TrunkDimensions,
-        V.Name AS VehicleName, 
-        V.RegistrationNumber, 
-        V.KM, 
-        V.AgeGroup, 
-        V.FuelType, 
-        V.EnergyClass
-    FROM PrivateVehicles PV
-    JOIN NormalVehicles NV ON PV.NormalVehicleId = NV.NormalVehicleId
-    JOIN Vehicles V ON NV.VehicleId = V.VehicleId;
+        PV.PrivateVehicleId, 
+               PV.IsofixMount, 
+               NV.NormalVehicleId, 
+               NV.NumberOfSeats, 
+               NV.TrunkDimensions, 
+               NV.IsCommercial, 
+               V.VehicleId, 
+               V.Name AS VehicleName, 
+               V.KM, 
+               V.RegistrationNumber, 
+               V.AgeGroup, 
+               V.TowHook, 
+               V.DriversLicenceClass, 
+               V.EngineSize, 
+               V.KmL, 
+               V.FuelType, 
+               V.EnergyClass
+        FROM PrivateVehicles PV
+        JOIN NormalVehicles NV ON PV.NormalVehicleId = NV.NormalVehicleId
+        JOIN Vehicles V ON NV.VehicleId = V.VehicleId
 END;
 GO
 

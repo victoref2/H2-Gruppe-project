@@ -152,7 +152,7 @@ namespace H2_Gruppe_project.ViewModels
             IsCommercialVisible = value;
             IsPrivateVisible = !value;
         }
-        public List<string> FuelType { get; } = new List<string> {"Diesel", "Petrol", "Electric", "Hybrid" };
+        public List<string> FuelType { get; } = new List<string> {"Diesel", "Petrol", "Benzin", "Electric", "Hybrid", "Hydrogen" };
 
         public List<string> VehicleTypes { get; } = new List<string> { "Truck", "Bus", "Normal Vehicle" };
 
