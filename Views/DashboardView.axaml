@@ -19,45 +19,51 @@
       <TextBlock Text="{Binding UserName}" FontSize="18" HorizontalAlignment="Center" Margin="0,10"/>
     </StackPanel>
 
-    <!-- Your Auctions Section -->
-    <StackPanel Grid.Row="1" Margin="10">
-      <TextBlock Text="Your Auctions" FontSize="20" Margin="0,0,0,10"/>
-      <DataGrid ItemsSource="{Binding YourAuctions}" AutoGenerateColumns="False" CanUserResizeColumns="True" IsReadOnly="True">
-        <DataGrid.Columns>
-          <DataGridTemplateColumn Header="Select">
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <CheckBox IsChecked="{Binding IsSelected}" />
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-          <DataGridTextColumn Header="Name" Binding="{Binding Vehicle.Name}" />
-          <DataGridTextColumn Header="Age Group" Binding="{Binding Vehicle.AgeGroup}" />
-          <DataGridTextColumn Header="Bid" Binding="{Binding CurrentPrice}" />
-        </DataGrid.Columns>
-      </DataGrid>
-    </StackPanel>
+	  <StackPanel Margin="10" HorizontalAlignment="Left">
+		  <!-- Your Auctions Section -->
+		  <TextBlock Text="Your Auctions" FontSize="20" Margin="0,0,0,10"/>
+		  <ListBox ItemsSource="{Binding YourAuctions}" Width="200" Height="200">
+			  <ListBox.ItemTemplate>
+				  <DataTemplate>
+					  <StackPanel Margin="5">
+						  <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Vehicle.Name}" FontWeight="Bold"/>
+						  <TextBlock Text="Seller"/>
+						  <TextBlock Text="{Binding Seller.Name}" />
+						  <TextBlock Text="Current Pirce"/>
+						  <TextBlock Text="{Binding CurrentPrice, StringFormat='{}{0:C}'}" />
+						  <TextBlock Text="KM driven"/>
+						  <TextBlock Text="{Binding Vehicle.KM}" />
+						  <TextBlock Text="KM/L"/>
+						  <TextBlock Text="{Binding Vehicle.KmL}" />
+					  </StackPanel>
+				  </DataTemplate>
+			  </ListBox.ItemTemplate>
+		  </ListBox>
 
-    <!-- All Auctions Section -->
-    <StackPanel Grid.Row="2" Margin="10">
-      <TextBlock Text="All Auctions" FontSize="20" Margin="0,0,0,10"/>
-      <DataGrid ItemsSource="{Binding CurrentAuctions}" AutoGenerateColumns="False" CanUserResizeColumns="True" IsReadOnly="True">
-        <DataGrid.Columns>
-          <DataGridTemplateColumn Header="Select">
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <CheckBox IsChecked="{Binding IsSelected}" />
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-          <DataGridTextColumn Header="Name" Binding="{Binding Vehicle.Name}" />
-          <DataGridTextColumn Header="Age Group" Binding="{Binding Vehicle.AgeGroup}" />
-          <DataGridTextColumn Header="Bid" Binding="{Binding CurrentPrice}" />
-        </DataGrid.Columns>
-      </DataGrid>
-    </StackPanel>
+		  <!-- All Auctions Section -->
+		  <TextBlock Text="All Auctions" FontSize="20" Margin="20,0,0,10"/>
+		  <ListBox ItemsSource="{Binding CurrentAuctions}" Width="200" Height="200">
+			  <ListBox.ItemTemplate>
+				  <DataTemplate>
+					  <StackPanel Margin="5">
+						  <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Vehicle.Name}" FontWeight="Bold"/>
+						  <TextBlock Text="Seller"/>
+						  <TextBlock Text="{Binding Seller.Name}" />
+						  <TextBlock Text="Current Pirce"/>
+						  <TextBlock Text="{Binding CurrentPrice, StringFormat='{}{0:C}'}" />
+						  <TextBlock Text="KM driven"/>
+						  <TextBlock Text="{Binding Vehicle.KM}" />
+						  <TextBlock Text="KM/L"/>
+						  <TextBlock Text="{Binding Vehicle.KmL}" />
+					  </StackPanel>
+				  </DataTemplate>
+			  </ListBox.ItemTemplate>
+		  </ListBox>
+	  </StackPanel>
 
-    <!-- Action Buttons -->
+
+
+	  <!-- Action Buttons -->
     <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
       <Button Content="Open Selected Auction" Command="{Binding OpenSelectedAuctionCommand}" />
     </StackPanel>

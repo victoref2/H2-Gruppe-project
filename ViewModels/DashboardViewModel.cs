@@ -5,6 +5,9 @@ using H2_Gruppe_project.Classes;
 using H2_Gruppe_project.DatabaseClasses;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
+using System.Reactive.Linq;
+using Avalonia.Controls;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -14,10 +17,10 @@ namespace H2_Gruppe_project.ViewModels
         private string userName;
 
         [ObservableProperty]
-        private ObservableCollection<Auction> yourAuctions; // No need for "?" (nullability)
+        private ObservableCollection<Auction> yourAuctions; 
 
         [ObservableProperty]
-        private ObservableCollection<Auction> currentAuctions; // No need for "?" (nullability)
+        private ObservableCollection<Auction> currentAuctions; 
 
         private readonly MainWindowViewModel _mainWindowViewModel;
         private readonly User _loggedInUser;
@@ -31,15 +34,14 @@ namespace H2_Gruppe_project.ViewModels
 
             UserName = _loggedInUser.Name;
 
-            // Initialize collections
-            //LoadAuctions();
+            LoadAuctions();
         }
 
-        /*private void LoadAuctions()
+        private void LoadAuctions()
         {
             YourAuctions = new ObservableCollection<Auction>(_database.GetUserAuctions(_loggedInUser.Id));
             CurrentAuctions = new ObservableCollection<Auction>(_database.GetAllAuctions());
-        }*/
+        }
 
         [RelayCommand]
         public void GoToAddVehicle()

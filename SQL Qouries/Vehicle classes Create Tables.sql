@@ -1,3 +1,5 @@
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS Vehicles;
 CREATE TABLE Vehicles (
     VehicleId INT IDENTITY(1,1) PRIMARY KEY, 
     Name VARCHAR(100) NOT NULL,
@@ -12,6 +14,8 @@ CREATE TABLE Vehicles (
     EnergyClass VARCHAR(10) NOT NULL
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS HeavyVehicles;
 CREATE TABLE HeavyVehicles (
     HeavyVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     VehicleId INT NOT NULL,
@@ -20,7 +24,8 @@ CREATE TABLE HeavyVehicles (
     FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId) ON DELETE CASCADE
 );
 
-
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS Trucks;
 CREATE TABLE Trucks (
     TruckId INT IDENTITY(1,1) PRIMARY KEY,
     HeavyVehicleId INT NOT NULL,
@@ -31,6 +36,8 @@ CREATE TABLE Trucks (
     FOREIGN KEY (HeavyVehicleId) REFERENCES HeavyVehicles(HeavyVehicleId) ON DELETE CASCADE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS Buses;
 CREATE TABLE Buses (
     BusId INT IDENTITY(1,1) PRIMARY KEY,
     HeavyVehicleId INT NOT NULL,
@@ -43,6 +50,8 @@ CREATE TABLE Buses (
     FOREIGN KEY (HeavyVehicleId) REFERENCES HeavyVehicles(HeavyVehicleId) ON DELETE CASCADE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS NormalVehicles;
 CREATE TABLE NormalVehicles (
     NormalVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     VehicleId INT NOT NULL,
@@ -52,6 +61,8 @@ CREATE TABLE NormalVehicles (
     FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId) ON DELETE CASCADE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS PrivateVehicles;
 CREATE TABLE PrivateVehicles (
     PrivateVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     NormalVehicleId INT NOT NULL,
@@ -59,6 +70,8 @@ CREATE TABLE PrivateVehicles (
     FOREIGN KEY (NormalVehicleId) REFERENCES NormalVehicles(NormalVehicleId) ON DELETE CASCADE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS CommercialVehicles;
 CREATE TABLE CommercialVehicles (
     CommercialVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     NormalVehicleId INT NOT NULL,
@@ -67,6 +80,8 @@ CREATE TABLE CommercialVehicles (
     FOREIGN KEY (NormalVehicleId) REFERENCES NormalVehicles(NormalVehicleId) ON DELETE CASCADE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
     UserId INT IDENTITY(1,1) PRIMARY KEY,
     UserName NVARCHAR(100) NOT NULL UNIQUE, 
@@ -76,6 +91,8 @@ CREATE TABLE Users (
     Mail NVARCHAR(100) NOT NULL UNIQUE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS CorporateUsers;
 CREATE TABLE CorporateUsers (
     CorporateUserId INT IDENTITY(1,1) PRIMARY KEY,
     UserId INT NOT NULL,
@@ -84,6 +101,8 @@ CREATE TABLE CorporateUsers (
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS PrivateUsers;
 CREATE TABLE PrivateUsers (
     PrivateUserId INT IDENTITY(1,1) PRIMARY KEY,
     UserId INT NOT NULL,
@@ -91,6 +110,8 @@ CREATE TABLE PrivateUsers (
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
 );
 
+-- Drop table if it exists before creating it
+DROP TABLE IF EXISTS Auctions;
 CREATE TABLE Auctions (
     AuctionId INT IDENTITY(1,1) PRIMARY KEY,
     VehicleId INT NOT NULL,

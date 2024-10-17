@@ -106,10 +106,19 @@ namespace H2_Gruppe_project.ViewModels
                 }
 
 
-                var hashedPassword = User.HashPassword(Password);
+                var hashedPassword = Password;
 
                 await Task.Run(() =>
                 {
+                    User user = new(
+                        id: 0,
+                        name: Name,
+                        passWord: hashedPassword,
+                        mail: Email,
+                        balance: 0 // Initial balance
+                    );
+                    int Id = _database.CreateUser(user, isCorporateUser);
+
                     if (IsCorporateUser)
                     {
 
@@ -127,6 +136,7 @@ namespace H2_Gruppe_project.ViewModels
                             credit: Credit,
                             cvrNumber: CvrNumber
                         );
+                        
                         _database.AddCorporateUser(newCorporateUser);
                     }
                     else
@@ -139,7 +149,8 @@ namespace H2_Gruppe_project.ViewModels
                             balance: 0, // Initial balance
                             cprNumber: CprNumber
                         );
-                        _database.AddPrivateUser(newPrivateUser);
+                        
+                        _database.CreatePrivateUser(newPrivateUser, Id);
                     }
                 });
 

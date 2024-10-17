@@ -1,42 +1,205 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Security.Cryptography.X509Certificates;
 using H2_Gruppe_project.Classes;
+using Tmds.DBus.Protocol;
 
 namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
+        public int CreateUser(User user, bool corporateUser)
+        {
+            try
+            {
+                using (SqlConnection connection = GetConnection())
+                {
+                    connection.Open();
+                    int Id;
 
+                    using (SqlCommand cmd = new SqlCommand("CreateAUser", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-        public void UpdateUserPassword(int userId, string newPassword)
+                        cmd.Parameters.AddWithValue("@LoginName", user.Name);
+                        cmd.Parameters.AddWithValue("@Password", user.PassWord);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    // Step 1: Insert the user into the Users table
+                    using (SqlCommand cmd = new SqlCommand("CreateUser", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@UserName", user.Name);
+                        cmd.Parameters.AddWithValue("@Password", user.PassWord);
+                        cmd.Parameters.AddWithValue("@CorporateUser", corporateUser);
+                        cmd.Parameters.AddWithValue("@Balance", user.Balance);
+                        cmd.Parameters.AddWithValue("@Mail", user.Mail);
+
+                        return Convert.ToInt32(cmd.ExecuteNonQuery());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                throw;
+            }
+        }
+
+        public List<User> GetAllUsers()
+        {
+            List<User> users = new List<User>();
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand("GetAllUsers", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    User user = new User
+                    (
+                        (int)reader["UserId"],
+                        reader["UserName"].ToString(),
+                        null,//no password for you
+                        reader["Mail"].ToString(),
+                        (decimal)reader["Balance"]
+                    );
+                    users.Add(user);
+                }
+                connection.Close();
+            }
+            return users;
+        }
+
+        public User GetUserById(int userId)
+        {
+            User user = null;
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                SqlCommand cmd = new SqlCommand("GetUserById", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    user = new User
+                    (
+                        (int)reader["UserId"],
+                        reader["UserName"].ToString(),
+                        null, // Password is not retrieved
+                        reader["Mail"].ToString(),
+                        (decimal)reader["Balance"]
+                    );
+                }
+                connection.Close();
+            }
+
+            return user;
+        }
+
+        public User GetUserByName(string userName)
+        {
+            User user = null;
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                SqlCommand cmd = new SqlCommand("GetUserByName", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserName", userName);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    user = new User
+                    (
+                        (int)reader["UserId"],
+                        reader["UserName"].ToString(),
+                        reader["PassWord"].ToString(),
+                        reader["Mail"].ToString(),
+                        (decimal)reader["Balance"]
+                    );
+                }
+                connection.Close();
+            }
+
+            return user;
+        }
+
+        public void UpdateUser(User user, bool corporateUser)
+        {
+            // Ensure user object is not null before proceeding
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user), "User cannot be null.");
+            }
+
+            // Establish database connection
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("UpdateUser", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Add parameters to the command
+                    cmd.Parameters.AddWithValue("@UserId", user.Id);
+                    cmd.Parameters.AddWithValue("@UserName", user.Name);
+                    cmd.Parameters.AddWithValue("@Password", user.PassWord);
+                    cmd.Parameters.AddWithValue("@CorporateUser", corporateUser);
+                    cmd.Parameters.AddWithValue("@Balance", user.Balance);
+                    cmd.Parameters.AddWithValue("@Mail", user.Mail);
+
+                    // Execute the stored procedure
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"SQL error occurred: {ex.Message}");
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        throw;
+                    }
+                }
+                connection.Close();
+            }
+        }
+
+        public void DeleteUser(int userId)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        string query = @"
-                            UPDATE Users
-                            SET PassWord = @PassWord
-                            WHERE UserId = @UserId";
 
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                SqlCommand cmd = new SqlCommand("DeleteUser", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                        string hashedPassword = User.HashPassword(newPassword);
-                        cmd.Parameters.AddWithValue("@PassWord", hashedPassword);
-                        cmd.Parameters.AddWithValue("@UserId", userId);
+                cmd.Parameters.AddWithValue("@UserId", userId);
 
-                        cmd.ExecuteNonQuery();
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error updating user password: " + ex.Message);
-                    }
-                }
+                cmd.ExecuteNonQuery();
+                connection.Close();
             }
         }
 
@@ -45,174 +208,62 @@ namespace H2_Gruppe_project.DatabaseClasses
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+
+                using (SqlCommand cmd = new SqlCommand("UpdateUserBalance", connection))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@NewBalance", newBalance);
+
                     try
                     {
-                        string query = @"
-                            UPDATE Users
-                            SET Balance = @Balance
-                            WHERE UserId = @UserId";
-
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
-                        cmd.Parameters.AddWithValue("@Balance", newBalance);
-                        cmd.Parameters.AddWithValue("@UserId", userId);
-
                         cmd.ExecuteNonQuery();
-                        transaction.Commit();
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"SQL error occurred: {ex.Message}");
+                        throw; // Rethrow the exception to handle it at a higher level if needed
                     }
                     catch (Exception ex)
                     {
-                        transaction.Rollback();
-                        throw new Exception("Error updating user balance: " + ex.Message);
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        throw; // Rethrow for handling elsewhere
                     }
                 }
             }
+
         }
 
-        
-
-        // Read - Get User by Email
-        public User GetUserByEmail(string email)
+        public void UpdateUserPassword(int userId, string newPassword, string Name)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
 
-                string query = @"SELECT u.UserId, u.UserName, u.PassWord, u.Mail, u.Balance, 
-                                        p.CPRNumber, c.CVRNumber, c.Credit
-                                FROM Users u
-                                LEFT JOIN PrivateUsers p ON u.UserId = p.UserId
-                                LEFT JOIN CorporateUsers c ON u.UserId = c.UserId
-                                WHERE u.Mail = @Mail";
-
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@Mail", email);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                User user = null;
-
-                if (reader.Read())
+                using (SqlCommand cmd = new SqlCommand("UpdateUserPassword", connection))
                 {
-                    int userId = Convert.ToInt32(reader["UserId"]);  // Use int for UserId
-                    if (reader["CVRNumber"] != DBNull.Value)
-                    {
-                        user = new CorporateUser(
-                            id: userId,  // Use the integer UserId
-                            name: reader["UserName"].ToString(),
-                            passWord: reader["PassWord"].ToString(),
-                            mail: reader["Mail"].ToString(),
-                            balance: Convert.ToDecimal(reader["Balance"]),
-                            credit: Convert.ToDecimal(reader["Credit"]),
-                            cvrNumber: reader["CVRNumber"].ToString()
-                        );
-                    }
-                    else if (reader["CPRNumber"] != DBNull.Value)
-                    {
-                        user = new PrivateUser(
-                            id: userId,  // Use the integer UserId
-                            name: reader["UserName"].ToString(),
-                            passWord: reader["PassWord"].ToString(),
-                            mail: reader["Mail"].ToString(),
-                            balance: Convert.ToDecimal(reader["Balance"]),
-                            cprNumber: reader["CPRNumber"].ToString()
-                        );
-                    }
-                }
-                return user;
-            }
-        }
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-        // Delete - Delete User by UserId
-        public void DeleteUser(int userId)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
-                {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@NewPassword", newPassword); // Hash the new password
+                    cmd.Parameters.AddWithValue("@UserName", Name);
+
                     try
                     {
-                        // First, delete from PrivateUsers or CorporateUsers (if applicable)
-                        string deleteCorporateUserQuery = "DELETE FROM CorporateUsers WHERE UserId = @UserId";
-                        string deletePrivateUserQuery = "DELETE FROM PrivateUsers WHERE UserId = @UserId";
-
-                        SqlCommand deleteCorporateUserCmd = new SqlCommand(deleteCorporateUserQuery, connection, transaction);
-                        SqlCommand deletePrivateUserCmd = new SqlCommand(deletePrivateUserQuery, connection, transaction);
-
-                        deleteCorporateUserCmd.Parameters.AddWithValue("@UserId", userId);
-                        deletePrivateUserCmd.Parameters.AddWithValue("@UserId", userId);
-
-                        // Try to delete in both tables (only one will succeed)
-                        deleteCorporateUserCmd.ExecuteNonQuery();
-                        deletePrivateUserCmd.ExecuteNonQuery();
-
-                        // Finally, delete from Users table
-                        string query = "DELETE FROM Users WHERE UserId = @UserId";
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
-                        cmd.Parameters.AddWithValue("@UserId", userId);
                         cmd.ExecuteNonQuery();
-
-                        transaction.Commit();
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"SQL error occurred: {ex.Message}");
+                        throw; // Rethrow the exception to handle it at a higher level if needed
                     }
                     catch (Exception ex)
                     {
-                        transaction.Rollback();
-                        throw new Exception("Error deleting user from database: " + ex.Message);
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        throw; // Rethrow for handling elsewhere
                     }
                 }
-            }
-        }
-        // Read - Get User by ID
-        public User GetUser(int userId)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-
-                // Fetch whether the user is a Corporate or Private user
-                string query = @"
-                    SELECT u.UserId, u.UserName, u.PassWord, u.Mail, u.Balance, 
-                           p.CPRNumber, c.CVRNumber, c.Credit
-                    FROM Users u
-                    LEFT JOIN PrivateUsers p ON u.UserId = p.UserId
-                    LEFT JOIN CorporateUsers c ON u.UserId = c.UserId
-                    WHERE u.UserId = @UserId";
-
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@UserId", userId);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                User user = null;
-
-                if (reader.Read())
-                {
-                    // Identify if the user is corporate or private and return appropriate object
-                    if (reader["CVRNumber"] != DBNull.Value)
-                    {
-                        user = new CorporateUser(
-                            id: userId,  // Use the integer UserId
-                            name: reader["UserName"].ToString(),
-                            passWord: reader["PassWord"].ToString(),
-                            mail: reader["Mail"].ToString(),
-                            balance: Convert.ToDecimal(reader["Balance"]),
-                            credit: Convert.ToDecimal(reader["Credit"]),
-                            cvrNumber: reader["CVRNumber"].ToString()
-                        );
-                    }
-                    else if (reader["CPRNumber"] != DBNull.Value)
-                    {
-                        user = new PrivateUser(
-                            id: userId,  // Use the integer UserId
-                            name: reader["UserName"].ToString(),
-                            passWord: reader["PassWord"].ToString(),
-                            mail: reader["Mail"].ToString(),
-                            balance: Convert.ToDecimal(reader["Balance"]),
-                            cprNumber: reader["CPRNumber"].ToString()
-                        );
-                    }
-                }
-                return user;
             }
         }
     }

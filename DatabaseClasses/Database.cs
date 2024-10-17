@@ -9,10 +9,10 @@ namespace H2_Gruppe_project.DatabaseClasses
         {
             SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder
             {
-                DataSource = "h2sql.cloudprog.org,20002",
+                DataSource = "localhost", 
                 InitialCatalog = "AutoAuctionDB",
-                UserID = "sa",
-                Password = "yourStrong(!)Password"
+                UserID = "AddsUsers_User",
+                Password = "Password123!"
             };
 
             SqlConnection connection = new SqlConnection(sb.ToString());

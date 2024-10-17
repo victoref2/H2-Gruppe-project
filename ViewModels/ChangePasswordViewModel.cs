@@ -41,7 +41,7 @@ namespace H2_Gruppe_project.ViewModels
                 return;
             }
 
-            if (User.HashPassword(CurrentPassword) != _loggedInUser.PassWord)
+            if (CurrentPassword != _loggedInUser.PassWord)
             {
                 ErrorMessage = "Current password is incorrect.";
                 return;
@@ -61,9 +61,9 @@ namespace H2_Gruppe_project.ViewModels
 
             try
             {
-                _database.UpdateUserPassword(_loggedInUser.Id, NewPassword);
+                _database.UpdateUserPassword(_loggedInUser.Id, NewPassword,_loggedInUser.Name);
 
-                _loggedInUser.PassWord = User.HashPassword(NewPassword);
+                _loggedInUser.PassWord = NewPassword;
 
                 _mainWindowViewModel.SwitchViewModel(new ProfileViewModel(_mainWindowViewModel, _loggedInUser, _database, "Password changed successfully."));
             }

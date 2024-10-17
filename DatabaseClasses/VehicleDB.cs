@@ -36,8 +36,11 @@ namespace H2_Gruppe_project.DatabaseClasses
             {
                 connection.Open();
 
-                string query = @"SELECT * FROM Vehicles WHERE VehicleId = @VehicleId";
-                SqlCommand cmd = new SqlCommand(query, connection);
+
+                SqlCommand cmd = new SqlCommand("GetVehicleById", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                // Add the input parameter for the stored procedure
                 cmd.Parameters.AddWithValue("@VehicleId", vehicleId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -63,6 +66,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                 return vehicle;
             }
         }
+
 
         // Update - Update Vehicle
         public void UpdateVehicle(Vehicle vehicle)

@@ -288,6 +288,8 @@ BEGIN
 END;
 GO
 
+DROP PROCEDURE IF EXISTS CreateAUser;
+GO
 CREATE PROCEDURE CreateAUser
     @LoginName NVARCHAR(128),
     @Password NVARCHAR(128)
@@ -332,6 +334,8 @@ END;
 GO
 
 -- Get all Trucks with relevant information
+DROP PROCEDURE IF EXISTS GetAllTrucks;
+GO
 CREATE PROCEDURE GetAllTrucks
 AS
 BEGIN
@@ -362,6 +366,8 @@ GO
 
 
 -- Edit a Truck and its related Vehicle and Heavy Vehicle details
+DROP PROCEDURE IF EXISTS EditTruck;
+GO
 CREATE PROCEDURE EditTruck
     @TruckId INT,
     @Height DECIMAL(10, 2),
@@ -403,6 +409,8 @@ END;
 GO
 
 -- Delete a Truck and related records from HeavyVehicles and Vehicles
+DROP PROCEDURE IF EXISTS DeleteATruck;
+GO
 CREATE PROCEDURE DeleteATruck
     @TruckId INT
 AS
@@ -417,6 +425,8 @@ BEGIN
 END;
 GO
 
+DROP PROCEDURE IF EXISTS GetAllBuses;
+GO
 CREATE PROCEDURE GetAllBuses
 AS
 BEGIN
@@ -449,6 +459,8 @@ GO
 
 
 -- Edit a Bus and its related Vehicle and Heavy Vehicle details
+DROP PROCEDURE IF EXISTS EditBus;
+GO
 CREATE PROCEDURE EditBus
     @BusId INT,
     @Height DECIMAL(10, 2),
@@ -500,6 +512,8 @@ GO
 
 
 -- Delete a Bus and related records from HeavyVehicles and Vehicles
+DROP PROCEDURE IF EXISTS DeleteABuS;
+GO
 CREATE PROCEDURE DeleteABus
     @BusId INT
 AS
@@ -515,6 +529,8 @@ END;
 GO
 
 -- Get all Commercial Vehicles with relevant information
+DROP PROCEDURE IF EXISTS GetAllCommercialVehicles;
+GO
 CREATE PROCEDURE GetAllCommercialVehicles
 AS
 BEGIN
@@ -537,6 +553,8 @@ END;
 GO
 
 -- Edit a Commercial Vehicle and its related Vehicle and Normal Vehicle details
+DROP PROCEDURE IF EXISTS EditCommercialVehicle;
+GO
 CREATE PROCEDURE EditCommercialVehicle
     @CommercialVehicleId INT,
     @RollCage BIT,
@@ -576,6 +594,8 @@ END;
 GO
 
 -- Delete a Commercial Vehicle and related records from NormalVehicles and Vehicles
+DROP PROCEDURE IF EXISTS DeleteACommercialVehicle;
+GO
 CREATE PROCEDURE DeleteACommercialVehicle
     @CommercialVehicleId INT
 AS
@@ -591,6 +611,8 @@ END;
 GO
 
 -- Get all Private Vehicles with relevant information
+DROP PROCEDURE IF EXISTS GetAllPrivateVehicles;
+GO
 CREATE PROCEDURE GetAllPrivateVehicles
 AS
 BEGIN
@@ -619,6 +641,8 @@ END;
 GO
 
 -- Edit a Private Vehicle and its related Vehicle and Normal Vehicle details
+DROP PROCEDURE IF EXISTS EditPrivateVehicle;
+GO
 CREATE PROCEDURE EditPrivateVehicle
     @PrivateVehicleId INT,
     @IsofixMount BIT,
@@ -657,6 +681,8 @@ END;
 GO
 
 -- Delete a Private Vehicle and related records from NormalVehicles and Vehicles
+DROP PROCEDURE IF EXISTS DeleteAPrivateVehicle;
+GO
 CREATE PROCEDURE DeleteAPrivateVehicle
     @PrivateVehicleId INT
 AS
@@ -668,5 +694,355 @@ BEGIN
     BEGIN CATCH
         THROW;
     END CATCH;
+END;
+GO
+
+-- Create a User
+DROP PROCEDURE IF EXISTS CreateUser;
+GO
+CREATE PROCEDURE CreateUser
+    @UserName NVARCHAR(100),
+    @Password NVARCHAR(255),
+    @CorporateUser BIT,
+    @Balance DECIMAL(10, 2),
+    @Mail NVARCHAR(100)
+AS
+BEGIN
+    BEGIN TRY
+        INSERT INTO Users (UserName, Password, CorporateUser, Balance, Mail)
+        VALUES (@UserName, @Password, @CorporateUser, @Balance, @Mail);
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- Get all Users
+DROP PROCEDURE IF EXISTS GetAllUsers;
+GO
+CREATE PROCEDURE GetAllUsers
+AS
+BEGIN
+    SELECT UserId, UserName, CorporateUser, Balance, Mail FROM Users;
+END;
+GO
+
+-- Get a User by UserId
+DROP PROCEDURE IF EXISTS GetUserById;
+GO
+CREATE PROCEDURE GetUserById
+    @UserId INT
+AS
+BEGIN
+    SELECT UserId, UserName, CorporateUser, Balance, Mail
+    FROM Users
+    WHERE UserId = @UserId;
+END;
+GO
+
+DROP PROCEDURE IF EXISTS GetUserByName;
+GO
+CREATE PROCEDURE GetUserByName
+	@UserName NVARCHAR(100)
+AS
+BEGIN
+	SELECT UserId, UserName, PassWord, CorporateUser, Balance, Mail
+	FROM Users
+	WHERE UserName = @UserName;
+END;
+GO
+
+-- Update a User
+-- Drop the procedure if it already exists
+DROP PROCEDURE IF EXISTS UpdateUser;
+GO
+
+-- Create the new stored procedure
+CREATE PROCEDURE UpdateUser
+    @UserId INT,
+    @UserName NVARCHAR(100),
+    @Password NVARCHAR(255),  -- Consider using NVARCHAR(128) if your passwords are limited
+    @CorporateUser BIT,
+    @Balance DECIMAL(10, 2),
+    @Mail NVARCHAR(100)
+AS
+BEGIN
+    BEGIN TRY
+        -- Step 1: Update the user in the Users table
+        UPDATE Users
+        SET UserName = @UserName,
+            Password = @Password,
+            CorporateUser = @CorporateUser,
+            Balance = @Balance,
+            Mail = @Mail
+        WHERE UserId = @UserId;
+
+        -- Step 2: Update SQL Server login (if necessary)
+        DECLARE @Sql NVARCHAR(MAX);
+        SET @Sql = 'ALTER LOGIN [' + @UserName + '] WITH PASSWORD = ''' + @Password + ''';';
+        EXEC sp_executesql @Sql;
+
+        PRINT 'User updated successfully.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error occurred: ' + ERROR_MESSAGE();
+    END CATCH;
+END;
+GO
+
+
+-- Delete a User
+DROP PROCEDURE IF EXISTS DeleteUser;
+GO
+CREATE PROCEDURE DeleteUser
+    @UserId INT
+AS
+BEGIN
+    BEGIN TRY
+        DELETE FROM Users WHERE UserId = @UserId;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- Create a Corporate User
+DROP PROCEDURE IF EXISTS CreateCorporateUser;
+GO
+CREATE PROCEDURE CreateCorporateUser
+    @UserId INT,
+    @Credit DECIMAL(10, 2),
+    @CVRNumber NVARCHAR(20)
+AS
+BEGIN
+    BEGIN TRY
+        INSERT INTO CorporateUsers (UserId, Credit, CVRNumber)
+        VALUES (@UserId, @Credit, @CVRNumber);
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- Get all Corporate Users
+DROP PROCEDURE IF EXISTS GetAllCorporateUsers;
+GO
+CREATE PROCEDURE GetAllCorporateUsers
+AS
+BEGIN
+    SELECT CorporateUserId, UserId, Credit, CVRNumber FROM CorporateUsers;
+END;
+GO
+
+-- Get a Corporate User by CorporateUserId
+DROP PROCEDURE IF EXISTS GetCorporateUserById;
+GO
+CREATE PROCEDURE GetCorporateUserById
+    @CorporateUserId INT
+AS
+BEGIN
+    SELECT CorporateUserId, UserId, Credit, CVRNumber
+    FROM CorporateUsers
+    WHERE CorporateUserId = @CorporateUserId;
+END;
+GO
+
+-- Update a Corporate User
+DROP PROCEDURE IF EXISTS UpdateCorporateUser;
+GO
+CREATE PROCEDURE UpdateCorporateUser
+    @CorporateUserId INT,
+    @UserId INT,
+    @Credit DECIMAL(10, 2),
+    @CVRNumber NVARCHAR(20)
+AS
+BEGIN
+    BEGIN TRY
+        UPDATE CorporateUsers
+        SET UserId = @UserId,
+            Credit = @Credit,
+            CVRNumber = @CVRNumber
+        WHERE CorporateUserId = @CorporateUserId;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- Delete a Corporate User
+DROP PROCEDURE IF EXISTS DeleteCorporateUser;
+GO
+CREATE PROCEDURE DeleteCorporateUser
+    @CorporateUserId INT
+AS
+BEGIN
+    BEGIN TRY
+        DELETE FROM CorporateUsers WHERE CorporateUserId = @CorporateUserId;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- Create a Private User
+DROP PROCEDURE IF EXISTS CreatePrivateUser;
+GO
+CREATE PROCEDURE CreatePrivateUser
+    @UserId INT,
+    @CPRNumber NVARCHAR(11)
+AS
+BEGIN
+    BEGIN TRY
+        INSERT INTO PrivateUsers (UserId, CPRNumber)
+        VALUES (@UserId, @CPRNumber);
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- Get all Private Users
+DROP PROCEDURE IF EXISTS GetAllPrivateUsers;
+GO
+CREATE PROCEDURE GetAllPrivateUsers
+AS
+BEGIN
+    SELECT PrivateUserId, UserId, CPRNumber FROM PrivateUsers;
+END;
+GO
+
+-- Get a Private User by PrivateUserId
+DROP PROCEDURE IF EXISTS GetPrivateUserById;
+GO
+CREATE PROCEDURE GetPrivateUserById
+    @PrivateUserId INT
+AS
+BEGIN
+    SELECT PrivateUserId, UserId, CPRNumber
+    FROM PrivateUsers
+    WHERE PrivateUserId = @PrivateUserId;
+END;
+GO
+
+-- Delete a Private User
+DROP PROCEDURE IF EXISTS DeletePrivateUser;
+GO
+CREATE PROCEDURE DeletePrivateUser
+    @PrivateUserId INT
+AS
+BEGIN
+    BEGIN TRY
+        DELETE FROM PrivateUsers WHERE PrivateUserId = @PrivateUserId;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- Create an Auction
+DROP PROCEDURE IF EXISTS sp_AddAuction;
+GO
+CREATE PROCEDURE sp_AddAuction
+    @VehicleId INT,
+    @SellerUserId INT,
+    @Price DECIMAL(18, 2),
+    @ClosingDate DATETIME,
+    @BuyerUserId INT
+AS
+BEGIN
+    INSERT INTO Auctions (VehicleId, SellerUserId, Price, ClosingDate, BuyerUserId)
+    VALUES (@VehicleId, @SellerUserId, @Price, @ClosingDate, @BuyerUserId);
+
+    SELECT SCOPE_IDENTITY();
+END
+GO
+
+-- Get all Auctions
+DROP PROCEDURE IF EXISTS sp_GetAllAuctions;
+GO
+CREATE PROCEDURE sp_GetAllAuctions
+AS
+BEGIN
+    SELECT * FROM Auctions;
+END
+GO
+
+-- Delete an Auction
+DROP PROCEDURE IF EXISTS sp_DeleteAuction;
+GO
+CREATE PROCEDURE sp_DeleteAuction
+    @AuctionId INT
+AS
+BEGIN
+    DELETE FROM Auctions
+    WHERE AuctionId = @AuctionId;
+END
+GO
+
+-- Get Seller Auctions
+DROP PROCEDURE IF EXISTS sp_GetUserAuctions;
+GO
+CREATE PROCEDURE sp_GetUserAuctions
+    @SellerUserId INT
+AS
+BEGIN
+    SELECT * FROM Auctions 
+    WHERE SellerUserId = @SellerUserId;
+END
+GO
+
+-- Update Auction
+DROP PROCEDURE IF EXISTS sp_UpdateAuction;
+GO
+CREATE PROCEDURE sp_UpdateAuction
+    @AuctionId INT,
+    @VehicleId INT,
+    @SellerUserId INT,
+    @Price DECIMAL(18, 2),
+    @ClosingDate DATETIME,
+    @BuyerUserId INT
+AS
+BEGIN
+    UPDATE Auctions
+    SET VehicleId = @VehicleId,
+        SellerUserId = @SellerUserId,
+        Price = @Price,
+        ClosingDate = @ClosingDate,
+        BuyerUserId = @BuyerUserId
+    WHERE AuctionId = @AuctionId;
+END
+GO
+
+-- Get Auction by ID
+DROP PROCEDURE IF EXISTS sp_GetAuction;
+GO
+CREATE PROCEDURE sp_GetAuction
+    @AuctionId INT
+AS
+BEGIN
+    SELECT * FROM Auctions WHERE AuctionId = @AuctionId;
+END
+GO
+
+DROP PROCEDURE IF EXISTS AddNormalVehicles;
+GO
+
+CREATE PROCEDURE AddNormalVehicles
+    @VehicleId INT,
+    @NumberOfSeats INT,
+    @TrunkDimensions NVARCHAR(50),
+    @IsCommercial BIT
+AS
+BEGIN
+    INSERT INTO NormalVehicles (VehicleId, NumberOfSeats, TrunkDimensions, IsCommercial)
+    VALUES (@VehicleId, @NumberOfSeats, @TrunkDimensions, @IsCommercial);
+    SELECT SCOPE_IDENTITY();
 END;
 GO

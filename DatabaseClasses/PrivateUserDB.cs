@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using H2_Gruppe_project.Classes;
 
@@ -6,142 +8,125 @@ namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        // Create - Add PrivateUser
-        public void AddPrivateUser(PrivateUser privateUser)
+        // Create a Private User
+        public void CreatePrivateUser(PrivateUser privateUser, int Id)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+
+                using (SqlCommand cmd = new SqlCommand("CreatePrivateUser", connection))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@UserId", Id);
+                    cmd.Parameters.AddWithValue("@CPRNumber", privateUser.CPRNumber);
+
                     try
                     {
-                        string query = @"
-                            EXEC AddPrivateUser @UserName, @Password, @Mail, @CPRNumber, @Balance;
-                            SELECT SCOPE_IDENTITY();";
-
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
-
-                        cmd.Parameters.AddWithValue("@UserName", privateUser.Name);
-                        cmd.Parameters.AddWithValue("@Password", privateUser.PassWord);
-                        cmd.Parameters.AddWithValue("@Mail", privateUser.Mail);
-                        cmd.Parameters.AddWithValue("@CPRNumber", privateUser.CPRNumber);
-                        cmd.Parameters.AddWithValue("@Balance", privateUser.Balance);
-
-                        int userId = Convert.ToInt32(cmd.ExecuteScalar());
-                        privateUser.Id = userId;
-
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error adding private user to database: " + ex.Message);
-                    }
-                }
-            }
-        }
-
-        // Read - Get PrivateUser by ID
-        public PrivateUser GetPrivateUser(int userId)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-
-                string query = @"SELECT u.UserId, u.UserName, u.Password, u.Mail, u.Balance, p.CPRNumber 
-                                FROM Users u 
-                                JOIN PrivateUsers p ON u.UserId = p.UserId 
-                                WHERE u.UserId = @UserId";
-
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@UserId", userId);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                PrivateUser privateUser = null;
-
-                if (reader.Read())
-                {
-                    privateUser = new PrivateUser(
-                        id: Convert.ToInt32(reader["UserId"]),
-                        name: reader["UserName"].ToString(),
-                        passWord: reader["Password"].ToString(),
-                        mail: reader["Mail"].ToString(),
-                        balance: Convert.ToDecimal(reader["Balance"]),
-                        cprNumber: reader["CPRNumber"].ToString()
-                    );
-                }
-                return privateUser;
-            }
-        }
-
-        // Update - Update PrivateUser
-        public void UpdatePrivateUser(PrivateUser privateUser)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        string query = @"
-                            UPDATE Users
-                            SET UserName = @UserName, Password = @Password, Mail = @Mail, Balance = @Balance
-                            WHERE UserId = @UserId;
-
-                            UPDATE PrivateUsers
-                            SET CPRNumber = @CPRNumber
-                            WHERE UserId = @UserId;";
-
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
-                        cmd.Parameters.AddWithValue("@UserName", privateUser.Name);
-                        cmd.Parameters.AddWithValue("@Password", privateUser.PassWord);
-                        cmd.Parameters.AddWithValue("@Mail", privateUser.Mail);
-                        cmd.Parameters.AddWithValue("@Balance", privateUser.Balance);
-                        cmd.Parameters.AddWithValue("@CPRNumber", privateUser.CPRNumber);
-                        cmd.Parameters.AddWithValue("@UserId", privateUser.Id);
-
                         cmd.ExecuteNonQuery();
-                        transaction.Commit();
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"SQL error occurred: {ex.Message}");
+                        throw;
                     }
                     catch (Exception ex)
                     {
-                        transaction.Rollback();
-                        throw new Exception("Error updating private user in database: " + ex.Message);
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        throw;
                     }
                 }
             }
         }
 
-        // Delete - Delete PrivateUser by ID
-        public void DeletePrivateUser(int userId)
+        // Get All Private Users
+        public List<PrivateUser> GetAllPrivateUsers()
+        {
+            List<PrivateUser> privateUsers = new List<PrivateUser>();
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("GetAllPrivateUsers", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int privateUserId = reader.GetInt32(0); // PrivateUserId
+                            int userId = reader.GetInt32(1);       // UserId
+                            string cprNumber = reader.GetString(2); // CPRNumber
+
+                            // You can fetch User details here if needed
+                            // User user = GetUserById(userId); // Implement this if needed
+
+                            privateUsers.Add(new PrivateUser(privateUserId, "DummyName", "DummyPass", "dummy@mail.com", 0, cprNumber));
+                        }
+                    }
+                }
+            }
+            return privateUsers;
+        }
+
+        // Get a Private User by ID
+        public PrivateUser GetPrivateUserById(int privateUserId)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+
+                using (SqlCommand cmd = new SqlCommand("GetPrivateUserById", connection))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PrivateUserId", privateUserId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int userId = reader.GetInt32(1); // UserId
+                            string cprNumber = reader.GetString(2); // CPRNumber
+
+                            // You can fetch User details here if needed
+                            // User user = GetUserById(userId); // Implement this if needed
+
+                            return new PrivateUser(privateUserId, "DummyName", "DummyPass", "dummy@mail.com", 0, cprNumber);
+                        }
+                    }
+                }
+            }
+            return null; // Return null if no PrivateUser found
+        }
+
+        // Delete a Private User
+        public void DeletePrivateUser(int privateUserId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("DeletePrivateUser", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PrivateUserId", privateUserId);
+
                     try
                     {
-                        // First, delete the record from PrivateUsers table
-                        string deletePrivateUserQuery = "DELETE FROM PrivateUsers WHERE UserId = @UserId;";
-                        SqlCommand deletePrivateUserCmd = new SqlCommand(deletePrivateUserQuery, connection, transaction);
-                        deletePrivateUserCmd.Parameters.AddWithValue("@UserId", userId);
-                        deletePrivateUserCmd.ExecuteNonQuery();
-
-                        // Then, delete the record from Users table
-                        string deleteUserQuery = "DELETE FROM Users WHERE UserId = @UserId;";
-                        SqlCommand deleteUserCmd = new SqlCommand(deleteUserQuery, connection, transaction);
-                        deleteUserCmd.Parameters.AddWithValue("@UserId", userId);
-                        deleteUserCmd.ExecuteNonQuery();
-
-                        transaction.Commit();
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        Console.WriteLine($"SQL error occurred: {ex.Message}");
+                        throw;
                     }
                     catch (Exception ex)
                     {
-                        transaction.Rollback();
-                        throw new Exception("Error deleting private user from database: " + ex.Message);
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        throw;
                     }
                 }
             }

@@ -11,7 +11,7 @@ namespace H2_Gruppe_project.ViewModels
     public partial class LoginViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private string email;
+        private string name;
 
         [ObservableProperty]
         private string password;
@@ -33,9 +33,8 @@ namespace H2_Gruppe_project.ViewModels
         {
             try
             {
-                var user = _database.GetUserByEmail(Email);
-                
-                if (user != null && user.PassWord == User.HashPassword(Password))
+                var user = _database.GetUserByName(name);
+                if (user != null && user.PassWord == Password)
                 {
                     _mainWindowViewModel.SwitchViewModel(new DashboardViewModel(_mainWindowViewModel, user, _database));
                 }
