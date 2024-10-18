@@ -18,7 +18,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                 cmd.Parameters.AddWithValue("@TrunkDimensions", normalVehicle.TrunkDimensions);
                 cmd.Parameters.AddWithValue("@IsCommercial", normalVehicle.IsCommercial);
 
-                return Convert.ToInt32(cmd.ExecuteNonQuery());
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
     }

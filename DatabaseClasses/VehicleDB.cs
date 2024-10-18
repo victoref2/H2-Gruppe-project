@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using H2_Gruppe_project.Classes;
+using HarfBuzzSharp;
 
 namespace H2_Gruppe_project.DatabaseClasses
 {
@@ -64,6 +65,33 @@ namespace H2_Gruppe_project.DatabaseClasses
                 }
 
                 return vehicle;
+            }
+        }
+
+        public void GetVehicleTypeAndId(int vehicleId, out int VehicleSubId, out string VehicleType)
+        {
+            VehicleSubId = 0;
+            VehicleType = "N/A";
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+
+                SqlCommand cmd = new SqlCommand("GetVehicleByIdAndReturnTypeAndId", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                // Add the input parameter for the stored procedure
+                cmd.Parameters.AddWithValue("@VehicleId", vehicleId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        // Retrieve the vehicle type and sub ID if found
+                        VehicleType = reader["VehicleType"].ToString();
+                        VehicleSubId = reader["VehicleSubId"] is DBNull ? 0 : Convert.ToInt32(reader["VehicleSubId"]); // Set VehicleSubId, defaults to 0 if NULL
+                    }
+                }
             }
         }
 

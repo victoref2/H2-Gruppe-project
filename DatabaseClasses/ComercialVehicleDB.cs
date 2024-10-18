@@ -42,7 +42,7 @@ namespace H2_Gruppe_project.DatabaseClasses
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@NormalVehiclesId", comercialVehicle.NormalVehicleId);
+                cmd.Parameters.AddWithValue("@NormalVehicleId", normalVehicleId);
                 cmd.Parameters.AddWithValue("@RollCage", comercialVehicle.RollCage);
                 cmd.Parameters.AddWithValue("@LoadCapacity", comercialVehicle.LoadCapacity);
 

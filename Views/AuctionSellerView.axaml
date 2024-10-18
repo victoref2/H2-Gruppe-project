@@ -13,17 +13,200 @@
     <!-- Auction Info Section -->
     <StackPanel Grid.Column="0" Margin="10">
       <TextBlock Text="Seller of Auction" FontSize="24" />
-      <Border Width="200" Height="200" BorderBrush="Gray" BorderThickness="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock Text="{Binding Auction.Vehicle.Name}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+		<Border  Margin="10" BorderBrush="Black" BorderThickness="1" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Top">
+		  <StackPanel>
+                <TextBlock Text="{Binding Auction.Vehicle.Name}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+		        <TextBlock Text="KM driven"/>
+		        <TextBox Text="{Binding Auction.Vehicle.KM}" Margin="0,0,70,0"/>
+		        <TextBlock Text="KM/L"/>
+		        <TextBox Text="{Binding Auction.Vehicle.KmL}" Margin="0,0,70,10"/>
+		  <StackPanel>
+			  <!-- Vehicle Type -->
+			  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				  <TextBlock Text="Vehicle type" Width="120"/>
+				  <ComboBox Width="150" ItemsSource="{Binding VehicleTypes}" SelectedItem="{Binding SelectedVehicleType, Mode=TwoWay}"/>
+			  </StackPanel>
+
+			  <!-- Engine Size -->
+			  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				  <TextBlock Text="Engine size" Width="120"/>
+				  <TextBox Width="150" Text="{Binding EngineSize, Mode=TwoWay}"/>
+			  </StackPanel>
+
+			  <!-- Tow Bar -->
+			  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				  <TextBlock Text="Tow bar" Width="120"/>
+				  <CheckBox IsChecked="{Binding TowBar, Mode=TwoWay}" Margin="0,-7,0,0"/>
+			  </StackPanel>
+
+			  <!--NormalVH-->
+			  <StackPanel IsVisible="{Binding IsNormalVHVisible}">
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Width="120" Text="Number of Seats"/>
+					  <TextBox Width="150" Text="{Binding NumberOfSeats, Mode=TwoWay}"/>
+				  </StackPanel>
+
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Trunk Dimensions" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding TrunkDimensions, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Is Commercial" Width="120"/>
+					  <StackPanel Margin="0,-7,0,0">
+						  <CheckBox IsChecked="{Binding IsCommercialVH, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+			  </StackPanel>
+
+			  <!--PrivateVH-->
+			  <StackPanel IsVisible="{Binding IsPrivateVisible}">
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Isofix Mount" Width="120"/>
+					  <StackPanel Margin="0,-7,0,0">
+						  <CheckBox IsChecked="{Binding IsofixMount, Mode=TwoWay}" Margin="0,-7,0,0"/>
+					  </StackPanel>
+				  </StackPanel>
+			  </StackPanel>
+
+			  <!--CommercialVH-->
+			  <StackPanel IsVisible="{Binding IsCommercialVisible}">
+				  <!-- RollCage property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Roll Cage" Width="120"/>
+					  <CheckBox IsChecked="{Binding RollCage, Mode=TwoWay}" Margin="0,-7,0,0"/>
+					  <StackPanel Margin="0,-7,0,0">
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- LoadCapacity property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Load Capacity" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding LoadCapacity, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+			  </StackPanel>
+
+			  <!--HeavyVehicle-->
+			  <StackPanel IsVisible="{Binding IsHeavyVehicleVisible}">
+				  <!-- MaxLoadCapacity property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Max Load Capacity" Width="130"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding MaxLoadCapacity, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- NumberOfAxles property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Number of Axles" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding NumberOfAxles, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+			  </StackPanel>
+
+			  <!--Bus-->
+			  <StackPanel IsVisible="{Binding IsBusVisible}">
+				  <!-- Height property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Height" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding Height, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- Weight property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Weight" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding Weight, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- Length property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Length" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding Length, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- NumberOfSeats property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Number of Seats" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding NumberOfSeats, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- NumberOfSleepingPlaces property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Number of Sleeping Places" Width="190"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding NumberOfSleepingPlaces, Mode=TwoWay}"/>
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- HasToilet property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Has Toilet" Width="120"/>
+					  <StackPanel Margin="0,-7,0,0">
+						  <CheckBox IsChecked="{Binding HasToilet, Mode=TwoWay}" Margin="0,-7,0,0"/>
+					  </StackPanel>
+				  </StackPanel>
+			  </StackPanel>
+
+			  <!--Truck-->
+			  <StackPanel IsVisible="{Binding IsTruckVisible}">
+				  <!-- Height property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Height" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding Height, Mode=TwoWay}" />
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- Weight property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Weight" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding Weight, Mode=TwoWay}" />
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- Length property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Length" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding Length, Mode=TwoWay}" />
+					  </StackPanel>
+				  </StackPanel>
+
+				  <!-- LoadCapacity property -->
+				  <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+					  <TextBlock Text="Load Capacity" Width="120"/>
+					  <StackPanel>
+						  <TextBox Width="150" Text="{Binding LoadCapacity, Mode=TwoWay}" />
+					  </StackPanel>
+				  </StackPanel>
+			  </StackPanel>
+		  </StackPanel>
+		</StackPanel>
       </Border>
-      <Button Content="Back" HorizontalAlignment="Left" Margin="10,20,0,0" Width="80" Command="{Binding BackCommand}" />
+      
     </StackPanel>
 
     <!-- Current Bid and Accept Section -->
-    <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10">
-      <TextBlock Text="{Binding Auction.ClosingDate, StringFormat='Closing {0:MM/dd/yy}'}" FontSize="18" HorizontalAlignment="Right" />
-      <TextBlock Text="{Binding Auction.CurrentPrice, StringFormat='DKK {0:N0}'}" FontSize="24" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Right" Margin="0,10,0,0" />
-      <Button Content="Accept" Width="120" Height="40" HorizontalAlignment="Right" Margin="0,20,0,0" Command="{Binding AcceptBidCommand}" />
-    </StackPanel>
+	  <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10">
+		  <TextBlock Text="{Binding Auction.ClosingDate, StringFormat='Closing {0:dd/MM/yy}'}" FontSize="18" HorizontalAlignment="Right" />
+		  <TextBlock Text="{Binding Auction.CurrentPrice, StringFormat='DKK {0:N0}'}" FontSize="24" FontWeight="Bold" Foreground="Black" HorizontalAlignment="Right" Margin="0,10,0,0" />
+		  <Button Content="Accept" Width="120" Height="40" HorizontalAlignment="Right" Margin="0,20,0,0" Command="{Binding AcceptBidCommand}" />
+
+		  <Button Content="Back" Width="120" Height="40" HorizontalAlignment="Right" Margin="0,60,0,0" Command="{Binding BackCommand}" />
+	  </StackPanel>
   </Grid>
 </UserControl>

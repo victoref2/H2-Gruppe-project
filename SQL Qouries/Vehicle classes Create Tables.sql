@@ -1,5 +1,14 @@
--- Drop table if it exists before creating it
+-- Drop tables if they exist before creating new ones
+DROP TABLE IF EXISTS Auctions;
+DROP TABLE IF EXISTS CommercialVehicles;
+DROP TABLE IF EXISTS PrivateVehicles;
+DROP TABLE IF EXISTS NormalVehicles;
+DROP TABLE IF EXISTS Buses;
+DROP TABLE IF EXISTS Trucks;
+DROP TABLE IF EXISTS HeavyVehicles;
 DROP TABLE IF EXISTS Vehicles;
+
+-- Create Vehicles table
 CREATE TABLE Vehicles (
     VehicleId INT IDENTITY(1,1) PRIMARY KEY, 
     Name VARCHAR(100) NOT NULL,
@@ -8,14 +17,13 @@ CREATE TABLE Vehicles (
     AgeGroup VARCHAR(20) NOT NULL,
     TowHook BIT NOT NULL,
     DriversLicenceClass VARCHAR(5) NOT NULL,
-    EngineSize VARCHAR NOT NULL,
+    EngineSize VARCHAR(10) NOT NULL,
     KmL DECIMAL(10, 2) NOT NULL,
     FuelType VARCHAR(20) NOT NULL,
     EnergyClass VARCHAR(10) NOT NULL
 );
 
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS HeavyVehicles;
+-- Create HeavyVehicles table
 CREATE TABLE HeavyVehicles (
     HeavyVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     VehicleId INT NOT NULL,
@@ -24,8 +32,7 @@ CREATE TABLE HeavyVehicles (
     FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId) ON DELETE CASCADE
 );
 
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS Trucks;
+-- Create Trucks table
 CREATE TABLE Trucks (
     TruckId INT IDENTITY(1,1) PRIMARY KEY,
     HeavyVehicleId INT NOT NULL,
@@ -36,8 +43,7 @@ CREATE TABLE Trucks (
     FOREIGN KEY (HeavyVehicleId) REFERENCES HeavyVehicles(HeavyVehicleId) ON DELETE CASCADE
 );
 
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS Buses;
+-- Create Buses table
 CREATE TABLE Buses (
     BusId INT IDENTITY(1,1) PRIMARY KEY,
     HeavyVehicleId INT NOT NULL,
@@ -50,8 +56,7 @@ CREATE TABLE Buses (
     FOREIGN KEY (HeavyVehicleId) REFERENCES HeavyVehicles(HeavyVehicleId) ON DELETE CASCADE
 );
 
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS NormalVehicles;
+-- Create NormalVehicles table
 CREATE TABLE NormalVehicles (
     NormalVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     VehicleId INT NOT NULL,
@@ -61,8 +66,7 @@ CREATE TABLE NormalVehicles (
     FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId) ON DELETE CASCADE
 );
 
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS PrivateVehicles;
+-- Create PrivateVehicles table
 CREATE TABLE PrivateVehicles (
     PrivateVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     NormalVehicleId INT NOT NULL,
@@ -70,14 +74,28 @@ CREATE TABLE PrivateVehicles (
     FOREIGN KEY (NormalVehicleId) REFERENCES NormalVehicles(NormalVehicleId) ON DELETE CASCADE
 );
 
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS CommercialVehicles;
+-- Create CommercialVehicles table
 CREATE TABLE CommercialVehicles (
     CommercialVehicleId INT IDENTITY(1,1) PRIMARY KEY,
     NormalVehicleId INT NOT NULL,
     RollCage BIT NOT NULL,
     LoadCapacity INT NOT NULL CHECK (LoadCapacity >= 0),
     FOREIGN KEY (NormalVehicleId) REFERENCES NormalVehicles(NormalVehicleId) ON DELETE CASCADE
+);
+
+-- Create Auctions table
+CREATE TABLE Auctions (
+    AuctionId INT IDENTITY(1,1) PRIMARY KEY,
+    VehicleId INT NOT NULL,
+    SellerUserId INT NOT NULL,
+    BuyerUserId INT, 
+    Price DECIMAL(18,2) NOT NULL,
+    ClosingDate DATETIME NOT NULL,
+
+    -- Foreign Key Constraints
+    FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId),
+    FOREIGN KEY (SellerUserId) REFERENCES Users(UserId),
+    FOREIGN KEY (BuyerUserId) REFERENCES Users(UserId)
 );
 
 -- Drop table if it exists before creating it
@@ -108,20 +126,4 @@ CREATE TABLE PrivateUsers (
     UserId INT NOT NULL,
     CPRNumber NVARCHAR(11) NOT NULL,
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
-);
-
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS Auctions;
-CREATE TABLE Auctions (
-    AuctionId INT IDENTITY(1,1) PRIMARY KEY,
-    VehicleId INT NOT NULL,
-    SellerUserId INT NOT NULL,
-    BuyerUserId INT, 
-    Price DECIMAL(18,2) NOT NULL,
-    ClosingDate DATETIME NOT NULL,
-
-    -- Foreign Key Constraints
-    FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId),
-    FOREIGN KEY (SellerUserId) REFERENCES Users(UserId),
-    FOREIGN KEY (BuyerUserId) REFERENCES Users(UserId)
-);
+ );

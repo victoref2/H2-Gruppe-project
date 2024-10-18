@@ -8,7 +8,7 @@ CREATE PROCEDURE AddVehicle
     @AgeGroup VARCHAR(20),
     @TowHook BIT,
     @DriversLicenceClass VARCHAR(5),
-    @EngineSize DECIMAL,
+    @EngineSize VARCHAR(10), 
     @KmL DECIMAL(10, 2),
     @FuelType VARCHAR(20),
     @EnergyClass VARCHAR(10)
@@ -1046,3 +1046,63 @@ BEGIN
     SELECT SCOPE_IDENTITY();
 END;
 GO
+
+DROP PROCEDURE IF EXISTS GetVehicleByIdAndReturnTypeAndId;
+GO
+
+CREATE PROCEDURE GetVehicleByIdAndReturnTypeAndId
+    @VehicleId INT
+AS
+BEGIN
+    DECLARE @VehicleType NVARCHAR(50);
+    DECLARE @VehicleSubId INT;
+
+    -- Check if the vehicle is a Truck
+    IF EXISTS (SELECT 1 FROM Trucks t 
+                JOIN HeavyVehicles h ON t.HeavyVehicleId = h.HeavyVehicleId 
+                WHERE h.VehicleId = @VehicleId)
+    BEGIN
+        SELECT @VehicleType = 'Truck', @VehicleSubId = t.TruckId
+        FROM Trucks t
+        JOIN HeavyVehicles h ON t.HeavyVehicleId = h.HeavyVehicleId
+        WHERE h.VehicleId = @VehicleId;
+    END
+    -- Check if the vehicle is a Bus
+    ELSE IF EXISTS (SELECT 1 FROM Buses b 
+                    JOIN HeavyVehicles h ON b.HeavyVehicleId = h.HeavyVehicleId 
+                    WHERE h.VehicleId = @VehicleId)
+    BEGIN
+        SELECT @VehicleType = 'Bus', @VehicleSubId = b.BusId
+        FROM Buses b
+        JOIN HeavyVehicles h ON b.HeavyVehicleId = h.HeavyVehicleId
+        WHERE h.VehicleId = @VehicleId;
+    END
+    -- Check if the vehicle is a Private Vehicle
+    ELSE IF EXISTS (SELECT 1 FROM PrivateVehicles p 
+                    JOIN NormalVehicles n ON p.NormalVehicleId = n.NormalVehicleId 
+                    WHERE n.VehicleId = @VehicleId)
+    BEGIN
+        SELECT @VehicleType = 'PrivateVehicle', @VehicleSubId = p.PrivateVehicleId
+        FROM PrivateVehicles p
+        JOIN NormalVehicles n ON p.NormalVehicleId = n.NormalVehicleId
+        WHERE n.VehicleId = @VehicleId;
+    END
+    -- Check if the vehicle is a Commercial Vehicle
+    ELSE IF EXISTS (SELECT 1 FROM CommercialVehicles c 
+                    JOIN NormalVehicles n ON c.NormalVehicleId = n.NormalVehicleId 
+                    WHERE n.VehicleId = @VehicleId)
+    BEGIN
+        SELECT @VehicleType = 'CommercialVehicle', @VehicleSubId = c.CommercialVehicleId
+        FROM CommercialVehicles c
+        JOIN NormalVehicles n ON c.NormalVehicleId = n.NormalVehicleId
+        WHERE n.VehicleId = @VehicleId;
+    END
+    ELSE
+    BEGIN
+        SET @VehicleType = 'Not Found';  -- If no type found
+        SET @VehicleSubId = NULL;  -- No sub ID
+    END
+
+    -- Return the results
+    SELECT @VehicleType AS VehicleType, @VehicleSubId AS VehicleSubId;
+END
