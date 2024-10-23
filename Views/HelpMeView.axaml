@@ -1,11 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
+             x:Class="H2_Gruppe_project.Views.HelpMeView"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:H2_Gruppe_project.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:vm="using:H2_Gruppe_project.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="H2_Gruppe_project.HelpMeView"
 			 x:DataType="vm:HelpMeViewModel">
+	
 	<Grid Margin="20">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -30,12 +31,14 @@
 						<StackPanel Margin="5">
 							<TextBlock Text="Seller"/>
 							<TextBlock Text="{Binding Seller.Name}" />
-							<TextBlock Text="Current Price"/>
+							<TextBlock Text="Price"/>
 							<TextBlock Text="{Binding CurrentPrice, StringFormat='{}{0:C}'}" />
 							<TextBlock Text="KM driven"/>
 							<TextBlock Text="{Binding Vehicle.KM}" />
 							<TextBlock Text="KM/L"/>
 							<TextBlock Text="{Binding Vehicle.KmL}" />
+							<TextBlock Text="Buyer Name"/>
+							<TextBlock Text="{Binding CurrentBuyer.Name}"/>
 						</StackPanel>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
@@ -49,12 +52,14 @@
 						<StackPanel Margin="5">
 							<TextBlock Text="Seller"/>
 							<TextBlock Text="{Binding Seller.Name}" />
-							<TextBlock Text="Current Price"/>
+							<TextBlock Text="Price"/>
 							<TextBlock Text="{Binding CurrentPrice, StringFormat='{}{0:C}'}" />
 							<TextBlock Text="KM driven"/>
 							<TextBlock Text="{Binding Vehicle.KM}" />
 							<TextBlock Text="KM/L"/>
 							<TextBlock Text="{Binding Vehicle.KmL}" />
+							<TextBlock Text="Buyer Name"/>
+							<TextBlock Text="{Binding CurrentBuyer.Name}"/>
 						</StackPanel>
 					</DataTemplate>
 				</ListBox.ItemTemplate>

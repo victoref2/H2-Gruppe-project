@@ -148,8 +148,32 @@ namespace H2_Gruppe_project.ViewModels
             {
                 User buyer = _database.GetUserById(_loggedInUser.Id);
                 CorporateUser? corp = _database.GetCorporateUser(buyer.Id);
-                decimal? corpbuyer = corp.Credit + corp.Balance;
-                if (buyer.Balance >= BidAmount && Auction.CurrentBuyer.Id != buyer.Id)
+                if (corp != null) 
+                { 
+                    decimal? corpbuyer = corp.Credit + corp.Balance;
+
+                    if (buyer.IsCorp && corpbuyer >= BidAmount)
+                    {
+
+                        if (Auction.CurrentBuyer != null && Auction.CurrentBuyer.Id != buyer.Id)
+                        {
+                            User currentBuyer = _database.GetUserById(Auction.CurrentBuyer.Id);
+
+                            currentBuyer.Balance += Auction.CurrentPrice;
+                            _database.UpdateUserBalance(currentBuyer.Id, currentBuyer.Balance);
+                        }
+                        Auction.CurrentBuyer = buyer;
+                        Auction.CurrentPrice = BidAmount;
+                        _database.UpdateAuction(Auction);
+
+                        BidAmount -= buyer.Balance;
+                        corp.Credit -= BidAmount;
+                        corp.Balance = 0;
+
+                        _database.UpdateCorporateUser(corp);
+                    }
+                }
+                if (buyer.Balance >= BidAmount)
                 {
                     if (Auction.CurrentBuyer != null && Auction.CurrentBuyer.Id != 0)
                     {
@@ -162,29 +186,9 @@ namespace H2_Gruppe_project.ViewModels
                     buyer.Balance -= BidAmount;
                     _database.UpdateUserBalance(buyer.Id, buyer.Balance);
 
-                    Auction.CurrentBuyer = buyer; 
-                    Auction.CurrentPrice = BidAmount;
-                    _database.UpdateAuction(Auction);
-                }
-                else if (buyer.IsCorp && corpbuyer >= BidAmount)
-                {
-
-                    if (Auction.CurrentBuyer != null && Auction.CurrentBuyer.Id != buyer.Id)
-                    {
-                        User currentBuyer = _database.GetUserById(Auction.CurrentBuyer.Id);
-
-                        currentBuyer.Balance += Auction.CurrentPrice;
-                        _database.UpdateUserBalance(currentBuyer.Id, currentBuyer.Balance);
-                    }
                     Auction.CurrentBuyer = buyer;
                     Auction.CurrentPrice = BidAmount;
                     _database.UpdateAuction(Auction);
-
-                    BidAmount -= buyer.Balance;
-                    corp.Credit -= BidAmount;
-                    corp.Balance = 0;
-
-                    _database.UpdateCorporateUser(corp);
                 }
                 else
                 {

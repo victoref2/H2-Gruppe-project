@@ -64,7 +64,7 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void GoToAuctionHistory()
         {
-            _mainWindowViewModel.SwitchViewModel(new HistoryViewModel(_mainWindowViewModel, _loggedInUser, _database));
+            _mainWindowViewModel.SwitchViewModel(new HelpMeViewModel(_mainWindowViewModel, _loggedInUser, _database));
         }
 
 

@@ -116,10 +116,9 @@ namespace H2_Gruppe_project.ViewModels
         // Command methods
         private void AcceptBid()
         {
-            // Logic to accept the current bid
-            Auction.CurrentPrice = Auction.CurrentPrice; // This line will trigger acceptance logic
+            _database.CreateEndedAuction(Auction);
+            _database.DeleteAuction(Auction.Id);
             Console.WriteLine("Bid Accepted");
-            // Here, you'd likely also communicate with the database to update the auction status
         }
 
         [RelayCommand]

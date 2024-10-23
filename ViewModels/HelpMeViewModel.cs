@@ -1,14 +1,18 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using H2_Gruppe_project.Classes;
 using H2_Gruppe_project.DatabaseClasses;
-using System;
+using System.Threading.Tasks;
+using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Reactive.Linq;
+using Avalonia.Controls;
+
 
 namespace H2_Gruppe_project.ViewModels
 {
-    public partial class HistoryViewModel : ViewModelBase
+    public partial class HelpMeViewModel : ViewModelBase
     {
         private readonly MainWindowViewModel _mainWindowViewModel;
         private readonly User _loggedInUser;
@@ -23,13 +27,15 @@ namespace H2_Gruppe_project.ViewModels
         [ObservableProperty]
         private ObservableCollection<Auction> currentAuctions;
 
-        public HistoryViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser, Database database)
+        public HelpMeViewModel(MainWindowViewModel mainWindowViewModel, User loggedInUser, Database database)
         {
             _mainWindowViewModel = mainWindowViewModel;
             _loggedInUser = loggedInUser;
             _database = database;
 
             UserName = _loggedInUser.Name;
+
+            LoadAuctions();
         }
 
         private void LoadAuctions()

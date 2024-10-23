@@ -44,6 +44,6 @@
         <Page Include="Views\LoginView.axaml" />
         <Page Include="Views\ChangePasswordView.axaml" />
         <Page Include="Views\RegisterUserView.axaml" />
-		<Page Include="Views\HistoryView.axaml" />
+		<Page Include="H2_Gruppe_project\Views\HelpMeView.axaml" />
 	</ItemGroup>
 </Project>
