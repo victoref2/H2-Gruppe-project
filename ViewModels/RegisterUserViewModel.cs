@@ -115,7 +115,8 @@ namespace H2_Gruppe_project.ViewModels
                         name: Name,
                         passWord: hashedPassword,
                         mail: Email,
-                        balance: 0 // Initial balance
+                        balance: 0, // Initial balance
+                        isCorp: IsCorporateUser
                     );
                     int Id = _database.CreateUser(user, isCorporateUser);
 
@@ -128,11 +129,12 @@ namespace H2_Gruppe_project.ViewModels
                             return;
                         }
                         var newCorporateUser = new CorporateUser(
-                            id: 0,
+                            id: Id,
                             name: Name,
                             passWord: hashedPassword,
                             mail: Email,
                             balance: 0, // Initial balance
+                            isCorp: true,
                             credit: Credit,
                             cvrNumber: CvrNumber
                         );
@@ -147,6 +149,7 @@ namespace H2_Gruppe_project.ViewModels
                             passWord: hashedPassword,
                             mail: Email,
                             balance: 0, // Initial balance
+                            isCorp: false,
                             cprNumber: CprNumber
                         );
                         

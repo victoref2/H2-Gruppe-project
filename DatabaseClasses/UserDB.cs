@@ -39,7 +39,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@Balance", user.Balance);
                         cmd.Parameters.AddWithValue("@Mail", user.Mail);
 
-                        return Convert.ToInt32(cmd.ExecuteNonQuery());
+                        return cmd.ExecuteNonQuery();
                     }
                 }
             }
@@ -71,7 +71,8 @@ namespace H2_Gruppe_project.DatabaseClasses
                         reader["UserName"].ToString(),
                         null,//no password for you
                         reader["Mail"].ToString(),
-                        (decimal)reader["Balance"]
+                        (decimal)reader["Balance"],
+                        (bool)reader["CorporateUser"]
                     );
                     users.Add(user);
                 }
@@ -102,7 +103,9 @@ namespace H2_Gruppe_project.DatabaseClasses
                         reader["UserName"].ToString(),
                         null, // Password is not retrieved
                         reader["Mail"].ToString(),
-                        (decimal)reader["Balance"]
+                        (decimal)reader["Balance"],
+                        (bool)reader["CorporateUser"]
+
                     );
                 }
                 connection.Close();
@@ -133,7 +136,8 @@ namespace H2_Gruppe_project.DatabaseClasses
                         reader["UserName"].ToString(),
                         reader["PassWord"].ToString(),
                         reader["Mail"].ToString(),
-                        (decimal)reader["Balance"]
+                        (decimal)reader["Balance"],
+                        (bool)reader["CorporateUser"]
                     );
                 }
                 connection.Close();

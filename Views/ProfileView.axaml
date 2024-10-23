@@ -30,6 +30,12 @@
                 <TextBlock Text="{Binding Balance}" />
             </StackPanel>
 
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+			    <TextBlock Text="Add Balance:" Width="100" FontWeight="Bold"/>
+				<TextBox Width="150" Text="{Binding AddBalance}"/>
+				<Button Content="Add" Command="{Binding UpdateBalanceCommand}" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+			</StackPanel>
+
             <!-- Credit (Visible only for Corporate Users) -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10" IsVisible="{Binding IsCorporateUser}">
                 <TextBlock Text="Credit:" Width="100" FontWeight="Bold"/>
@@ -38,9 +44,9 @@
 
             <!-- Add/Subtract Credit (Visible only for Corporate Users) -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10" IsVisible="{Binding IsCorporateUser}">
-                <TextBlock Text="Update Credit:" Width="100" FontWeight="Bold"/>
+                <TextBlock Text="Add Credit:" Width="100" FontWeight="Bold"/>
                 <TextBox Width="150" Text="{Binding AmountToChange}" />
-                <Button Content="Update" Command="{Binding UpdateCreditCommand}" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                <Button Content="Add" Command="{Binding UpdateCreditCommand}" HorizontalAlignment="Center" Margin="10,0,0,0"/>
             </StackPanel>
 
             <!-- Change password -->

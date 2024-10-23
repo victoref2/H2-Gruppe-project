@@ -1,64 +1,58 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
+using System.Transactions;
 using H2_Gruppe_project.Classes;
 
 namespace H2_Gruppe_project.DatabaseClasses
 {
     public partial class Database
     {
-        // Create - Add CorporateUser
         public void AddCorporateUser(CorporateUser corporateUser)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
                 {
-                    try
+                    using (SqlCommand cmd = new SqlCommand("AddCorporateUser", connection, transaction))
                     {
-                        string query = @"
-                            EXEC AddCorporateUser @UserName, @Password, @Mail, @Credit, @CVRNumber, @Balance;
-                            SELECT SCOPE_IDENTITY();";
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
-
-                        cmd.Parameters.AddWithValue("@UserName", corporateUser.Name);
-                        cmd.Parameters.AddWithValue("@Password", corporateUser.PassWord);
-                        cmd.Parameters.AddWithValue("@Mail", corporateUser.Mail);
+                        // Add parameters for the stored procedure
+                        cmd.Parameters.AddWithValue("@UserId", corporateUser.Id);
                         cmd.Parameters.AddWithValue("@Credit", corporateUser.Credit);
                         cmd.Parameters.AddWithValue("@CVRNumber", corporateUser.CVRNumber);
-                        cmd.Parameters.AddWithValue("@Balance", corporateUser.Balance);
 
-                        int userId = Convert.ToInt32(cmd.ExecuteScalar());
-                        corporateUser.Id = userId;
+                        // Execute the query
+                        cmd.ExecuteNonQuery();
 
                         transaction.Commit();
                     }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error adding corporate user to database: " + ex.Message);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Error adding corporate user: " + ex.Message);
                 }
             }
         }
 
+
         // Read - Get CorporateUser by ID
-        public CorporateUser GetCorporateUser(int userId)
+        public CorporateUser GetCorporateUser(int corporateUserId)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
 
-                string query = @"
-                    SELECT u.UserId, u.UserName, u.Password, u.Mail, u.Balance, 
-                        c.Credit, c.CVRNumber 
-                    FROM Users u 
-                    JOIN CorporateUsers c ON u.UserId = c.UserId 
-                    WHERE u.UserId = @UserId";
+                SqlCommand cmd = new SqlCommand("GetCorporateUserById", connection); // Use the correct stored procedure name
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@UserId", userId);
+                // Add the parameter for the stored procedure
+                cmd.Parameters.AddWithValue("@CorporateUserId", corporateUserId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
                 CorporateUser corporateUser = null;
@@ -71,6 +65,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                         passWord: reader["Password"].ToString(),
                         mail: reader["Mail"].ToString(),
                         balance: Convert.ToDecimal(reader["Balance"]),
+                        isCorp: Convert.ToBoolean(reader["CorporateUser"]), // This should now work
                         credit: Convert.ToDecimal(reader["Credit"]),
                         cvrNumber: reader["CVRNumber"].ToString()
                     );
@@ -79,34 +74,31 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        // Update - Update CorporateUser
+
+
         public void UpdateCorporateUser(CorporateUser corporateUser)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                using (SqlCommand cmd = new SqlCommand("UpdateCorporateUser", connection, transaction))
                 {
                     try
                     {
-                        string query = @"
-                            UPDATE Users
-                            SET UserName = @UserName, Password = @Password, Mail = @Mail, Balance = @Balance
-                            WHERE UserId = @UserId;
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                            UPDATE CorporateUsers
-                            SET Credit = @Credit, CVRNumber = @CVRNumber
-                            WHERE UserId = @UserId;";
-
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        // Add parameters for the stored procedure
+                        cmd.Parameters.AddWithValue("@UserId", corporateUser.Id);
                         cmd.Parameters.AddWithValue("@UserName", corporateUser.Name);
                         cmd.Parameters.AddWithValue("@Password", corporateUser.PassWord);
                         cmd.Parameters.AddWithValue("@Mail", corporateUser.Mail);
                         cmd.Parameters.AddWithValue("@Balance", corporateUser.Balance);
                         cmd.Parameters.AddWithValue("@Credit", corporateUser.Credit);
                         cmd.Parameters.AddWithValue("@CVRNumber", corporateUser.CVRNumber);
-                        cmd.Parameters.AddWithValue("@UserId", corporateUser.Id);
 
+                        // Execute the stored procedure
                         cmd.ExecuteNonQuery();
                         transaction.Commit();
                     }
@@ -119,28 +111,24 @@ namespace H2_Gruppe_project.DatabaseClasses
             }
         }
 
-        // Delete - Delete CorporateUser by ID
         public void DeleteCorporateUser(int userId)
         {
             using (SqlConnection connection = GetConnection())
             {
                 connection.Open();
-                using (SqlTransaction transaction = connection.BeginTransaction())
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                using (SqlCommand cmd = new SqlCommand("DeleteCorporateUser", connection, transaction))
                 {
                     try
                     {
-                        // First, delete the corporate user record from the CorporateUsers table
-                        string query = "DELETE FROM CorporateUsers WHERE UserId = @UserId;";
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        // Add parameter for the stored procedure
                         cmd.Parameters.AddWithValue("@UserId", userId);
+
+                        // Execute the stored procedure
                         cmd.ExecuteNonQuery();
-
-                        // Then, delete the user record from the Users table
-                        string deleteUserQuery = "DELETE FROM Users WHERE UserId = @UserId;";
-                        SqlCommand deleteUserCmd = new SqlCommand(deleteUserQuery, connection, transaction);
-                        deleteUserCmd.Parameters.AddWithValue("@UserId", userId);
-                        deleteUserCmd.ExecuteNonQuery();
-
                         transaction.Commit();
                     }
                     catch (Exception ex)
@@ -151,5 +139,6 @@ namespace H2_Gruppe_project.DatabaseClasses
                 }
             }
         }
+
     }
 }

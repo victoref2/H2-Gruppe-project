@@ -11,8 +11,8 @@ namespace H2_Gruppe_project.Classes
     {
         public string CPRNumber { get; set; }
 
-        public PrivateUser(int id, string name, string passWord, string mail, decimal balance, string cprNumber)
-            : base(id, name, passWord, mail, balance)
+        public PrivateUser(int id, string name, string passWord, string mail, decimal balance,bool isCorp ,string cprNumber)
+            : base(id, name, passWord, mail, balance,isCorp)
         {
             CPRNumber = cprNumber;
         }

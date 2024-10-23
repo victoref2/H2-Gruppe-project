@@ -704,7 +704,7 @@ CREATE PROCEDURE CreateUser
     @UserName NVARCHAR(100),
     @Password NVARCHAR(255),
     @CorporateUser BIT,
-    @Balance DECIMAL(10, 2),
+    @Balance DECIMAL,
     @Mail NVARCHAR(100)
 AS
 BEGIN
@@ -1106,3 +1106,104 @@ BEGIN
     -- Return the results
     SELECT @VehicleType AS VehicleType, @VehicleSubId AS VehicleSubId;
 END
+
+
+DROP PROCEDURE IF EXISTS UpdateVehicle;
+GO
+
+CREATE PROCEDURE UpdateVehicle
+    @VehicleId INT,
+    @Name VARCHAR(100),
+    @Km VARCHAR(20),
+    @RegistrationNumber VARCHAR(20),
+    @AgeGroup VARCHAR(20),
+    @TowHook BIT,
+    @DriversLicenceClass VARCHAR(5),
+    @EngineSize VARCHAR(MAX),
+    @KmL DECIMAL(10, 2),
+    @FuelType VARCHAR(20),
+    @EnergyClass VARCHAR(10)
+AS
+BEGIN
+    -- Update statement for the vehicle
+    UPDATE Vehicles
+    SET Name = @Name,
+        KM = @Km,
+        RegistrationNumber = @RegistrationNumber,
+        AgeGroup = @AgeGroup,
+        TowHook = @TowHook,
+        DriversLicenceClass = @DriversLicenceClass,
+        EngineSize = @EngineSize,
+        KmL = @KmL,
+        FuelType = @FuelType,
+        EnergyClass = @EnergyClass
+    WHERE VehicleId = @VehicleId;
+END;
+GO
+
+DROP PROCEDURE IF EXISTS AddCorporateUser;
+GO
+
+CREATE PROCEDURE AddCorporateUser
+    @UserName NVARCHAR(50),
+    @Password NVARCHAR(50),
+    @Mail NVARCHAR(100),
+    @Credit DECIMAL(18, 2),
+    @CVRNumber NVARCHAR(20),
+    @Balance DECIMAL(18, 2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Insert user into CorporateUser table
+    INSERT INTO CorporateUser (UserName, Password, Mail, Credit, CVRNumber, Balance)
+    VALUES (@UserName, @Password, @Mail, @Credit, @CVRNumber, @Balance);
+
+    -- Return the inserted user's Id
+    SELECT SCOPE_IDENTITY() AS UserId;
+END;
+GO
+
+DROP PROCEDURE IF EXISTS UpdateCorporateUser;
+GO
+
+CREATE PROCEDURE UpdateCorporateUser
+    @UserId INT,
+    @UserName NVARCHAR(50),
+    @Password NVARCHAR(50),
+    @Mail NVARCHAR(100),
+    @Balance DECIMAL(18, 2),
+    @Credit DECIMAL(18, 2),
+    @CVRNumber NVARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Update the Users table
+    UPDATE Users
+    SET UserName = @UserName, Password = @Password, Mail = @Mail, Balance = @Balance
+    WHERE UserId = @UserId;
+
+    -- Update the CorporateUsers table
+    UPDATE CorporateUsers
+    SET Credit = @Credit, CVRNumber = @CVRNumber
+    WHERE UserId = @UserId;
+END;
+GO
+
+DROP PROCEDURE IF EXISTS DeleteCorporateUser;
+GO
+
+CREATE PROCEDURE DeleteCorporateUser
+    @UserId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Delete from the CorporateUsers table
+    DELETE FROM CorporateUsers WHERE UserId = @UserId;
+
+    -- Delete from the Users table
+    DELETE FROM Users WHERE UserId = @UserId;
+END;
+GO

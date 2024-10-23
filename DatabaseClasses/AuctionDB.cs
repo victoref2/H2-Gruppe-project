@@ -64,11 +64,22 @@ namespace H2_Gruppe_project.DatabaseClasses
                         closingDate: Convert.ToDateTime(reader["ClosingDate"]),
                         currentBuyer: buyer
                     );
+
+                    if (auction.ClosingDate <= DateTime.Now)
+                    {
+                        CreateEndedAuction(auction);
+
+                        DeleteAuction(auction.Id);
+
+                        continue;
+                    }
+
                     auctions.Add(auction);
                 }
             }
             return auctions;
         }
+
 
         public void AddAuction(Auction auction)
         {

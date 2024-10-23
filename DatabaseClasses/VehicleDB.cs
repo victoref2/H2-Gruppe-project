@@ -96,8 +96,7 @@ namespace H2_Gruppe_project.DatabaseClasses
         }
 
 
-        // Update - Update Vehicle
-        public void UpdateVehicle(Vehicle vehicle)
+        public bool UpdateVehicle(Vehicle vehicle)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -106,13 +105,11 @@ namespace H2_Gruppe_project.DatabaseClasses
                 {
                     try
                     {
-                        string query = @"
-                            UPDATE Vehicles 
-                            SET Name = @Name, KM = @Km, RegistrationNumber = @RegistrationNumber, AgeGroup = @AgeGroup, TowHook = @TowHook, 
-                                DriversLicenceClass = @DriversLicenceClass, EngineSize = @EngineSize, KmL = @KmL, FuelType = @FuelType, EnergyClass = @EnergyClass
-                            WHERE VehicleId = @VehicleId";
+                        SqlCommand cmd = new SqlCommand("UpdateVehicle", connection, transaction);
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                        SqlCommand cmd = new SqlCommand(query, connection, transaction);
+                        // Add the parameters for the stored procedure
+                        cmd.Parameters.AddWithValue("@VehicleId", vehicle.Id);
                         cmd.Parameters.AddWithValue("@Name", vehicle.Name);
                         cmd.Parameters.AddWithValue("@Km", vehicle.KM);
                         cmd.Parameters.AddWithValue("@RegistrationNumber", vehicle.RegistrationNumber);
@@ -123,10 +120,11 @@ namespace H2_Gruppe_project.DatabaseClasses
                         cmd.Parameters.AddWithValue("@KmL", vehicle.KmL);
                         cmd.Parameters.AddWithValue("@FuelType", vehicle.FuelType);
                         cmd.Parameters.AddWithValue("@EnergyClass", vehicle.EnergyClass);
-                        cmd.Parameters.AddWithValue("@VehicleId", vehicle.Id);
 
                         cmd.ExecuteNonQuery();
+
                         transaction.Commit();
+                        return true;
                     }
                     catch (Exception ex)
                     {

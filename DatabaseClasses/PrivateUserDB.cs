@@ -64,7 +64,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                             // You can fetch User details here if needed
                             // User user = GetUserById(userId); // Implement this if needed
 
-                            privateUsers.Add(new PrivateUser(privateUserId, "DummyName", "DummyPass", "dummy@mail.com", 0, cprNumber));
+                            privateUsers.Add(new PrivateUser(privateUserId, "DummyName", "DummyPass", "dummy@mail.com", 0,false, cprNumber));
                         }
                     }
                 }
@@ -94,7 +94,7 @@ namespace H2_Gruppe_project.DatabaseClasses
                             // You can fetch User details here if needed
                             // User user = GetUserById(userId); // Implement this if needed
 
-                            return new PrivateUser(privateUserId, "DummyName", "DummyPass", "dummy@mail.com", 0, cprNumber);
+                            return new PrivateUser(privateUserId, "DummyName", "DummyPass", "dummy@mail.com", 0,false, cprNumber);
                         }
                     }
                 }

@@ -64,7 +64,7 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void GoToAuctionHistory()
         {
-            // Implement navigation to Auction history page if needed.
+            _mainWindowViewModel.SwitchViewModel(new HistoryViewModel(_mainWindowViewModel, _loggedInUser, _database));
         }
 
 

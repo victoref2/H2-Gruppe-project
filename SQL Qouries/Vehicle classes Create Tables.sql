@@ -1,5 +1,6 @@
 -- Drop tables if they exist before creating new ones
 DROP TABLE IF EXISTS Auctions;
+DROP TABLE IF EXISTS EndedAuctions;
 DROP TABLE IF EXISTS CommercialVehicles;
 DROP TABLE IF EXISTS PrivateVehicles;
 DROP TABLE IF EXISTS NormalVehicles;
@@ -7,6 +8,10 @@ DROP TABLE IF EXISTS Buses;
 DROP TABLE IF EXISTS Trucks;
 DROP TABLE IF EXISTS HeavyVehicles;
 DROP TABLE IF EXISTS Vehicles;
+DROP TABLE IF EXISTS PrivateUsers;
+DROP TABLE IF EXISTS CorporateUsers;
+DROP TABLE IF EXISTS Users;
+GO
 
 -- Create Vehicles table
 CREATE TABLE Vehicles (
@@ -83,6 +88,30 @@ CREATE TABLE CommercialVehicles (
     FOREIGN KEY (NormalVehicleId) REFERENCES NormalVehicles(NormalVehicleId) ON DELETE CASCADE
 );
 
+CREATE TABLE Users (
+    UserId INT IDENTITY(1,1) PRIMARY KEY,
+    UserName NVARCHAR(100) NOT NULL UNIQUE, 
+    Password NVARCHAR(255) NOT NULL,
+    CorporateUser BIT NOT NULL DEFAULT 0,
+    Balance DECIMAL(10,2) NOT NULL DEFAULT 0,
+    Mail NVARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE CorporateUsers (
+    CorporateUserId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    Credit DECIMAL(10,2) NOT NULL,
+    CVRNumber NVARCHAR(20) NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
+CREATE TABLE PrivateUsers (
+    PrivateUserId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    CPRNumber NVARCHAR(11) NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+ );
+
 -- Create Auctions table
 CREATE TABLE Auctions (
     AuctionId INT IDENTITY(1,1) PRIMARY KEY,
@@ -97,33 +126,17 @@ CREATE TABLE Auctions (
     FOREIGN KEY (SellerUserId) REFERENCES Users(UserId),
     FOREIGN KEY (BuyerUserId) REFERENCES Users(UserId)
 );
+-- Create EndedAuctions table
+CREATE TABLE EndedAuctions (
+    EndAuctionId INT IDENTITY(1,1) PRIMARY KEY,
+    VehicleId INT NOT NULL,
+    SellerUserId INT NOT NULL,
+    BuyerUserId INT, 
+    Price DECIMAL(32,1) NOT NULL,
+    ClosingDate DATETIME NOT NULL,
 
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS Users;
-CREATE TABLE Users (
-    UserId INT IDENTITY(1,1) PRIMARY KEY,
-    UserName NVARCHAR(100) NOT NULL UNIQUE, 
-    Password NVARCHAR(255) NOT NULL,
-    CorporateUser BIT NOT NULL DEFAULT 0,
-    Balance DECIMAL(10,2) NOT NULL DEFAULT 0,
-    Mail NVARCHAR(100) NOT NULL UNIQUE
+    -- Foreign Key Constraints
+    FOREIGN KEY (VehicleId) REFERENCES Vehicles(VehicleId),
+    FOREIGN KEY (SellerUserId) REFERENCES Users(UserId),
+    FOREIGN KEY (BuyerUserId) REFERENCES Users(UserId)
 );
-
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS CorporateUsers;
-CREATE TABLE CorporateUsers (
-    CorporateUserId INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL,
-    Credit DECIMAL(10,2) NOT NULL,
-    CVRNumber NVARCHAR(20) NOT NULL,
-    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
-);
-
--- Drop table if it exists before creating it
-DROP TABLE IF EXISTS PrivateUsers;
-CREATE TABLE PrivateUsers (
-    PrivateUserId INT IDENTITY(1,1) PRIMARY KEY,
-    UserId INT NOT NULL,
-    CPRNumber NVARCHAR(11) NOT NULL,
-    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
- );

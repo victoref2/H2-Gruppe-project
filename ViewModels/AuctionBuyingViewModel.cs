@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using H2_Gruppe_project.Classes;
 using H2_Gruppe_project.DatabaseClasses;
+using System.Collections.Generic;
+using HarfBuzzSharp;
 
 namespace H2_Gruppe_project.ViewModels
 {
@@ -14,7 +16,7 @@ namespace H2_Gruppe_project.ViewModels
         public Auction Auction { get; set; }
 
         private bool _isBidWindowVisible;
-        private string _bidAmount;
+        private decimal _bidAmount;
 
         private readonly User _loggedInUser;
         private readonly Database _database;
@@ -27,7 +29,7 @@ namespace H2_Gruppe_project.ViewModels
         }
 
         // Property for Bid Amount
-        public string BidAmount
+        public decimal BidAmount
         {
             get => _bidAmount;
             set => SetProperty(ref _bidAmount, value);
@@ -49,14 +51,85 @@ namespace H2_Gruppe_project.ViewModels
             Auction = auction;
 
             // Initialize properties
-            BidAmount = string.Empty;
+            BidAmount = 0;
 
             // Initialize commands
             MakeBidCommand = new RelayCommand(OpenBidWindow);
             CancelBidCommand = new RelayCommand(CloseBidWindow);
             SubmitBidCommand = new RelayCommand(SubmitBid);
             BackCommand = new RelayCommand(GoBack);
+
+            VehicleData(Auction.Vehicle.Id);
         }
+
+        // Visibility for Vehicle Types
+        [ObservableProperty]
+        private bool isTruckVisible;
+
+        [ObservableProperty]
+        private bool isBusVisible;
+
+        [ObservableProperty]
+        private bool isHeavyVehicleVisible;
+
+        [ObservableProperty]
+        private bool isNormalVHVisible;
+
+        [ObservableProperty]
+        private bool isPrivateVisible;
+
+        [ObservableProperty]
+        private bool isCommercialVisible;
+
+        // Vehicle Type Specific Properties
+        [ObservableProperty]
+        private bool isofixMount;
+
+        [ObservableProperty]
+        private bool towBar;
+
+        [ObservableProperty]
+        private int numberOfSeats;
+
+        [ObservableProperty]
+        private string trunkDimensions;
+
+        [ObservableProperty]
+        private bool isCommercialVH;
+
+        [ObservableProperty]
+        private bool rollCage;
+
+        [ObservableProperty]
+        private decimal loadCapacity;
+
+        [ObservableProperty]
+        private int maxLoadCapacity;
+
+        [ObservableProperty]
+        private int numberOfAxles;
+
+        [ObservableProperty]
+        private int numberOfSleepingPlaces;
+
+        [ObservableProperty]
+        private bool hasToilet;
+
+        [ObservableProperty]
+        private decimal height;
+
+        [ObservableProperty]
+        private decimal length;
+
+        [ObservableProperty]
+        private decimal weight;
+
+        [ObservableProperty]
+        private string engineSize;
+        public List<string> VehicleTypes { get; } = new List<string> { "Truck", "Bus", "CommercialVehicle", "PrivateVehicle" };
+
+        [ObservableProperty]
+        private string selectedVehicleType;
 
         // Command methods
         private void OpenBidWindow()
@@ -71,53 +144,58 @@ namespace H2_Gruppe_project.ViewModels
 
         private void SubmitBid()
         {
-            if (decimal.TryParse(BidAmount, out decimal bidValue))
+            if (BidAmount != null && BidAmount > Auction.CurrentPrice)
             {
-                // Check if bid is higher than current price
-                if (bidValue <= Auction.CurrentPrice)
+                User buyer = _database.GetUserById(_loggedInUser.Id);
+                CorporateUser? corp = _database.GetCorporateUser(buyer.Id);
+                decimal? corpbuyer = corp.Credit + corp.Balance;
+                if (buyer.Balance >= BidAmount && Auction.CurrentBuyer.Id != buyer.Id)
                 {
-                    // Bid must be higher than the current price
-                    ShowErrorMessage("Bid must be higher than the current price.");
-                    return;
-                }
+                    if (Auction.CurrentBuyer != null && Auction.CurrentBuyer.Id != 0)
+                    {
+                        User currentBuyer = _database.GetUserById(Auction.CurrentBuyer.Id);
 
-                // Check if user has enough balance
-                if (_loggedInUser.Balance < bidValue)
+                        currentBuyer.Balance += Auction.CurrentPrice;
+                        _database.UpdateUserBalance(currentBuyer.Id, currentBuyer.Balance);
+                    }
+
+                    buyer.Balance -= BidAmount;
+                    _database.UpdateUserBalance(buyer.Id, buyer.Balance);
+
+                    Auction.CurrentBuyer = buyer; 
+                    Auction.CurrentPrice = BidAmount;
+                    _database.UpdateAuction(Auction);
+                }
+                else if (buyer.IsCorp && corpbuyer >= BidAmount)
                 {
-                    // User does not have enough money to place the bid
-                    ShowErrorMessage("You do not have enough balance to place this bid.");
-                    return;
-                }
 
-                // If there is a current buyer, refund their previous bid
-                if (Auction.CurrentBuyer != null)
+                    if (Auction.CurrentBuyer != null && Auction.CurrentBuyer.Id != buyer.Id)
+                    {
+                        User currentBuyer = _database.GetUserById(Auction.CurrentBuyer.Id);
+
+                        currentBuyer.Balance += Auction.CurrentPrice;
+                        _database.UpdateUserBalance(currentBuyer.Id, currentBuyer.Balance);
+                    }
+                    Auction.CurrentBuyer = buyer;
+                    Auction.CurrentPrice = BidAmount;
+                    _database.UpdateAuction(Auction);
+
+                    BidAmount -= buyer.Balance;
+                    corp.Credit -= BidAmount;
+                    corp.Balance = 0;
+
+                    _database.UpdateCorporateUser(corp);
+                }
+                else
                 {
-                    // Refund the previous highest bidder
-                    Auction.CurrentBuyer.Balance += Auction.CurrentPrice;
-                    _database.UpdateUserBalance(Auction.CurrentBuyer.Id, Auction.CurrentBuyer.Balance);
+                    Console.WriteLine("Insufficient balance to make this bid.");
                 }
-
-                // Deduct the new bid amount from the logged-in user's balance
-                _loggedInUser.Balance -= bidValue;
-
-                // Update the auction's current price and buyer
-                Auction.CurrentPrice = bidValue;
-                Auction.CurrentBuyer = _loggedInUser;
-                    
-                // Update the auction and user balance in the database
-                _database.UpdateAuction(Auction);
-                _database.UpdateUserBalance(_loggedInUser.Id, _loggedInUser.Balance);
-
-                CloseBidWindow(); // Close the bid window after a successful bid
             }
             else
             {
-                // Handle invalid bid (optional: show an error message)
-                ShowErrorMessage("Invalid bid amount.");
+                Console.WriteLine("Bid must be higher than the current price.");
             }
         }
-
-
 
         private void GoBack()
         {
@@ -128,6 +206,90 @@ namespace H2_Gruppe_project.ViewModels
         private void ShowErrorMessage(string message)
         {
             Console.WriteLine(message); // Placeholder for real error message handling
+        }
+
+        public void VehicleData(int VHId)
+        {
+            // Reset all visibility flags
+            IsTruckVisible = false;
+            IsBusVisible = false;
+            IsHeavyVehicleVisible = false;
+            IsNormalVHVisible = false;
+
+            IsCommercialVisible = false;
+            isCommercialVH = false;
+            IsPrivateVisible = false;
+
+            string VHType;
+            int VHIdOut;
+
+            // Get Vehicle Type and Id from the database
+            _database.GetVehicleTypeAndId(VHId, out VHIdOut, out VHType);
+
+            selectedVehicleType = VHType;
+
+            if (VHType == "Truck")
+            {
+                Truck truck = _database.GetTruckById(VHIdOut);
+
+                IsTruckVisible = true;
+                IsHeavyVehicleVisible = true;
+
+                EngineSize = truck.EngineSize;
+                towBar = truck.TowHook;
+                maxLoadCapacity = truck.MaxLoadCapacity;
+                numberOfAxles = truck.NumberOfAxles;
+                Height = truck.Height;
+                Weight = truck.Weight;
+                Length = truck.Length;
+                LoadCapacity = truck.LoadCapacity;
+            }
+            else if (VHType == "Bus")
+            {
+                Bus bus = _database.GetABus(VHIdOut);
+
+                IsHeavyVehicleVisible = true;
+                IsBusVisible = true;
+
+                EngineSize = bus.EngineSize;
+                towBar = bus.TowHook;
+                maxLoadCapacity = bus.MaxLoadCapacity;
+                numberOfAxles = bus.NumberOfAxles;
+                Height = bus.Height;
+                Weight = bus.Weight;
+                Length = bus.Length;
+                NumberOfSeats = bus.NumberOfSeats;
+                NumberOfSleepingPlaces = bus.NumberOfSleepingPlaces;
+                HasToilet = bus.HasToilet;
+            }
+            else if (VHType == "PrivateVehicle")
+            {
+                PrivateVehicle privateVehicle = _database.GetPrivatVHById(VHIdOut);
+
+                IsNormalVHVisible = true;
+                IsPrivateVisible = true;
+
+                EngineSize = privateVehicle.EngineSize;
+                towBar = privateVehicle.TowHook;
+                NumberOfSeats = privateVehicle.NumberOfSeats;
+                TrunkDimensions = privateVehicle.TrunkDimensions;
+                IsofixMount = privateVehicle.IsofixMount;
+            }
+            else if (VHType == "CommercialVehicle")
+            {
+                ComercialVehicle comercialVehicle = _database.GetComercialVehicleById(VHIdOut);
+
+                IsNormalVHVisible = true;
+                IsCommercialVisible = true;
+                isCommercialVH = true;
+
+                engineSize = comercialVehicle.EngineSize;
+                TowBar = comercialVehicle.TowHook;
+                numberOfSeats = comercialVehicle.NumberOfSeats;
+                trunkDimensions = comercialVehicle.TrunkDimensions;
+                RollCage = comercialVehicle.RollCage;
+                LoadCapacity = comercialVehicle.LoadCapacity;
+            }
         }
     }
 }

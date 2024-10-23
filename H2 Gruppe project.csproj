@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\HistoryView.axaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.0" />
     <PackageReference Include="Avalonia.Desktop" Version="11.1.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.0" />
@@ -40,5 +44,6 @@
         <Page Include="Views\LoginView.axaml" />
         <Page Include="Views\ChangePasswordView.axaml" />
         <Page Include="Views\RegisterUserView.axaml" />
+		<Page Include="Views\HistoryView.axaml" />
 	</ItemGroup>
 </Project>

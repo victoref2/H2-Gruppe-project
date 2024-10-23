@@ -4,12 +4,18 @@ using System;
 using H2_Gruppe_project.Classes;
 using H2_Gruppe_project.DatabaseClasses;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace H2_Gruppe_project.ViewModels
 {
     public partial class AuctionSellerViewModel : ViewModelBase
     {
         private readonly MainWindowViewModel _mainWindowViewModel;
+        //Status
+        [ObservableProperty]
+        private string statusMessageN;
+        [ObservableProperty]
+        private string statusMessageP;
 
         // Auction data
         public Auction Auction { get; set; }
@@ -103,6 +109,8 @@ namespace H2_Gruppe_project.ViewModels
             AcceptBidCommand = new RelayCommand(AcceptBid);
             BackCommand = new RelayCommand(GoBack);
             VehicleData(Auction.Vehicle.Id);
+
+            UpdateVH = new RelayCommand(UpdateVehicleKM);
         }
 
         // Command methods
@@ -202,6 +210,30 @@ namespace H2_Gruppe_project.ViewModels
                 LoadCapacity = comercialVehicle.LoadCapacity;
             }
         }
+        public ICommand UpdateVH { get; }
 
+        private void UpdateVehicleKM()
+        {
+            if (Auction.Vehicle == null)
+            {
+                Console.WriteLine("No vehicle selected for updating KM.");
+                return;
+            }
+
+            try
+            {
+                bool Resault = _database.UpdateVehicle(Auction.Vehicle);
+                if (Resault) 
+                {
+                    StatusMessageP = "Successfully saved changes";
+                    StatusMessageN = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessageN = ($"Error updating KM: {ex.Message}");
+                StatusMessageP = "";
+            }
+        }
     }
 }

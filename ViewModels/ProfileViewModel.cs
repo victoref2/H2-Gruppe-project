@@ -11,6 +11,9 @@ namespace H2_Gruppe_project.ViewModels
     public partial class ProfileViewModel : ViewModelBase
     {
         [ObservableProperty]
+        private decimal addBalance;
+
+        [ObservableProperty]
         private string username;
 
         [ObservableProperty]
@@ -108,12 +111,13 @@ namespace H2_Gruppe_project.ViewModels
         [RelayCommand]
         public void UpdateBalance()
         {
-            if (AmountToChange != 0)
+            if (addBalance != 0)
             {
-                _loggedInUser.Balance += AmountToChange;
+                _loggedInUser.Balance += addBalance;
                 _database.UpdateUserBalance(_loggedInUser.Id, _loggedInUser.Balance);
                 SuccessMessage = "Balance updated successfully.";
                 AmountToChange = 0;
+                Balance = _loggedInUser.Balance;
             }
             else
             {

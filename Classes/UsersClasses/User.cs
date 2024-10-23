@@ -14,14 +14,16 @@ public class User
     public string PassWord { get; set; }
     public string Mail { get; set; }
     public decimal Balance { get; set; }
+    public bool IsCorp { get; set; }
 
-    public User(int id,string name,string passWord,string mail, decimal balance) 
+    public User(int id,string name,string passWord,string mail, decimal balance,bool isCorp) 
     { 
         Id = id;
         Name = name;
         PassWord = passWord;
         Mail = mail;
         Balance = balance;
+        IsCorp = isCorp;
     }
 
     public override string ToString() 
