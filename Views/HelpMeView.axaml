@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:vm="using:H2_Gruppe_project.ViewModels"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="H2_Gruppe_project.HelpMeView"
+			 x:DataType="vm:HelpMeViewModel">
+	<Grid Margin="20">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<!-- Header Section -->
+		<StackPanel Grid.Row="0" HorizontalAlignment="Center">
+			<TextBlock Text="Home screen" FontSize="24" HorizontalAlignment="Center"/>
+			<TextBlock Text="Welcome," FontSize="18" HorizontalAlignment="Center"/>
+			<TextBlock Text="{Binding UserName}" FontSize="18" HorizontalAlignment="Center" Margin="0,10"/>
+		</StackPanel>
+
+		<StackPanel Margin="10" HorizontalAlignment="Left">
+			<!-- Your Auctions Section -->
+			<TextBlock Text="All Auctions You have won" FontSize="20" Margin="0,0,0,10"/>
+			<ListBox ItemsSource="{Binding YourAuctions}" Width="200" Height="200">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Margin="5">
+							<TextBlock Text="Seller"/>
+							<TextBlock Text="{Binding Seller.Name}" />
+							<TextBlock Text="Current Price"/>
+							<TextBlock Text="{Binding CurrentPrice, StringFormat='{}{0:C}'}" />
+							<TextBlock Text="KM driven"/>
+							<TextBlock Text="{Binding Vehicle.KM}" />
+							<TextBlock Text="KM/L"/>
+							<TextBlock Text="{Binding Vehicle.KmL}" />
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+
+			<!-- All Auctions Section -->
+			<TextBlock Text="All Your Auctions" FontSize="20" Margin="20,0,0,10"/>
+			<ListBox ItemsSource="{Binding CurrentAuctions}" Width="200" Height="200">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Margin="5">
+							<TextBlock Text="Seller"/>
+							<TextBlock Text="{Binding Seller.Name}" />
+							<TextBlock Text="Current Price"/>
+							<TextBlock Text="{Binding CurrentPrice, StringFormat='{}{0:C}'}" />
+							<TextBlock Text="KM driven"/>
+							<TextBlock Text="{Binding Vehicle.KM}" />
+							<TextBlock Text="KM/L"/>
+							<TextBlock Text="{Binding Vehicle.KmL}" />
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+
+		<!-- Side Panel for Buttons -->
+		<StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20">
+			<Button Content="+ Set for sale" Command="{Binding GoToAddVehicleCommand}" Margin="0,10" />
+			<Button Content="User profile" Command="{Binding GoToProfileCommand}" Margin="0,10" />
+			<Button Content="Dash Board" Command="{Binding GoToAuctionHistoryCommand}" Margin="0,10" />
+			<Button Content="Logout" Command="{Binding LogoutCommand}" Foreground="Red" Margin="0,10" />
+		</StackPanel>
+	</Grid>
+</UserControl>
